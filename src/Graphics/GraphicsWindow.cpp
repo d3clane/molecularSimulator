@@ -8,32 +8,32 @@
 namespace Graphics
 {
 
-Window::Window(int width, int height, const char* title) : 
+RenderWindow::RenderWindow(int width, int height, const char* title) : 
         window_(sf::VideoMode(width, height), title), height_(height), width_(width)
 {
 }
 
-void Window::display()
+void RenderWindow::display()
 {
     window_.display();
 }
 
-bool Window::isOpen()
+bool RenderWindow::isOpen()
 {
     return window_.isOpen();
 }
 
-void Window::close()
+void RenderWindow::close()
 {
     window_.close();
 }
 
-void Window::clear()
+void RenderWindow::clear()
 {
     window_.clear();
 }
 
-void Window::drawLine(WindowLine line)
+void RenderWindow::drawLine(WindowLine line)
 {
     sf::Vertex drewLine[] =
     {
@@ -44,7 +44,7 @@ void Window::drawLine(WindowLine line)
     window_.draw(drewLine, sizeof(drewLine) / sizeof(*drewLine), sf::Lines);
 }
 
-void Window::drawPixels(const PixelsArray& pixels)
+void RenderWindow::drawPixels(const PixelsArray& pixels)
 {
     sf::Texture texture;
     texture.create(pixels.width_, pixels.height_);
@@ -56,22 +56,22 @@ void Window::drawPixels(const PixelsArray& pixels)
     window_.draw(sprite);
 }
 
-void Window::drawSprite(const Sprite& sprite)
+void RenderWindow::drawSprite(const Sprite& sprite)
 {
     window_.draw(sprite.sprite_);
 }
 
-unsigned int Window::getWidth () const
+unsigned int RenderWindow::getWidth () const
 {
     return width_;
 }
 
-unsigned int Window::getHeight() const
+unsigned int RenderWindow::getHeight() const
 {
     return height_;
 }
 
-bool Window::pollEvent(Event& event)
+bool RenderWindow::pollEvent(Event& event)
 {
     bool anyEvent = window_.pollEvent(event.sfEvent);
 

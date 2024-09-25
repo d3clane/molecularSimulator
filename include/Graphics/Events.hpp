@@ -53,7 +53,7 @@ public:
 
     Event();
     
-    friend bool Window::pollEvent(Event& event);
+    friend bool RenderWindow::pollEvent(Event& event);
 };
 
 } // Graphics

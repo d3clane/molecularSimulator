@@ -7,7 +7,7 @@ namespace Graphics
 {
 
 struct WindowPoint;
-class Window;
+class RenderWindow;
 
 namespace Mouse
 {
@@ -23,7 +23,7 @@ enum class Wheel
 };
 
 bool isButtonPressed(const Button& button);
-WindowPoint getPosition(const Window& window);
+WindowPoint getPosition(const RenderWindow& window);
 
 } // namespace Mouse
 

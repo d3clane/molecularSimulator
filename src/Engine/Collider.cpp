@@ -42,12 +42,6 @@ bool checkCollision(const CircleCollider& collider1, const CircleCollider& colli
 {
     double criticalDistance = *collider1.radius_ + *collider2.radius_;
 
-    //static bool firstAttempt = true;
-    //if (firstAttempt)
-    //    printf("%p %p\n", collider1.topLeft_, collider2.topLeft_);
-    //firstAttempt = false;
-
-    //std::cout << "topLefts: \n" << collider1.topLeft_->x << "\n" << collider1.topLeft_->y << std::endl;
     return getDistanceSquare2D(*collider1.topLeft_, *collider2.topLeft_) < criticalDistance * criticalDistance;
 }
 

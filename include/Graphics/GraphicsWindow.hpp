@@ -43,7 +43,7 @@ struct WindowLine
 class PixelsArray;
 class Sprite;
 
-class Window
+class RenderWindow
 {
 private:
     sf::RenderWindow window_;
@@ -51,7 +51,7 @@ private:
 public:
     const unsigned int width_, height_;
 
-    Window(int width, int height, const char* title);
+    RenderWindow(int width, int height, const char* title);
 
     bool isOpen();
     void close();
@@ -68,7 +68,7 @@ public:
 
     bool pollEvent(Event& event);
 
-    friend WindowPoint Mouse::getPosition(const Window& window);
+    friend WindowPoint Mouse::getPosition(const RenderWindow& window);
 };
 
 } // Graphics

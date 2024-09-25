@@ -29,7 +29,7 @@ public:
     void  setColor(const Color& color);
     Color getColor() const;
 
-    friend void Window::drawSprite(const Sprite& sprite);
+    friend void RenderWindow::drawSprite(const Sprite& sprite);
 };
 
 

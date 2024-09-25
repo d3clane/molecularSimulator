@@ -69,6 +69,32 @@ RectangleMolecule::RectangleMolecule(
     sprite_.scaleInPixels({width, height});
 }
 
+RectangleMolecule::RectangleMolecule(const RectangleMolecule& other) : 
+    RectangleMolecule(other.width_, other.height_, Molecule::CtorParams{
+        other.sprite_, other.transformableTopLeft_, other.mass_, other.speed_
+        }
+    )
+{
+}
+
+RectangleMolecule::operator Graphics::Sprite() 
+{ 
+    sprite_.setPosition({transformableTopLeft_.x, transformableTopLeft_.y});
+    //sprite_.scaleInPixels({2 * radius_, 2 * radius_});
+
+    return sprite_;
+}
+
 Engine::RectangleCollider& RectangleMolecule::collider() & { return collider_; }
+
+double RectangleMolecule::width()  const
+{
+    return width_;
+}
+
+double RectangleMolecule::height() const
+{
+    return height_;
+}
 
 } // namespace Scene

@@ -8,6 +8,8 @@
 namespace Engine
 {
 
+
+
 class RectangleCollider;
 
 class CircleCollider
@@ -33,7 +35,7 @@ public:
     RectangleCollider(const Point* topLeft, const double* width, const double* height);
     
     RectangleCollider(const RectangleCollider& other) = delete;
-    
+
     friend bool checkCollision(const RectangleCollider& collider1, const RectangleCollider& collider2);
     friend bool checkCollision(const CircleCollider& collider,     const RectangleCollider& collider2);
 };

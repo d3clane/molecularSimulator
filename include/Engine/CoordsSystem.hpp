@@ -39,6 +39,8 @@ public:
     void moveCenter (const PixelVector& delta);
     void changeScale(const int delta);
 
+    void draw(Graphics::RenderWindow& window, const Graphics::Drawable* drawable);
+
     Graphics::WindowPoint getPosInWindow(const Point& point) const;
 
     Point getPosInCoordsSystem(const Graphics::WindowPoint& point) const;

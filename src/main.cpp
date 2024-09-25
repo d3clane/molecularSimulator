@@ -51,20 +51,23 @@ int main()
         );
 #endif
 
-    for (int i = 0; i < 20; ++i)
+    for (int i = 0; i < 50; ++i)
     {
-        double v_x = (rand() % 100) / 1000.;
+        double v_x = (rand() % 100) / 100 * v;
+        int dirX = rand() % 2 == 0 ? -1 : 1;
+        int dirY = rand() % 2 == 0 ? -1 : 1;
+
         circleMolecules.push_back(
             Scene::CircleMolecule(
                 5, Scene::Molecule::CtorParams(
                     whiteSprite, Engine::Point(rand() % 600 + 50, rand() % 400 + 50, 0), 1, 
-                    Engine::Vector(v_x, std::sqrt(v * v - v_x * v_x), 0)
+                    Engine::Vector(dirX * v_x, dirY * std::sqrt(v * v - v_x * v_x), 0)
                 )
             )
         );
     }
 
-    Graphics::Window window{800, 600, "molecules"};
+    Graphics::RenderWindow window{800, 600, "molecules"};
 
     while (window.isOpen())
     {

@@ -8,7 +8,8 @@ namespace Scene
 {
 
 void onCircleMoleculesCollision(
-    ListIterator<CircleMolecule>& aIt, ListIterator<CircleMolecule>& bIt
+    ListIterator<CircleMolecule>& aIt, ListIterator<CircleMolecule>& bIt,
+    ListType<CircleMolecule>& circleMolecules, ListType<RectangleMolecule>& rectangleMolecules
 )
 {
     CircleMolecule& a = *aIt;
@@ -45,13 +46,37 @@ void onCircleMoleculesCollision(
     //b.collider() = Engine::CircleCollider(b.topLeft(), b.radius());
 }
 
-void onRectangleMoleculesCollision(ListIterator<RectangleMolecule>& aIt, ListIterator<RectangleMolecule>& bIt)
+void onRectangleMoleculesCollision(
+    ListIterator<RectangleMolecule>& aIt, ListIterator<RectangleMolecule>& bIt,
+    ListType<CircleMolecule>& circleMolecules, ListType<RectangleMolecule>& rectangleMolecules
+)
 {
+    RectangleMolecule& a = *aIt;
+    RectangleMolecule& b = *bIt;
 
+    Vector aSpeed = a.speed();
+    Vector bSpeed = b.speed();
+
+    unsigned int aMass = a.mass();
+    unsigned int bMass = b.mass();
+
+    RectangleMolecule tmp = a;
+    tmp.mass(aMass + bMass);
+    tmp.speed((aMass * aSpeed + bMass * bSpeed) / (aMass + bMass));
+
+    // chem reaction
+    rectangleMolecules.push_back(tmp);
+
+    aIt = rectangleMolecules.erase(aIt);
+    bIt = rectangleMolecules.erase(bIt);
 }
 
 template<typename T1, typename F>
-void handleMoleculesCollision(ListType<T1>& molecules, F onCollision)
+void handleMoleculesCollision(
+    ListType<T1>& molecules, 
+    ListType<CircleMolecule>& circleMolecules, ListType<RectangleMolecule>& rectangleMolecules,
+    F onCollision
+)
 {
     for (auto firstMoleculeIt = molecules.begin(), itEnd = molecules.end(); 
          firstMoleculeIt != itEnd; ++firstMoleculeIt)
@@ -93,7 +118,6 @@ void onCircleAndRectangleMoleculesCollision(
     CircleMolecule& circleMolecule, RectangleMolecule& rectangleMolecule
 )
 {
-
 }
 
 void handleCollisionCircleWithRectangle(
@@ -113,14 +137,18 @@ void handleCollisionCircleWithRectangle(
 void MoleculeManager::moveMolecules()
 {
     for (auto& molecule : circleMolecules_)
-    {
         molecule.move(molecule.speed());
-        //molecule.collider() = Engine::CircleCollider(molecule.topLeft(), molecule.radius());
-    }
-    
+
+    for (auto& molecule : rectangleMolecules_)
+        molecule.move(molecule.speed());
+        
     handleMoleculesCollision(
         circleMolecules_, onCircleMoleculesCollision
     );
+    handleMoleculesCollision(
+        rectangleMolecules_, onRectangleMoleculesCollision
+    );
+
     handleCollisionWithBoundary(
         circleMolecules_, boundaries_, onCollisionWithBoundary<CircleMolecule>
     );

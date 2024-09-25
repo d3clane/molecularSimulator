@@ -16,7 +16,7 @@ bool isButtonPressed(const Button& button)
     return sf::Mouse::isButtonPressed(convertButtonToSfButton(button));
 }
 
-WindowPoint getPosition(const Window& window)
+WindowPoint getPosition(const RenderWindow& window)
 {
     sf::Vector2i sfMousePosition = sf::Mouse::getPosition(window.window_);
 

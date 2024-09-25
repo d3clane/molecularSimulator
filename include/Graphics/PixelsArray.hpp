@@ -61,7 +61,7 @@ public:
         return topLeftPixelWindowPos_ + Graphics::WindowPoint{width_ / 2, height_ / 2};
     }
 
-    friend void Window::drawPixels(const PixelsArray& pixels);
+    friend void RenderWindow::drawPixels(const PixelsArray& pixels);
 };
 
 } // Graphics

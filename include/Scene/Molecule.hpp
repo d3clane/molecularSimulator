@@ -77,10 +77,14 @@ class RectangleMolecule : public Molecule
 
 public:
     RectangleMolecule(const double width, const double height, const Molecule::CtorParams& ctorParams);
+    RectangleMolecule(const RectangleMolecule& other);
 
     Engine::RectangleCollider& collider() &;
 
-    operator Graphics::Sprite() const;
+    double width()  const;
+    double height() const;
+
+    operator Graphics::Sprite();
 };
 
 } // namespace Scene
