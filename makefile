@@ -22,7 +22,7 @@ LIB_LINK  := -L/opt/homebrew/Cellar/sfml/2.6.1/lib -lsfml-graphics -lsfml-window
 LDFLAGS   := $(LIB_LINK)
 
 PROGRAM_DIR  := $(OUT_O_DIR)/bin
-PROGRAM_NAME := sphere.out
+PROGRAM_NAME := molecules.out
 
 TESTS = ./Tests
 
@@ -31,7 +31,12 @@ ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 override CFLAGS += $(COMMONINC)
 override CFLAGS += $(LIB_INC)
 
-CPPSRC = 
+CPPSRC = src/Graphics/Events.cpp src/Graphics/GraphicsWindow.cpp src/Graphics/Mouse.cpp \
+		 src/Graphics/PixelsArray.cpp src/Graphics/PrivateConverters.cpp src/Graphics/Sprite.cpp  \
+		 src/Graphics/Texture.cpp src/Engine/Collider.cpp src/Engine/CoordsSystem.cpp \
+		 src/Engine/Transformable.cpp src/Engine/Vector.cpp src/Scene/Molecule.cpp \
+		 src/Scene/MoleculeManager.cpp src/main.cpp
+
 CPPOBJ := $(addprefix $(OUT_O_DIR)/,$(CPPSRC:.cpp=.o))
 DEPS = $(CPPOBJ:.o=.d)
 

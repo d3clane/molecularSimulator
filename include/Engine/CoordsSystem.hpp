@@ -1,9 +1,9 @@
-#ifndef COORDS_SYSTEM_HPP
-#define COORDS_SYSTEM_HPP
+#ifndef ENGINE_COORDS_SYSTEM_HPP
+#define ENGINE_COORDS_SYSTEM_HPP
 
 #include "Graphics/GraphicsWindow.hpp"
 
-namespace Scene
+namespace Engine
 {
 
 struct Point
@@ -12,11 +12,13 @@ struct Point
 
     Point(double x, double y, double z) : x(x), y(y), z(z) {}
     //Point(Graphics::WindowPoint windowPoint) : x(windowPoint.x), y(windowPoint.y), z(0) {}
+
+    Point& operator+=(const Point& other);
+    Point& operator-=(const Point& other);
 };
 
-Point operator +(const Point& self, const Point& other);
-
-class Sphere;
+Point operator+(const Point& self, const Point& other);
+Point operator-(const Point& self, const Point& other);
 
 struct PixelVector
 {
@@ -42,9 +44,11 @@ public:
     Point getPosInCoordsSystem(const Graphics::WindowPoint& point) const;
 };
 
-double getDistance3D(const Point& p1, const Point& p2);
-double getDistance2D(const Point& p1, const Point& p2);
+double getDistanceSquare3D(const Point& p1, const Point& p2);
+double getDistanceSquare2D(const Point& p1, const Point& p2);
+double getDistance3D      (const Point& p1, const Point& p2);
+double getDistance2D      (const Point& p1, const Point& p2);
 
-} // Scene
+} // namespace Engine
 
-#endif // COORDS_SYSTEM_HPP
+#endif // ENGINE_COORDS_SYSTEM_HPP

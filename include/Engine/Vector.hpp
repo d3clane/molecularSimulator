@@ -1,11 +1,11 @@
-#ifndef VECTOR_HPP
-#define VECTOR_HPP
+#ifndef ENGINE_VECTOR_HPP
+#define ENGINE_VECTOR_HPP
 
 #include <stddef.h>
 
-#include "Scene/CoordsSystem.hpp"
+#include "Engine/CoordsSystem.hpp"
 
-namespace Scene
+namespace Engine
 {
 
 struct Vector
@@ -22,6 +22,10 @@ struct Vector
     Vector reflectRelatively(const Vector& pivot) const;
     Vector getNormalizedVector() const;
 
+    Vector getPerpendicular() const;
+
+    Vector projectOnto(const Vector& other) const;
+
     operator Point() const { return Point(dx, dy, dz); }
 };
 
@@ -35,6 +39,6 @@ double operator ^(const Vector& self, const Vector& other);
 
 double cos(const Vector& v1, const Vector& v2);
 
-} // Scene
+} // namespace Engine
 
-#endif // VECTOR_HPP
+#endif // ENGINE_VECTOR_HPP

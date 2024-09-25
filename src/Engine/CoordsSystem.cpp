@@ -1,7 +1,7 @@
 #include "Graphics/PixelsArray.hpp"
-#include "Scene/CoordsSystem.hpp"
+#include "Engine/CoordsSystem.hpp"
 
-namespace Scene
+namespace Engine
 {
 
 namespace 
@@ -19,9 +19,32 @@ void changeOneArgScale(unsigned int& step, const int delta)
 
 using Graphics::WindowLine;
 
-Point operator +(const Point& self, const Point& other)
+Point& Point::operator+=(const Point& other)
 {
-    return Point(self.x + other.x, self.y + other.y, self.z + other.z);
+    this->x += other.x;
+    this->y += other.y;
+    this->z += other.z;
+    return *this;
+}
+
+Point& Point::operator-=(const Point& other)
+{
+    this->x -= other.x;
+    this->y -= other.y;
+    this->z -= other.z;
+    return *this;
+}
+
+Point operator+(const Point& self, const Point& other)
+{
+    Point selfCpy = self;
+    return selfCpy += other;
+}
+
+Point operator-(const Point& self, const Point& other)
+{
+    Point selfCpy = self;
+    return selfCpy -= other;
 }
 
 void CoordsSystem::moveCenter(const PixelVector& delta)
@@ -51,15 +74,24 @@ Point CoordsSystem::getPosInCoordsSystem(const Graphics::WindowPoint& point) con
 
 double getDistance3D(const Point& p1, const Point& p2)
 {
-    return sqrt((p1.x - p2.x) * (p1.x - p2.x) + 
-                (p1.y - p2.y) * (p1.y - p2.y) + 
-                (p1.z - p2.z) * (p1.z - p2.z));
+    return sqrt(getDistance3D(p1, p2));
 }
 
 double getDistance2D(const Point& p1, const Point& p2)
 {
-    return sqrt((p1.x - p2.x) * (p1.x - p2.x) + 
-                (p1.y - p2.y) * (p1.y - p2.y));
+    return sqrt(getDistanceSquare2D(p1, p2));
 }
 
-} // Scene
+double getDistanceSquare2D(const Point& p1, const Point& p2)
+{
+    return (p1.x - p2.x) * (p1.x - p2.x) + 
+           (p1.y - p2.y) * (p1.y - p2.y);
+}
+
+double getDistanceSquare3D(const Point& p1, const Point& p2)
+{
+    return (p1.x - p2.x) * (p1.x - p2.x) + 
+           (p1.y - p2.y) * (p1.y - p2.y) + 
+           (p1.z - p2.z) * (p1.z - p2.z);
+}
+} // namespace Engine

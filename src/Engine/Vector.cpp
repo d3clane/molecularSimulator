@@ -1,9 +1,9 @@
 #include <cassert>
 #include <cmath>
 
-#include "Scene/Vector.hpp"
+#include "Engine/Vector.hpp"
 
-namespace Scene
+namespace Engine
 {
 
 double cos(const Vector& v1, const Vector& v2)
@@ -40,12 +40,19 @@ Vector Vector::getNormalizedVector() const
 
 Vector Vector::reflectRelatively(const Vector& pivot) const
 {
-    Vector normalizedPivot = pivot.getNormalizedVector();
+    return 2 * projectOnto(pivot) - *this;
+}
 
-    double pivotLength = pivot.length();
-    double cosAngle = cos(*this, normalizedPivot);
+Vector Vector::getPerpendicular() const
+{
+    return Vector(dy, -dx, 0);
+}
 
-    return normalizedPivot * (2 * pivotLength * cosAngle) - *this;
+Vector Vector::projectOnto(const Vector& other) const
+{
+    double myLen = length();
+    if (myLen == 0) return *this; // TODO: double comparison
+    return other.getNormalizedVector() * cos(*this, other) * length();
 }
 
 Vector operator -(const Vector& self)
@@ -88,4 +95,4 @@ double operator ^(const Vector& self, const Vector& other)
     return self.dx * other.dx + self.dy * other.dy + self.dz * other.dz;
 }
 
-} // Scene
+} // namespace Engine
