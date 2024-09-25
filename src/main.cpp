@@ -30,13 +30,34 @@ int main()
     // TODO: coords system
 
     const double v = 0.1;
+
+#if 0
+        circleMolecules.push_back(
+            Scene::CircleMolecule(
+                5, Scene::Molecule::CtorParams(
+                    whiteSprite, Engine::Point(50, 300, 0), 1, 
+                    Engine::Vector(0, v, 0)
+                )
+            )
+        );
+
+        circleMolecules.push_back(
+            Scene::CircleMolecule(
+                5, Scene::Molecule::CtorParams(
+                    whiteSprite, Engine::Point(50, 500, 0), 1, 
+                    Engine::Vector(0, -v, 0)
+                )
+            )
+        );
+#endif
+
     for (int i = 0; i < 20; ++i)
     {
         double v_x = (rand() % 100) / 1000.;
         circleMolecules.push_back(
             Scene::CircleMolecule(
                 5, Scene::Molecule::CtorParams(
-                    whiteSprite, Engine::Point(rand() % 800, rand() % 600, 0), 1, 
+                    whiteSprite, Engine::Point(rand() % 600 + 50, rand() % 400 + 50, 0), 1, 
                     Engine::Vector(v_x, std::sqrt(v * v - v_x * v_x), 0)
                 )
             )

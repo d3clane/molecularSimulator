@@ -10,8 +10,8 @@ namespace Scene
 
 class Boundary : public Engine::Transformable
 {
-    unsigned int width_;
-    unsigned int height_;
+    double width_;
+    double height_;
 
     Engine::RectangleCollider collider_;
 
@@ -19,10 +19,12 @@ class Boundary : public Engine::Transformable
 
 public:
     Boundary(
-        const Point& topLeft, const unsigned int width, const unsigned int height,
+        const Point& topLeft, const double width, const double height,
         const Vector& perpendicular
     );
 
+    Boundary(const Boundary& other);
+    
     Engine::RectangleCollider& collider() &;
     const Vector& perpendicular() const &;
 };

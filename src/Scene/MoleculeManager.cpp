@@ -115,7 +115,7 @@ void MoleculeManager::moveMolecules()
     for (auto& molecule : circleMolecules_)
     {
         molecule.move(molecule.speed());
-        molecule.collider() = Engine::CircleCollider(molecule.topLeft(), molecule.radius());
+        //molecule.collider() = Engine::CircleCollider(molecule.topLeft(), molecule.radius());
     }
     
     handleMoleculesCollision(
@@ -134,10 +134,15 @@ ListType<Boundary>&                MoleculeManager::boundaries        ()       {
 const ListType<Boundary>&          MoleculeManager::boundaries        () const { return boundaries_; }
 
 Boundary::Boundary(
-    const Point& topLeft, const unsigned int width, const unsigned int height,
+    const Point& topLeft, const double width, const double height,
     const Vector& perpendicular
 ) : Engine::Transformable(topLeft), width_(width), height_(height), perpendicular_(perpendicular),
-    collider_(Engine::RectangleCollider(topLeft, width, height))
+    collider_(Engine::RectangleCollider(&transformableTopLeft_, &width_, &height_))
+{
+}
+
+Boundary::Boundary(const Boundary& other) : 
+    Boundary(other.transformableTopLeft_, other.width_, other.height_, other.perpendicular_)
 {
 }
 

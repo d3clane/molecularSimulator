@@ -60,6 +60,8 @@ class CircleMolecule : public Molecule
 
 public:
     CircleMolecule(const double radius, const Molecule::CtorParams& ctorParams);
+    CircleMolecule(const CircleMolecule&  other);
+    CircleMolecule(CircleMolecule&& other);
 
     Engine::CircleCollider& collider() &;
     double radius() const;

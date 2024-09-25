@@ -12,11 +12,13 @@ class RectangleCollider;
 
 class CircleCollider
 {
-    Point center_;
-    double radius_;
+    const Point* topLeft_;
+    const double* radius_;
 
 public:
-    CircleCollider(const Point& center, const double radius);
+    CircleCollider(const Point* topLeft, const double* radius);
+
+    CircleCollider(const CircleCollider& other) = delete;
 
     friend bool checkCollision(const CircleCollider& collider1, const CircleCollider& collider2);
     friend bool checkCollision(const CircleCollider& collider,  const RectangleCollider& collider2);
@@ -24,12 +26,14 @@ public:
 
 class RectangleCollider
 {
-    Point topLeft_;
-    double width_, height_;
+    const Point* topLeft_;
+    const double* width_, *height_;
 
 public:
-    RectangleCollider(const Point& topLeft, const double width, const double height);
-
+    RectangleCollider(const Point* topLeft, const double* width, const double* height);
+    
+    RectangleCollider(const RectangleCollider& other) = delete;
+    
     friend bool checkCollision(const RectangleCollider& collider1, const RectangleCollider& collider2);
     friend bool checkCollision(const CircleCollider& collider,     const RectangleCollider& collider2);
 };

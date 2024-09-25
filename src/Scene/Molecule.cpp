@@ -1,5 +1,8 @@
 #include "Scene/Molecule.hpp"
 
+#include <iostream>
+#include <cstdio>
+
 namespace Scene
 {
 
@@ -8,6 +11,7 @@ Molecule::Molecule(
 ) : sprite_(sprite), mass_(mass), speed_(speed), Engine::Transformable(topLeft)
 {
     sprite_.setPosition({transformableTopLeft_.x, transformableTopLeft_.y});
+    //std::cout << transformableTopLeft_.x << " " << transformableTopLeft_.y << '\n';
 }
 
 Molecule::Molecule(const Molecule::CtorParams& ctorParams) : 
@@ -25,9 +29,25 @@ Molecule::operator Graphics::Sprite() { return sprite_; } // TODO: configure sca
 
 CircleMolecule::CircleMolecule(const double radius, const Molecule::CtorParams& ctorParams) : 
     Molecule(ctorParams), radius_(radius),
-    collider_(Engine::CircleCollider(ctorParams.topLeft + Point(radius, radius, 0), radius))
+    collider_(Engine::CircleCollider(&transformableTopLeft_, &radius_))
 {
+    //printf("this addr - %p, topLeft addr - %p\n", this, &transformableTopLeft_);
+
     sprite_.scaleInPixels({radius * 2, radius * 2});
+}
+
+CircleMolecule::CircleMolecule(const CircleMolecule& other) : 
+    CircleMolecule(other.radius_, Molecule::CtorParams(
+            other.sprite_, other.transformableTopLeft_, other.mass_, other.speed_
+        )
+    )
+{
+    sprite_ = other.sprite_; // TODO: think why it doesn't work with the init list already
+    sprite_.setPosition({transformableTopLeft_.x, transformableTopLeft_.y});
+}
+
+CircleMolecule::CircleMolecule(CircleMolecule&& other) : CircleMolecule(other)
+{
 }
 
 Engine::CircleCollider& CircleMolecule::collider() & { return collider_; }
@@ -44,7 +64,7 @@ CircleMolecule::operator Graphics::Sprite()
 RectangleMolecule::RectangleMolecule(
     const double width, const double height, const Molecule::CtorParams& ctorParams
 ) : Molecule(ctorParams), width_(width), height_(height),
-    collider_(Engine::RectangleCollider(ctorParams.topLeft, width, height))
+    collider_(Engine::RectangleCollider(&transformableTopLeft_, &width_, &height_))
 {
     sprite_.scaleInPixels({width, height});
 }
