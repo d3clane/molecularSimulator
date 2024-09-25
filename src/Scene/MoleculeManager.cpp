@@ -22,15 +22,12 @@ void onCircleMoleculesCollision(
 
     Vector relativeASpeedBefore = aSpeed - bSpeed;
 
-    Vector centerDirection              = Vector(b.topLeft(), a.topLeft());
-    Vector perpendicularDirection       = centerDirection.getPerpendicular();
-    Vector centerDirectionSpeed         = relativeASpeedBefore.projectOnto(centerDirection);
-    Vector perpendicularDirectionSpeed  = relativeASpeedBefore.projectOnto(perpendicularDirection);
+    Vector centerDirection      = Vector(a.topLeft(), b.topLeft());
+    Vector centerDirectionSpeed = relativeASpeedBefore.projectOnto(centerDirection);
 
     double v_x = centerDirectionSpeed.length();
-    double v_y = perpendicularDirectionSpeed.length();
 
-    double relativeBSpeedAfterLen = 2 * aMass * bMass * (v_x + v_y) / (aMass * bMass + bMass * bMass);
+    double relativeBSpeedAfterLen = 2 * aMass * bMass * v_x / (aMass * bMass + bMass * bMass);
 
     Vector relativeBSpeedAfter = centerDirection.getNormalizedVector() * relativeBSpeedAfterLen;
     Vector relativeASpeedAfter = relativeASpeedBefore - (bMass / aMass) * relativeBSpeedAfter;
@@ -38,8 +35,14 @@ void onCircleMoleculesCollision(
     Vector aSpeedAfter = bSpeed + relativeASpeedAfter;
     Vector bSpeedAfter = bSpeed + relativeBSpeedAfter;
 
+    //a.move(-3 * a.speed());
+    //b.move(-3 * b.speed());
+
     a.speed(aSpeedAfter);
     b.speed(bSpeedAfter);
+
+    //a.collider() = Engine::CircleCollider(a.topLeft(), a.radius());
+    //b.collider() = Engine::CircleCollider(b.topLeft(), b.radius());
 }
 
 void onRectangleMoleculesCollision(ListIterator<RectangleMolecule>& aIt, ListIterator<RectangleMolecule>& bIt)
