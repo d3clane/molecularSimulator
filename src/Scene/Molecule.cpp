@@ -10,7 +10,7 @@ Molecule::Molecule(
     const Graphics::Sprite& sprite, const Point& topLeft, const unsigned int mass, const Vector& speed
 ) : sprite_(sprite), mass_(mass), speed_(speed), Engine::Transformable(topLeft)
 {
-    sprite_.setPosition({transformableTopLeft_.x, transformableTopLeft_.y});
+    sprite_.setPosition({transformablePos_.x, transformablePos_.y});
     //std::cout << transformableTopLeft_.x << " " << transformableTopLeft_.y << '\n';
 }
 
@@ -24,12 +24,12 @@ void          Molecule::mass(const unsigned int mass)    { mass_ = mass;  }
 const Vector& Molecule::speed() const &                  { return speed_; }
 void          Molecule::speed(const Vector& speed)       { speed_ = speed; }
 
-Point Molecule::topLeft() const { return transformableTopLeft_; };
+Point Molecule::topLeft() const { return transformablePos_; };
 Molecule::operator Graphics::Sprite() { return sprite_; } // TODO: configure scale
 
 CircleMolecule::CircleMolecule(const double radius, const Molecule::CtorParams& ctorParams) : 
     Molecule(ctorParams), radius_(radius),
-    collider_(Engine::CircleCollider(&transformableTopLeft_, &radius_))
+    collider_(Engine::CircleCollider(&transformablePos_, &radius_))
 {
     //printf("this addr - %p, topLeft addr - %p\n", this, &transformableTopLeft_);
 
@@ -38,12 +38,12 @@ CircleMolecule::CircleMolecule(const double radius, const Molecule::CtorParams& 
 
 CircleMolecule::CircleMolecule(const CircleMolecule& other) : 
     CircleMolecule(other.radius_, Molecule::CtorParams(
-            other.sprite_, other.transformableTopLeft_, other.mass_, other.speed_
+            other.sprite_, other.transformablePos_, other.mass_, other.speed_
         )
     )
 {
     sprite_ = other.sprite_; // TODO: think why it doesn't work with the init list already
-    sprite_.setPosition({transformableTopLeft_.x, transformableTopLeft_.y});
+    sprite_.setPosition({transformablePos_.x, transformablePos_.y});
 }
 
 CircleMolecule::CircleMolecule(CircleMolecule&& other) : CircleMolecule(other)
@@ -55,7 +55,7 @@ double CircleMolecule::radius() const { return radius_; }
 
 CircleMolecule::operator Graphics::Sprite()
 {
-    sprite_.setPosition({transformableTopLeft_.x, transformableTopLeft_.y});
+    sprite_.setPosition({transformablePos_.x, transformablePos_.y});
     //sprite_.scaleInPixels({2 * radius_, 2 * radius_});
 
     return sprite_;
@@ -64,14 +64,14 @@ CircleMolecule::operator Graphics::Sprite()
 RectangleMolecule::RectangleMolecule(
     const double width, const double height, const Molecule::CtorParams& ctorParams
 ) : Molecule(ctorParams), width_(width), height_(height),
-    collider_(Engine::RectangleCollider(&transformableTopLeft_, &width_, &height_))
+    collider_(Engine::RectangleCollider(&transformablePos_, &width_, &height_))
 {
     sprite_.scaleInPixels({width, height});
 }
 
 RectangleMolecule::RectangleMolecule(const RectangleMolecule& other) : 
     RectangleMolecule(other.width_, other.height_, Molecule::CtorParams{
-        other.sprite_, other.transformableTopLeft_, other.mass_, other.speed_
+        other.sprite_, other.transformablePos_, other.mass_, other.speed_
         }
     )
 {
@@ -79,7 +79,7 @@ RectangleMolecule::RectangleMolecule(const RectangleMolecule& other) :
 
 RectangleMolecule::operator Graphics::Sprite() 
 { 
-    sprite_.setPosition({transformableTopLeft_.x, transformableTopLeft_.y});
+    sprite_.setPosition({transformablePos_.x, transformablePos_.y});
     //sprite_.scaleInPixels({2 * radius_, 2 * radius_});
 
     return sprite_;

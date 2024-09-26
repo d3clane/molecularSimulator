@@ -4,23 +4,23 @@
 namespace Engine
 {
 
-Transformable::Transformable(const Point& topLeft) : transformableTopLeft_(topLeft)
+Transformable::Transformable(const Point& topLeft) : transformablePos_(topLeft)
 {
 }
 
 void Transformable::move(const Vector& delta)
 {
-    transformableTopLeft_ += delta;
+    transformablePos_ += delta;
 }
 
 void Transformable::pos(const Point& pos)
 {
-    transformableTopLeft_ = pos;
+    transformablePos_ = pos;
 }
 
 Point Transformable::pos () const
 {
-    return transformableTopLeft_;
+    return transformablePos_;
 }
 
 } // namespace Engine

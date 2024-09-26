@@ -2,6 +2,7 @@
 #define GRAPHICS_DRAWABLE_HPP
 
 #include "Graphics/Sprite.hpp"
+#include "Engine/CoordsSystem.hpp"
 
 namespace Scene
 {
@@ -9,8 +10,7 @@ namespace Scene
 class Drawable
 {
 public:
-    virtual void  
-
+    virtual void draw(Graphics::RenderWindow& window, const Engine::CoordsSystem& coordsSystem) = 0;
 };
 
 } // namespace Scene

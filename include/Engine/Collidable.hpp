@@ -1,6 +1,0 @@
-#ifndef COLLIDABLE_HPP
-#define COLLIDABLE_HPP
-
-
-
-#endif // COLLIDABLE_HPP

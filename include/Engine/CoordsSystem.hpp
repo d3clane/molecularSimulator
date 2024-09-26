@@ -20,26 +20,20 @@ struct Point
 Point operator+(const Point& self, const Point& other);
 Point operator-(const Point& self, const Point& other);
 
-struct PixelVector
-{
-    int dx, dy, dz;
-
-    PixelVector(int dx, int dy, int dz) : dx(dx), dy(dy), dz(dz) {}
-};
-
 class CoordsSystem
 {
     Point center_;
     unsigned int stepInPixels_;
 
 public:
-    CoordsSystem(const unsigned int stepInPixels, const Point& center) : 
-        stepInPixels_(stepInPixels), center_(center) {}
+    CoordsSystem(const unsigned int stepInPixels, const Point& centerInPixels) : 
+        stepInPixels_(stepInPixels), center_(centerInPixels) {}
 
-    void moveCenter (const PixelVector& delta);
+    void moveCenter (const Vector& deltaPixels);
     void changeScale(const int delta);
 
-    void draw(Graphics::RenderWindow& window, const Graphics::Drawable* drawable);
+    unsigned int getSizeInPixels(const unsigned int size) const;
+    Graphics::WindowVector getScaleInPixels(const Vector& scale) const;
 
     Graphics::WindowPoint getPosInWindow(const Point& point) const;
 

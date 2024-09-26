@@ -1,5 +1,6 @@
 #include "Graphics/PixelsArray.hpp"
 #include "Engine/CoordsSystem.hpp"
+#include "Engine/Vector.hpp"
 
 namespace Engine
 {
@@ -47,17 +48,25 @@ Point operator-(const Point& self, const Point& other)
     return selfCpy -= other;
 }
 
-void CoordsSystem::moveCenter(const PixelVector& delta)
+void CoordsSystem::moveCenter(const Vector& delta)
 {
-    center_.x += delta.dx;
-    center_.y += delta.dy;
-    center_.z += delta.dz;
+    center_ += delta;
 }
 
 void CoordsSystem::changeScale(const int delta)
 {
     changeOneArgScale(stepInPixels_, delta);
     changeOneArgScale(stepInPixels_, delta);
+}
+
+unsigned int CoordsSystem::getSizeInPixels(const unsigned int size) const
+{
+    return size * stepInPixels_;
+}
+
+Graphics::WindowVector CoordsSystem::getScaleInPixels(const Vector& scale) const
+{
+    return Graphics::WindowVector{getSizeInPixels(scale.dx), getSizeInPixels(scale.dy)};
 }
 
 Graphics::WindowPoint CoordsSystem::getPosInWindow(const Point& point) const

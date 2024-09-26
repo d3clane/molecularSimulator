@@ -165,12 +165,12 @@ Boundary::Boundary(
     const Point& topLeft, const double width, const double height,
     const Vector& perpendicular
 ) : Engine::Transformable(topLeft), width_(width), height_(height), perpendicular_(perpendicular),
-    collider_(Engine::RectangleCollider(&transformableTopLeft_, &width_, &height_))
+    collider_(Engine::RectangleCollider(&transformablePos_, &width_, &height_))
 {
 }
 
 Boundary::Boundary(const Boundary& other) : 
-    Boundary(other.transformableTopLeft_, other.width_, other.height_, other.perpendicular_)
+    Boundary(other.transformablePos_, other.width_, other.height_, other.perpendicular_)
 {
 }
 

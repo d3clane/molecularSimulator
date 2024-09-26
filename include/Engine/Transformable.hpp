@@ -11,7 +11,7 @@ class Vector;
 class Transformable
 {
 protected:
-    Point transformableTopLeft_;
+    Point transformablePos_;
 
 public:
     Transformable(const Point& topLeft);
