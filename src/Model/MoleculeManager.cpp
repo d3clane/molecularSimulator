@@ -79,7 +79,9 @@ void handleCollisionWithBoundaries(
         for (auto& boundary : boundaries)
         {
             if (Molecules2DVtable::checkCollision(molecule.get(), &boundary))
+            {
                 bounceFromBoundary(molecule.get(), &boundary);
+            }
         }
     }
 }

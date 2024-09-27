@@ -3,6 +3,11 @@
 #include "Graphics/Texture.hpp"
 #include "Graphics/Sprite.hpp"
 
+#include "Model/Molecule.hpp"
+#include "Model/MoleculeManager.hpp"
+
+#include <iostream>
+
 #define TEXTURE_LOAD(FILE_NAME, TEXTURE_NAME, SPRITE_NAME)      \ 
     Graphics::Texture TEXTURE_NAME;                             \
     Graphics::Sprite  SPRITE_NAME;                              \
@@ -11,58 +16,55 @@
 
 int main()
 {
-#if 0
-    Scene::MoleculeManager moleculeManager;
+    Model::MoleculeManager moleculeManager;
 
-    auto& circleMolecules    = moleculeManager.circleMolecules();
-    auto& rectangleMolecules = moleculeManager.rectangleMolecules();
-    auto& boundaries         = moleculeManager.boundaries();
+    auto& molecules  = moleculeManager.molecules();
+    auto& boundaries = moleculeManager.boundaries();
 
     TEXTURE_LOAD("media/textures/whiteCircle.png", whiteTexture, whiteSprite);
 
-    boundaries.push_back(Scene::Boundary(Engine::Point{0, 0, 0}, 0, 600,   Engine::Vector(1, 0, 0)));
-    boundaries.push_back(Scene::Boundary(Engine::Point{0, 0, 0}, 800, 0,   Engine::Vector(0, 1, 0)));
-    boundaries.push_back(Scene::Boundary(Engine::Point{0, 600, 0}, 800, 0, Engine::Vector(0, -1, 0)));
-    boundaries.push_back(Scene::Boundary(Engine::Point{800, 0, 0}, 0, 600, Engine::Vector(-1, 0, 0)));
+    boundaries.push_back(Model::Boundary(Engine::Point{0, 0, 0}, 0, 600,   Engine::Vector(1, 0, 0)));
+    boundaries.push_back(Model::Boundary(Engine::Point{0, 0, 0}, 800, 0,   Engine::Vector(0, 1, 0)));
+    boundaries.push_back(Model::Boundary(Engine::Point{0, 600, 0}, 800, 0, Engine::Vector(0, -1, 0)));
+    boundaries.push_back(Model::Boundary(Engine::Point{800, 0, 0}, 0, 600, Engine::Vector(-1, 0, 0)));
 
     // TODO: coords system
 
-    const double v = 0.1;
+    const double v = 0.01;
 
 #if 0
-        circleMolecules.push_back(
-            Scene::CircleMolecule(
-                5, Scene::Molecule::CtorParams(
-                    whiteSprite, Engine::Point(50, 300, 0), 1, 
-                    Engine::Vector(0, v, 0)
-                )
-            )
-        );
+    molecules.push_back(
+        std::unique_ptr<Model::Molecule>(new Model::CircleMolecule(
+            5, Model::Molecule::CtorParams(
+                Engine::Point(50, 300, 0), 1, 
+                Engine::Vector(0, v, 0)
+            ))
+        )
+    );
 
-        circleMolecules.push_back(
-            Scene::CircleMolecule(
-                5, Scene::Molecule::CtorParams(
-                    whiteSprite, Engine::Point(50, 500, 0), 1, 
-                    Engine::Vector(0, -v, 0)
-                )
-            )
-        );
+    molecules.push_back(
+        std::unique_ptr<Model::Molecule>(new Model::CircleMolecule(
+            5, Model::Molecule::CtorParams(
+                Engine::Point(50, 500, 0), 1, 
+                Engine::Vector(0, -v, 0)
+            ))
+        )
+    );
 #endif
-
     for (int i = 0; i < 50; ++i)
     {
-        double v_x = (rand() % 100) / 100 * v;
+        double v_x = (rand() % 100) / 100. * v;
         int dirX = rand() % 2 == 0 ? -1 : 1;
         int dirY = rand() % 2 == 0 ? -1 : 1;
 
-        circleMolecules.push_back(
-            Scene::CircleMolecule(
-                5, Scene::Molecule::CtorParams(
-                    whiteSprite, Engine::Point(rand() % 600 + 50, rand() % 400 + 50, 0), 1, 
-                    Engine::Vector(dirX * v_x, dirY * std::sqrt(v * v - v_x * v_x), 0)
-                )
-            )
-        );
+        Model::CircleMolecule* tmp = new Model::CircleMolecule{
+            5, Model::Molecule::CtorParams{
+                Engine::Point(rand() % 600 + 50, rand() % 400 + 50, 0), 1,
+                Engine::Vector(dirX * v_x, dirY * std::sqrt(v * v - v_x * v_x), 0)
+            }
+        };
+
+        molecules.push_back(std::unique_ptr<Model::Molecule>(tmp));
     }
 
     Graphics::RenderWindow window{800, 600, "molecules"};
@@ -77,14 +79,22 @@ int main()
         }
 
         window.clear();
-        
-        for (auto& molecule : circleMolecules)
-            window.drawSprite(molecule);
+
+        for (auto& molecule : molecules)
+        {
+            Engine::Point topLeft = molecule.get()->topLeft();
+
+            Model::CircleMolecule* tmp = dynamic_cast<Model::CircleMolecule*>(molecule.get());
+
+            whiteSprite.setPosition({topLeft.x, topLeft.y});
+            whiteSprite.scaleInPixels({tmp->radius() * 2, tmp->radius() * 2});
+            
+            window.drawSprite(whiteSprite);
+
+        }
 
         moleculeManager.moveMolecules();
 
         window.display();
     }
-
-#endif
 }

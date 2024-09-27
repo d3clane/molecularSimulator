@@ -37,7 +37,7 @@ CircleMolecule::CircleMolecule(const double radius, const Molecule::CtorParams& 
     Molecule(ctorParams), radius_(radius)
 {
     id_ = MoleculeId::Circle;
-    collider_.reset(new CircleCollider{&transformablePos_, &radius});
+    collider_.reset(new CircleCollider{&transformablePos_, &radius_});
 }
 
 CircleMolecule::CircleMolecule(const CircleMolecule& other) : 

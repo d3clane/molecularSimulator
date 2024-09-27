@@ -37,7 +37,7 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
 
     double impulseValue = impulse.length();
 
-    double criticalReactionImpulseValue = 0.01;
+    double criticalReactionImpulseValue = 1;
 
     MoleculesAfterChemistryReaction result;
     if (impulseValue < criticalReactionImpulseValue)

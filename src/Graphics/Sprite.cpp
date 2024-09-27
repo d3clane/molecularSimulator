@@ -4,6 +4,7 @@
 #include "Graphics/Texture.hpp"
 #include "Graphics/PixelsArray.hpp"
 
+#include <iostream>
 
 namespace Graphics
 {
@@ -38,7 +39,8 @@ WindowVector Sprite::getScaleInPixels() const
     if (texture == nullptr)
         return WindowVector(0, 0);
  
-    return WindowVector(texture->getSize().x, texture->getSize().y);
+    return WindowVector(texture->getSize().x * sprite_.getScale().x, 
+                        texture->getSize().y * sprite_.getScale().y);
 }
 
 void Sprite::setColor(const Color& color)
