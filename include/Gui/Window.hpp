@@ -1,19 +1,15 @@
 #ifndef GUI_WINDOW_HPP
 #define GUI_WINDOW_HPP
 
-#include "Graphics/Events.hpp"
-
 #include "Graphics/Drawable.hpp"
+#include "Graphics/Updatable.hpp"
 
 namespace Gui
 {
 
-class Window : public Graphics::Drawable
+class Window : public Graphics::Drawable, public Graphics::Updatable
 {
-public:
-    virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
 };
-
 
 };
 
