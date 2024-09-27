@@ -25,10 +25,10 @@ class CircleCollider : public Collider
 {
     const Point* topLeft_;
 
+    const double* radius_;
 public:
     explicit CircleCollider(const Point* topLeft = nullptr, const double* radius = nullptr);
 
-    const double* radius_; // TODO: MOVE BACK
     CircleCollider(const Collider* other) = delete;
 
     friend bool checkCollisionCircleCircle(const Collider* collider1, const Collider* collider2);
