@@ -9,8 +9,8 @@
 namespace Graphics
 {
 
+struct Color;
 class Texture;
-class Color;
 
 class Sprite
 {
