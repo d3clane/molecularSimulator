@@ -9,28 +9,28 @@ namespace Graphics
 {
 
 RenderWindow::RenderWindow(int width, int height, const char* title) : 
-        window_(sf::VideoMode(width, height), title), height_(height), width_(width)
+        renderWindow_(sf::VideoMode(width, height), title), height_(height), width_(width)
 {
 }
 
 void RenderWindow::display()
 {
-    window_.display();
+    renderWindow_.display();
 }
 
 bool RenderWindow::isOpen()
 {
-    return window_.isOpen();
+    return renderWindow_.isOpen();
 }
 
 void RenderWindow::close()
 {
-    window_.close();
+    renderWindow_.close();
 }
 
 void RenderWindow::clear()
 {
-    window_.clear();
+    renderWindow_.clear();
 }
 
 void RenderWindow::drawLine(WindowLine line)
@@ -41,7 +41,7 @@ void RenderWindow::drawLine(WindowLine line)
         sf::Vertex(sf::Vector2f(line.end.x,   line.end.y  )),
     };
 
-    window_.draw(drewLine, sizeof(drewLine) / sizeof(*drewLine), sf::Lines);
+    renderWindow_.draw(drewLine, sizeof(drewLine) / sizeof(*drewLine), sf::Lines);
 }
 
 void RenderWindow::drawPixels(const PixelsArray& pixels)
@@ -53,12 +53,12 @@ void RenderWindow::drawPixels(const PixelsArray& pixels)
     texture.update(pixels.pixels_);
     sprite.setTexture(texture);
 
-    window_.draw(sprite);
+    renderWindow_.draw(sprite);
 }
 
 void RenderWindow::drawSprite(const Sprite& sprite)
 {
-    window_.draw(sprite.sprite_);
+    renderWindow_.draw(sprite.sprite_);
 }
 
 unsigned int RenderWindow::getWidth () const
@@ -73,7 +73,7 @@ unsigned int RenderWindow::getHeight() const
 
 bool RenderWindow::pollEvent(Event& event)
 {
-    bool anyEvent = window_.pollEvent(event.sfEvent);
+    bool anyEvent = renderWindow_.pollEvent(event.sfEvent);
 
     if (!anyEvent) return anyEvent;
 

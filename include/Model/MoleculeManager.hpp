@@ -42,8 +42,16 @@ class MoleculeManager
     ListType<std::unique_ptr<Molecule> > molecules_;
     ListType<Boundary> boundaries_;
 
+    Point boundaryTopLeft_;
+    Point boundaryBottomRight_;
+
 public:
+    MoleculeManager(const Point& boundaryTopLeft, const Point& boundaryBottomRight);
+    
     void moveMolecules();
+
+    void addMolecules   (MoleculeType moleculeType);
+    void removeMolecules(MoleculeType moleculeType);
 
     ListType<std::unique_ptr<Molecule> >& molecules() & { return molecules_;  }
     ListType<Boundary>& boundaries() &                  { return boundaries_; }

@@ -9,16 +9,20 @@ namespace View
 
 class View
 {
-    Graphics::RenderWindow& window_;
+    Graphics::RenderWindow& renderWindow_;
     Model::MoleculeManager& manager_;
+
+    Gui::WindowManager windowManager_;
 
 public:
     View(Model::MoleculeManager& manager, Graphics::RenderWindow& window);
 
-    void update();
+    void update(const Graphics::Event& event);
 
     void draw();
     void handleEvents();
+
+    Gui::WindowManager& windowManager() &;
 };
 
 } // namespace View

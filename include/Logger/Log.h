@@ -4,7 +4,7 @@
 #include <time.h>
 #include <stdio.h>
 
-#include "Colors.h"
+#include "Logger/Colors.h"
 
 /// @brief Opens log file with name argv0
 /// @param [in]argv0 log file name (usually argv[0])

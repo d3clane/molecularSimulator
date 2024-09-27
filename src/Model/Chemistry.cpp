@@ -1,5 +1,7 @@
 #include "Model/Chemistry.hpp"
 
+#include <iostream>
+
 namespace Model
 {
 
@@ -8,22 +10,21 @@ MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1
     RectangleMolecule& molecule1 = *dynamic_cast<RectangleMolecule*>(rectMolecule1);
     RectangleMolecule& molecule2 = *dynamic_cast<RectangleMolecule*>(rectMolecule2);
 
-    MoleculesAfterChemistryReaction result;
+    MoleculesAfterChemistryReaction result; result.reacted = false; return result;
     result.reacted = true;
 
-    double newMass = 1;
     size_t numberOfMolecules = static_cast<size_t>(molecule1.mass() + molecule2.mass());
     Point topLeft = molecule1.topLeft();
 
     for (size_t i = 0; i < numberOfMolecules; ++i)
     {
-        // TODO: подумать, куда вынести эту магическую константу 5 в виде радиуса базового
         CircleMolecule* newMolecule = new CircleMolecule{
-            5, Molecule::CtorParams{topLeft, newMass, Vector{0, 0, 0}}
+            CircleMolecule::basicRadius(),
+            Molecule::CtorParams{topLeft, CircleMolecule::basicMass(), Vector{0, 0, 0}}
         };
 
         result.moleculesAfterReaction.push_back(newMolecule);
-        topLeft += Engine::Vector{20, 0, 0};
+        //topLeft += Engine::Vector{20, 0, 0};
     }
 
     return result;
@@ -41,9 +42,13 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
     Vector impulse = molecule1.speed().projectOnto(centerLine) * molecule1.mass() -
                      molecule2.speed().projectOnto(centerLine) * molecule2.mass();
 
+
     double impulseValue = impulse.length();
 
-    double criticalReactionImpulseValue = 0.01;
+    double basicMass     = CircleMolecule::basicMass();
+    double basicSpeedAbs = CircleMolecule::basicSpeedAbs();
+
+    double criticalReactionImpulseValue = basicMass * basicSpeedAbs * 1.5;
 
     MoleculesAfterChemistryReaction result;
     if (impulseValue < criticalReactionImpulseValue)
@@ -54,13 +59,15 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
 
     result.reacted = true;
     
-    double newMass   = molecule1.mass()   + molecule2.mass();
-    double newHeight = molecule1.radius() + molecule2.radius();
+    double rectangleBasicMass = RectangleMolecule::basicMass();
+
+    double newMass   = molecule1.mass() + molecule2.mass();
+    double newHeight = RectangleMolecule::basicHeight() * newMass / rectangleBasicMass;
+    double newWidth  = RectangleMolecule::basicWidth()  * newMass / rectangleBasicMass;
     
     Vector newSpeed = 
         (molecule1.speed() * molecule1.mass() + molecule2.speed() * molecule2.mass()) / newMass;
     
-
     RectangleMolecule* resultMolecule = new RectangleMolecule(
         newHeight, newHeight, Molecule::CtorParams{molecule1.topLeft(), newMass, newSpeed}
     );
@@ -78,8 +85,12 @@ MoleculesAfterChemistryReaction processChemistryRectCircle(Molecule* molecule1, 
     MoleculesAfterChemistryReaction result;
     result.reacted = true;
 
+    double basicMass = RectangleMolecule::basicMass();
+
     double newMass  = rectMolecule.mass() + circleMolecule.mass();
-    double newSize  = rectMolecule.height() * newMass / rectMolecule.mass();
+    double newHeight = RectangleMolecule::basicHeight() * newMass / basicMass;
+    double newWidth  = RectangleMolecule::basicWidth()  * newMass / basicMass;
+
     Vector newSpeed = 
         (rectMolecule.speed() * rectMolecule.mass() + circleMolecule.speed() * circleMolecule.mass()) / newMass;
 
@@ -87,8 +98,8 @@ MoleculesAfterChemistryReaction processChemistryRectCircle(Molecule* molecule1, 
 
     resultMolecule->mass  (newMass);
     resultMolecule->speed (newSpeed);
-    resultMolecule->height(newSize);
-    resultMolecule->width (newSize);
+    resultMolecule->height(newHeight);
+    resultMolecule->width (newWidth);
 
     result.moleculesAfterReaction.push_back(resultMolecule);
 

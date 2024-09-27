@@ -67,10 +67,9 @@ bool checkCollision  (const Molecule* molecule1, const Molecule* molecule2)
 
 bool checkCollision  (const Molecule* molecule, const Boundary* boundary)
 {
-    return MoleculesCollisionsVTable[(size_t)molecule->id()][(size_t)MoleculeId::Rectangle].checkCollision(
+    return MoleculesCollisionsVTable[(size_t)molecule->id()][(size_t)MoleculeType::Rectangle].checkCollision(
         molecule->collider(), boundary->collider() 
     );
-
 }
 
 void processPhysics  (Molecule* molecule1, Molecule* molecule2)

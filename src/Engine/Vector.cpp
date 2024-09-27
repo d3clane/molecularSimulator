@@ -3,8 +3,6 @@
 
 #include "Engine/Vector.hpp"
 
-#include "src/Loggers/Log.h"
-
 namespace Engine
 {
 
@@ -99,12 +97,6 @@ Vector& Vector::operator*=(const double coeff)
 
 Vector& Vector::operator/=(const double coeff)
 {
-    if (!std::isfinite(coeff))
-    {
-        LOG_BEGIN();
-        LOG_END();
-    }
-
     assert(std::isfinite(coeff));
     assert(coeff != 0);
 

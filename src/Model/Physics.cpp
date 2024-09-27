@@ -1,6 +1,9 @@
 #include "Model/Physics.hpp"
 #include "Model/MoleculeManager.hpp"
 
+#include "Utils/Rand.hpp"
+
+#include <iostream>
 namespace Model
 {
 
@@ -27,7 +30,7 @@ void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecul
         double myImpulse = std::sqrt(energyForOne * 2 * molecule->mass());
         double mySpeed = myImpulse / molecule->mass();
 
-        double vXCoeff = (rand() % 101) / 100.0;
+        double vXCoeff = Utils::Rand(0, 1);
         double vyCoeff = 1 - vXCoeff * vXCoeff;
         vyCoeff = vyCoeff < 0 ? 0 : std::sqrt(vyCoeff);
 
@@ -77,8 +80,9 @@ void processCollisionCircleCircle(Molecule* circleMolecule1, Molecule* circleMol
     //a.move(-3 * a.speed());
     //b.move(-3 * b.speed());
 
-    a.speed(aSpeedAfter);
-    b.speed(bSpeedAfter);
+    static const double alignCoeff = 1.2;
+    a.speed(aSpeedAfter / alignCoeff);
+    b.speed(bSpeedAfter / alignCoeff);
 }
 
 void processCollisionCircleRect  (Molecule* molecule1, Molecule* molecule2)
@@ -95,7 +99,7 @@ void processCollisionRectCircle  (Molecule* molecule1, Molecule* molecule2)
 
 void processCollisionRectRect    (Molecule* molecule1, Molecule* molecule2)
 {
-    assert(false);
+    //assert(false);
     return; // Impossible in my model
 }
 

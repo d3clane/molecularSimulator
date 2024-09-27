@@ -46,7 +46,7 @@ class Sprite;
 class RenderWindow
 {
 private:
-    sf::RenderWindow window_;
+    sf::RenderWindow renderWindow_;
 
 public:
     const unsigned int width_, height_;

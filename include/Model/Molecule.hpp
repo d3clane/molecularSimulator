@@ -18,7 +18,7 @@ using Engine::Point;
 using Engine::Vector;
 
 static const size_t numberOfDifferentMolecules = 2;
-enum class MoleculeId
+enum class MoleculeType
 {
     Circle,
     Rectangle,
@@ -26,8 +26,11 @@ enum class MoleculeId
 
 class Molecule : public Engine::Transformable
 {
+    static double basicSpeedAbs_;
+    static double basicMass_;
+
 protected:
-    MoleculeId id_;
+    MoleculeType id_;
 
     double mass_;
     Vector speed_;
@@ -51,7 +54,7 @@ public:
     double mass() const;
     void   mass(const double mass);
 
-    MoleculeId id() const;
+    MoleculeType id() const;
 
     const Collider* collider() const &;
 
@@ -59,10 +62,18 @@ public:
     void          speed(const Vector& speed);
 
     Point topLeft() const;
+
+    static double basicSpeedAbs();
+    static double basicMass();
+
+    static void basicSpeedAbs(const double newSpeedAbs);
+    static void basicMass    (const double newMass);
 };
 
 class CircleMolecule : public Molecule
 {
+    static double basicRadius_;
+
     double radius_;
 
 public:
@@ -72,10 +83,17 @@ public:
 
     double radius() const;
     void   radius(double newRadius);
+
+    static double basicRadius();
+
+    static void basicRadius(const double newRadius);
 };
 
 class RectangleMolecule : public Molecule
 {
+    static double basicWidth_;
+    static double basicHeight_;
+
     double width_;
     double height_;
 
@@ -87,6 +105,12 @@ public:
     void   width(double newWidth);
     double height() const;
     void   height(double newHeight);
+
+    static double basicWidth();
+    static double basicHeight();
+
+    static void basicWidth(const double newWidth);
+    static void basicHeight(const double newHeight);
 };
 
 } // namespace Model

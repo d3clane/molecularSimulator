@@ -3,8 +3,9 @@
 
 #include "src/Model/2DVtable.hpp"
 
+#include "Utils/Rand.hpp"
+
 #include <iostream>
-#include <unordered_map>
 
 namespace Model
 {
@@ -106,7 +107,78 @@ void handleCollisionWithBoundaries(
     }
 }
 
+CircleMolecule generateCircleMolecule(const Point& topLeftBoundary, const Point& bottomRightBoundary)
+{
+    double radius   = CircleMolecule::basicRadius();
+    double mass     = CircleMolecule::basicMass();
+    double speedAbs = CircleMolecule::basicSpeedAbs();
+
+    Point topLeft = topLeftBoundary;
+    const double width = bottomRightBoundary.x - topLeftBoundary.x;
+    const double height = bottomRightBoundary.y - topLeftBoundary.y;
+
+    topLeft.x += Utils::Rand(0, 1) * width;
+    topLeft.y += Utils::Rand(0, 1) * height;
+
+    double vX = Utils::Rand(0, 1) * speedAbs;
+    double vY = std::sqrt(speedAbs * speedAbs - vX * vX);
+
+    Vector speed = Vector(vX, vY, 0);
+
+    return CircleMolecule{radius, Molecule::CtorParams{topLeft, mass, speed}};
+}
+
+void generateCircleMolecules(
+    ListType<std::unique_ptr<Molecule> >& molecules, const Point& topLeft, const Point& bottomRight
+)
+{
+    static const size_t numberOfMoleculesToAdd = 10;
+
+    for (size_t i = 0; i < numberOfMoleculesToAdd; ++i)
+    {
+        molecules.push_back(
+            std::unique_ptr<Molecule>{new CircleMolecule{generateCircleMolecule(topLeft, bottomRight)}}
+        );
+    }
+}
+
+bool isOutOfBoundary(const Molecule* molecule, const Point& boundaryTopLeft, const Point& boundaryBottomRight)
+{
+    Point moleculePos = molecule->pos();
+
+    const double deltaStuck = 2;
+
+    return moleculePos.x < boundaryTopLeft.x - deltaStuck ||
+           moleculePos.y < boundaryTopLeft.y - deltaStuck ||
+           moleculePos.x > boundaryBottomRight.x ||
+           moleculePos.y > boundaryBottomRight.y;
+}
+
+void returnOutOfBoundaries(
+    ListType<std::unique_ptr<Molecule> >& molecules, 
+    const Point& boundaryTopLeft, const Point& boundaryBottomRight)
+{
+    for (auto& molecule : molecules)
+    {
+        if (isOutOfBoundary(molecule.get(), boundaryTopLeft, boundaryBottomRight))
+        {
+            molecule.get()->pos(
+                {
+                    Utils::Rand(boundaryTopLeft.x, boundaryBottomRight.x),
+                    Utils::Rand(boundaryTopLeft.y, boundaryBottomRight.y), 
+                    0
+                }
+            );
+        }
+    }
+}
+
 } // namespace anon
+
+MoleculeManager::MoleculeManager(const Point& boundaryTopLeft, const Point& boundaryBottomRight) : 
+    boundaryTopLeft_(boundaryTopLeft), boundaryBottomRight_(boundaryBottomRight)
+{
+}
 
 void MoleculeManager::moveMolecules()
 {
@@ -118,7 +190,31 @@ void MoleculeManager::moveMolecules()
     handleCollisionWithBoundaries(molecules_, boundaries_);
 
     handleCollisionBetweenMolecules(molecules_);
+
+    returnOutOfBoundaries(molecules_, boundaryTopLeft_, boundaryBottomRight_);
 }
+
+void MoleculeManager::addMolecules(MoleculeType moleculeType)
+{
+    switch (moleculeType)
+    {
+        case MoleculeType::Circle:
+            generateCircleMolecules(molecules_, boundaryTopLeft_, boundaryBottomRight_);
+            break;
+        
+        //TODO:
+
+        default:
+            assert(false);
+            break;
+    }
+}
+
+void MoleculeManager::removeMolecules(MoleculeType moleculeType)
+{
+    // TODO: implement
+}
+
 
 Boundary::Boundary(
     const Point& topLeft, const double width, const double height,

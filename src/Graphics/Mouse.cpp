@@ -18,7 +18,7 @@ bool isButtonPressed(const Button& button)
 
 WindowPoint getPosition(const RenderWindow& window)
 {
-    sf::Vector2i sfMousePosition = sf::Mouse::getPosition(window.window_);
+    sf::Vector2i sfMousePosition = sf::Mouse::getPosition(window.renderWindow_);
 
     return WindowPoint(sfMousePosition.x, sfMousePosition.y);
 }
