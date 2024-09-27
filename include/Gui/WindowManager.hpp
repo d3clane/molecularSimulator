@@ -9,7 +9,7 @@ namespace Gui
 class WindowManager : public WindowContainer
 {
 public:
-    virtual void update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) override;
+    virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) override;
 };
 
 } // namespace Gui

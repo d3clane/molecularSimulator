@@ -95,7 +95,7 @@ bool Button::isHovered(int mousePosX, int mousePosY) const
     return false;    
 }
 
-void Button::update(Graphics::RenderWindow& window, const Graphics::Event& event)
+bool Button::update(Graphics::RenderWindow& window, const Graphics::Event& event)
 {
     bool hoveredByInteractionMouse = 
         (event.type == Graphics::Event::EventType::MouseButtonReleased || 
@@ -105,7 +105,7 @@ void Button::update(Graphics::RenderWindow& window, const Graphics::Event& event
     if (!isHovered(window) && !hoveredByInteractionMouse)
     {
         onUnhover(window, event);
-        return;
+        return true;
     }
 
     switch (event.type)
@@ -121,7 +121,9 @@ void Button::update(Graphics::RenderWindow& window, const Graphics::Event& event
         default:
             onHover(window, event);
             break;
-    }    
+    }
+
+    return true;
 }
 
 void Button::onPress(Graphics::RenderWindow& window, const Graphics::Event& event)

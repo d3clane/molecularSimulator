@@ -11,7 +11,7 @@ namespace Gui
 class Window : public Graphics::Drawable
 {
 public:
-    virtual void update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
+    virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
 };
 
 

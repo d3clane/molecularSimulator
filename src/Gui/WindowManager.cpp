@@ -3,12 +3,15 @@
 namespace Gui
 {
 
-void WindowManager::update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)
+bool WindowManager::update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)
 {
+    bool updated = false;
     for (auto& window : windows_)
     {
-        window->update(renderWindow, event);
+        updated |= window->update(renderWindow, event);
     }
+
+    return updated;
 }
 
 } // namespace Gui
