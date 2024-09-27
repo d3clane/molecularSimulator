@@ -1,5 +1,5 @@
-#ifndef GRAPHICS_DRAWABLE_HPP
-#define GRAPHICS_DRAWABLE_HPP
+#ifndef SCENE_DRAWABLE_HPP
+#define SCENE_DRAWABLE_HPP
 
 #include "Graphics/Sprite.hpp"
 #include "Engine/CoordsSystem.hpp"
@@ -11,8 +11,10 @@ class Drawable
 {
 public:
     virtual void draw(Graphics::RenderWindow& window, const Engine::CoordsSystem& coordsSystem) = 0;
+
+    virtual ~Drawable() = default;
 };
 
 } // namespace Scene
 
-#endif // GRAPHICS_DRAWABLE_HPP
+#endif // SCENE_DRAWABLE_HPP
