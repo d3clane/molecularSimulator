@@ -19,7 +19,7 @@ void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecul
         impulse += molecule->mass() * molecule->speed();
     }
 
-    double energyForOne = energy / moleculesAfter.size();
+    double energyForOne = energy / moleculesAfter.size() / 2;
 
     // TODO: law of conservation of momentum
     for (auto& molecule : moleculesAfter)

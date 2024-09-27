@@ -21,7 +21,6 @@ double Vector::length() const
     assert(std::isfinite(dx));
     assert(std::isfinite(dy));
     assert(std::isfinite(dz));
-    assert(sqrt(dx * dx + dy * dy + dz * dz));
     return sqrt(dx * dx + dy * dy + dz * dz);
 }
 

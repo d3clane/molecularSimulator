@@ -11,14 +11,20 @@ MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1
     MoleculesAfterChemistryReaction result;
     result.reacted = true;
 
-    RectangleMolecule* resultMolecule = new RectangleMolecule(molecule1);
+    double newMass = 1;
+    size_t numberOfMolecules = static_cast<size_t>(molecule1.mass() + molecule2.mass());
+    Point topLeft = molecule1.topLeft();
 
-    resultMolecule->mass(molecule1.mass() + molecule2.mass());
-    resultMolecule->speed(
-        (molecule1.speed() * molecule1.mass() + molecule2.speed() * molecule2.mass()) / resultMolecule->mass()
-    );
-    //resultMolecule->height()
-    result.moleculesAfterReaction.push_back(resultMolecule);
+    for (size_t i = 0; i < numberOfMolecules; ++i)
+    {
+        // TODO: подумать, куда вынести эту магическую константу 5 в виде радиуса базового
+        CircleMolecule* newMolecule = new CircleMolecule{
+            5, Molecule::CtorParams{topLeft, newMass, Vector{0, 0, 0}}
+        };
+
+        result.moleculesAfterReaction.push_back(newMolecule);
+        topLeft += Engine::Vector{20, 0, 0};
+    }
 
     return result;
 }

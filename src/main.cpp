@@ -59,7 +59,7 @@ int main(const int argc, const char* argv[])
     );
 #endif
 
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 20; ++i)
     {
         double v_x = (rand() % 100) / 100. * v;
         double v_y = v * v - v_x * v_x;
@@ -100,7 +100,7 @@ int main(const int argc, const char* argv[])
             if (tmp != nullptr)
             {
                 whiteSprite.setPosition({topLeft.x, topLeft.y});
-                whiteSprite.scaleInPixels({tmp->radius() * tmp->mass(), tmp->radius() * tmp->mass()});
+                whiteSprite.scaleInPixels({tmp->radius(), tmp->radius()});
                 
                 window.drawSprite(whiteSprite);
             }
@@ -109,7 +109,7 @@ int main(const int argc, const char* argv[])
                 Model::RectangleMolecule* tmp = dynamic_cast<Model::RectangleMolecule*>(molecule.get());
 
                 redSprite.setPosition({topLeft.x, topLeft.y});
-                redSprite.scaleInPixels({tmp->width() * tmp->mass(), tmp->height() * tmp->mass()});
+                redSprite.scaleInPixels({tmp->width(), tmp->height()});
                 
                 window.drawSprite(redSprite);
 
