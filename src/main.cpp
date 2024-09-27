@@ -3,9 +3,6 @@
 #include "Graphics/Texture.hpp"
 #include "Graphics/Sprite.hpp"
 
-#include "Scene/Molecule.hpp"
-#include "Scene/MoleculeManager.hpp"
-
 #define TEXTURE_LOAD(FILE_NAME, TEXTURE_NAME, SPRITE_NAME)      \ 
     Graphics::Texture TEXTURE_NAME;                             \
     Graphics::Sprite  SPRITE_NAME;                              \
@@ -14,6 +11,7 @@
 
 int main()
 {
+#if 0
     Scene::MoleculeManager moleculeManager;
 
     auto& circleMolecules    = moleculeManager.circleMolecules();
@@ -88,5 +86,5 @@ int main()
         window.display();
     }
 
-
+#endif
 }

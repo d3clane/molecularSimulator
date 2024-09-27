@@ -55,6 +55,43 @@ Vector Vector::projectOnto(const Vector& other) const
     return other.getNormalizedVector() * cos(*this, other) * length();
 }
 
+Vector& Vector::operator+=(const Vector& other)
+{
+    dx += other.dx;
+    dy += other.dy;
+    dz += other.dz;
+    return *this;
+}
+
+Vector& Vector::operator-=(const Vector& other)
+{
+    dx -= other.dx;
+    dy -= other.dy;
+    dz -= other.dz;
+    return *this;
+}
+
+Vector& Vector::operator*=(const double coeff)
+{
+    assert(std::isfinite(coeff));
+    
+    dx *= coeff;
+    dy *= coeff;
+    dz *= coeff;
+    return *this;
+}
+
+Vector& Vector::operator/=(const double coeff)
+{
+    assert(std::isfinite(coeff));
+    assert(coeff != 0);
+
+    dx /= coeff;
+    dy /= coeff;
+    dz /= coeff;
+    return *this;
+}
+
 Vector operator -(const Vector& self)
 {
     return Vector(-self.dx, -self.dy, -self.dz);
@@ -62,19 +99,20 @@ Vector operator -(const Vector& self)
 
 Vector operator +(const Vector& self, const Vector& other)
 {
-    return Vector(self.dx + other.dx, self.dy + other.dy, self.dz + other.dz);
+    Vector tmp = self;
+    return tmp += other;
 }
 
 Vector operator -(const Vector& self, const Vector& other)
 {
-    return Vector(self.dx - other.dx, self.dy - other.dy, self.dz - other.dz);
+    Vector tmp = self;
+    return tmp -= other;
 }
 
 Vector operator *(const Vector& self, const double coeff)
 {
-    assert(std::isfinite(coeff));
-
-    return Vector(self.dx * coeff, self.dy * coeff, self.dz * coeff);
+    Vector tmp = self;
+    return tmp *= coeff;
 }
 
 Vector operator *(const double coeff, const Vector& self)
@@ -84,10 +122,8 @@ Vector operator *(const double coeff, const Vector& self)
 
 Vector operator /(const Vector& self, const double coeff)
 {
-    assert(std::isfinite(coeff));
-    assert(coeff != 0);
-
-    return Vector(self.dx / coeff, self.dy / coeff, self.dz / coeff);
+    Vector tmp = self;
+    return tmp /= coeff;
 }
 
 double operator ^(const Vector& self, const Vector& other)

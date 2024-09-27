@@ -15,7 +15,7 @@ CFLAGS = -D _DEBUG -ggdb3 -std=c++17 -O3 -Wall -Wextra -Weffc++ \
 		   -fPIE -Werror=vla									  
 
 OUT_O_DIR := build
-COMMONINC := -I./include
+COMMONINC := -I./include -I./
 LIB_INC   := -isystem/opt/homebrew/Cellar/sfml/2.6.1/include
 LIB_LINK  := -L/opt/homebrew/Cellar/sfml/2.6.1/lib -lsfml-graphics -lsfml-window -lsfml-system
 
@@ -33,9 +33,10 @@ override CFLAGS += $(LIB_INC)
 
 CPPSRC = src/Graphics/Events.cpp src/Graphics/GraphicsWindow.cpp src/Graphics/Mouse.cpp \
 		 src/Graphics/PixelsArray.cpp src/Graphics/PrivateConverters.cpp src/Graphics/Sprite.cpp  \
-		 src/Graphics/Texture.cpp src/Engine/Collider.cpp src/Engine/CoordsSystem.cpp \
-		 src/Engine/Transformable.cpp src/Engine/Vector.cpp src/Scene/Molecule.cpp \
-		 src/Scene/MoleculeManager.cpp src/main.cpp
+		 src/Graphics/Texture.cpp src/Model/Collider.cpp src/Engine/CoordsSystem.cpp \
+		 src/Engine/Transformable.cpp src/Engine/Vector.cpp src/Model/Molecule.cpp \
+		 src/Model/MoleculeManager.cpp src/main.cpp src/Model/2DVtable.cpp src/Model/Chemistry.cpp \
+		 src/Model/Physics.cpp
 
 CPPOBJ := $(addprefix $(OUT_O_DIR)/,$(CPPSRC:.cpp=.o))
 DEPS = $(CPPOBJ:.o=.d)

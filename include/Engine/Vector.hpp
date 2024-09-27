@@ -26,6 +26,11 @@ struct Vector
 
     Vector projectOnto(const Vector& other) const;
 
+    Vector& operator+=(const Vector& other);
+    Vector& operator-=(const Vector& other);
+    Vector& operator*=(const double coeff);
+    Vector& operator/=(const double coeff);
+    
     operator Point() const { return Point(dx, dy, dz); }
 };
 

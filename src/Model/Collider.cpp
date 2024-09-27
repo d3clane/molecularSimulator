@@ -1,10 +1,10 @@
-#include "Engine/Collider.hpp"
 #include "Engine/CoordsSystem.hpp"
+#include "Model/Collider.hpp"
 
 #include <iostream>
 #include <cstdio>
 
-namespace Engine
+namespace Model
 {
 
 namespace
@@ -29,8 +29,6 @@ bool checkCollisionCircleToRectangleOneSide(
 
 CircleCollider::CircleCollider(const Point* topLeft, const double* radius) : topLeft_(topLeft), radius_(radius) 
 {
-    //printf("CTOR colliders: %p\n", topLeft_);
-    //std::cout << topLeft_->x << " " << topLeft_->y << "\n";
 }
 
 RectangleCollider::RectangleCollider(const Point* topLeft, const double* width, const double* height) :
@@ -38,15 +36,21 @@ RectangleCollider::RectangleCollider(const Point* topLeft, const double* width, 
 {
 }
 
-bool checkCollision(const CircleCollider& collider1, const CircleCollider& collider2)
+bool checkCollisionCircleCircle(const Collider* circleCollider1, const Collider* circleCollider2)
 {
+    const CircleCollider& collider1 = *dynamic_cast<const CircleCollider*>(circleCollider1);
+    const CircleCollider& collider2 = *dynamic_cast<const CircleCollider*>(circleCollider2);
+
     double criticalDistance = *collider1.radius_ + *collider2.radius_;
 
     return getDistanceSquare2D(*collider1.topLeft_, *collider2.topLeft_) < criticalDistance * criticalDistance;
 }
 
-bool checkCollision(const CircleCollider& collider1,  const RectangleCollider& collider2)
+bool checkCollisionCircleRect(const Collider* circleCollider1,  const Collider* rectangleCollider2)
 {
+    const CircleCollider& collider1    = *dynamic_cast<const CircleCollider*>(circleCollider1);
+    const RectangleCollider& collider2 = *dynamic_cast<const RectangleCollider*>(rectangleCollider2);
+
     bool condition = 
         checkCollisionCircleToRectangleOneSide(
             collider2.topLeft_->x, *collider1.radius_, 
@@ -69,13 +73,16 @@ bool checkCollision(const CircleCollider& collider1,  const RectangleCollider& c
     return condition;
 }
 
-bool checkCollision(const RectangleCollider& collider1, const CircleCollider& collider2)
+bool checkCollisionRectCircle(const Collider* rectangleCollider1, const Collider* circleCollider2)
 {
-    return checkCollision(collider2, collider1);
+    return checkCollisionCircleRect(circleCollider2, rectangleCollider1);
 }
 
-bool checkCollision(const RectangleCollider& collider1, const RectangleCollider& collider2)
+bool checkCollisionRectRect(const Collider* rectangleCollider1, const Collider* rectangleCollider2)
 {
+    const RectangleCollider& collider1 = *dynamic_cast<const RectangleCollider*>(rectangleCollider1);
+    const RectangleCollider& collider2 = *dynamic_cast<const RectangleCollider*>(rectangleCollider2);
+    
     return std::abs(collider1.topLeft_->x - collider2.topLeft_->x) < 
                         (*collider1.width_  + *collider2.width_ ) / 2 &
            std::abs(collider1.topLeft_->y - collider2.topLeft_->y) < 
@@ -83,4 +90,4 @@ bool checkCollision(const RectangleCollider& collider1, const RectangleCollider&
 }
 
 
-} // namespace Engine
+} // namespace Model

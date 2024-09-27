@@ -6,6 +6,8 @@
 namespace Engine
 {
 
+class Vector;
+
 struct Point
 {
     double x, y, z;

@@ -1,92 +1,94 @@
-#ifndef SCENE_MOLECULE_HPP
-#define SCENE_MOLECULE_HPP
+#ifndef MODEL_MOLECULE_HPP
+#define MODEL_MOLECULE_HPP
 
 #include "Graphics/Sprite.hpp"
 
-#include "Engine/Collider.hpp"
+#include "Model/Collider.hpp"
+
 #include "Engine/Transformable.hpp"
 #include "Engine/CoordsSystem.hpp"
 #include "Engine/Vector.hpp"
 
-namespace Scene
+#include <memory>
+
+namespace Model
 {
 
 using Engine::Point;
 using Engine::Vector;
 
+static const size_t numberOfDifferentMolecules = 2;
+enum class MoleculeId
+{
+    Circle,
+    Rectangle,
+};
+
 class Molecule : public Engine::Transformable
 {
 protected:
-    Graphics::Sprite sprite_;
+    MoleculeId id_;
 
-    unsigned int mass_;
+    double mass_;
     Vector speed_;
 
+    std::unique_ptr<Collider> collider_;  
 public:
     struct CtorParams
     {
-        const Graphics::Sprite& sprite;
         const Point& topLeft;
-        const unsigned int mass;
+        const double mass;
         const Vector& speed;
 
-        CtorParams(
-            const Graphics::Sprite& sprite, const Point& topLeft, const unsigned int mass, const Vector& speed
-        ) : sprite(sprite), topLeft(topLeft), mass(mass), speed(speed) {}
+        CtorParams(const Point& topLeft, const double mass, const Vector& speed) : 
+            topLeft(topLeft), mass(mass), speed(speed) {}
     };
 
-    Molecule(
-        const Graphics::Sprite& sprite, const Point& topLeft, 
-        const unsigned int mass, const Vector& speed
-    );
+    Molecule(const Point& topLeft, const double mass, const Vector& speed);
     Molecule(const CtorParams& ctorParams);
+    Molecule(const Molecule& other);
 
-    unsigned int mass() const;
-    void         mass(const unsigned int mass);
+    double mass() const;
+    void   mass(const double mass);
+
+    MoleculeId id() const;
+
+    const Collider* collider() const &;
 
     const Vector& speed() const &;
     void          speed(const Vector& speed);
 
     Point topLeft() const;
-
-    operator Graphics::Sprite();
 };
 
 class CircleMolecule : public Molecule
 {
     double radius_;
 
-    Engine::CircleCollider collider_;
-
 public:
     CircleMolecule(const double radius, const Molecule::CtorParams& ctorParams);
     CircleMolecule(const CircleMolecule&  other);
     CircleMolecule(CircleMolecule&& other);
 
-    Engine::CircleCollider& collider() &;
     double radius() const;
-
-    operator Graphics::Sprite();
+    void   radius(double newRadius);
 };
 
 class RectangleMolecule : public Molecule
 {
-    double width_, height_;
-
-    Engine::RectangleCollider collider_;
+    double width_;
+    double height_;
 
 public:
     RectangleMolecule(const double width, const double height, const Molecule::CtorParams& ctorParams);
     RectangleMolecule(const RectangleMolecule& other);
 
-    Engine::RectangleCollider& collider() &;
-
     double width()  const;
+    void   width(double newWidth);
     double height() const;
-
-    operator Graphics::Sprite();
+    void   height(double newHeight);
 };
 
-} // namespace Scene
+} // namespace Model
 
-#endif // SCENE_MOLECULE_HPP
+#endif // MODEL_MOLECULE_HPP
