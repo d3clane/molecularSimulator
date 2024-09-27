@@ -1,16 +1,9 @@
 #include "View/View.hpp"
 #include "Gui/Button.hpp"
+#include "View/Gui/ButtonActions.hpp"
 
 namespace View
 {
-
-//TODO: it's temporary solution
-
-#define TEXTURE_LOAD(FILE_NAME, TEXTURE_NAME, SPRITE_NAME)      \ 
-    Graphics::Texture TEXTURE_NAME;                      \
-    Graphics::Sprite  SPRITE_NAME;                       \
-    TEXTURE_NAME.loadFromFile(FILE_NAME);                       \
-    SPRITE_NAME.setTexture(TEXTURE_NAME); 
 
 namespace 
 {
@@ -53,6 +46,18 @@ View::View(
     std::unique_ptr<Gui::Button> removeMoleculesButton{
         new Gui::Button{{buttonWidth, 0}, removeMoleculesSprite, staticParams}
     };
+
+    ChangeMoleculesQuantityAction addMoleculesAction{
+        manager_, Model::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Add
+    };
+
+    ChangeMoleculesQuantityAction removeMoleculesAction{
+        manager_, Model::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Remove
+    };
+
+    addMoleculesButton.get()->addAction(&addMoleculesAction);
+
+
 
     windowManager_.addWindow(std::move(addMoleculesButton   ));
     windowManager_.addWindow(std::move(removeMoleculesButton));

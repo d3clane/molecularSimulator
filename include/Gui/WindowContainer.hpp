@@ -10,7 +10,7 @@
 namespace Gui
 {
 
-class WindowContainer : public Window, public WindowContainer
+class HierarchyWindow : public Window, public WindowManager
 {
 public:
     virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)   = 0;

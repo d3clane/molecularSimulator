@@ -3,25 +3,13 @@
 
 #include "Graphics/Mouse.hpp"
 
+#include "Engine/Vector.hpp"
+
 namespace Gui
 {
 
-namespace 
-{
-
-void configureSprite(
-    Graphics::Sprite& sprite, 
-    unsigned int width, unsigned int height, const Graphics::WindowPoint& topLeft
-)
-{
-    sprite.setPosition(topLeft);
-    sprite.scaleInPixels({width, height});
-}
-
-} // namespace anonymous
-
 Button::CtorParams::CtorParams(
-    const Graphics::WindowPoint& topLeft, unsigned int width, unsigned int height,
+    const Engine::Point& topLeft, unsigned int width, unsigned int height,
     bool showing, State state,
     const Graphics::Sprite& normalSprite, const Graphics::Sprite& hoverSprite,
     const Graphics::Sprite& releaseSprite, const Graphics::Sprite& pressedSprite
@@ -32,7 +20,7 @@ Button::CtorParams::CtorParams(
 }
 
 Button::Button(
-    const Graphics::WindowPoint& topLeft, unsigned int width, unsigned int height, bool showing, State state,
+    const Engine::Point& topLeft, unsigned int width, unsigned int height, bool showing, State state,
     const Graphics::Sprite& initNormalSprite, const Graphics::Sprite& initHoverSprite, 
     const Graphics::Sprite& initReleaseSprite, const Graphics::Sprite& initPressedSprite
 ) : topLeft_(topLeft), width_(width), height_(height), showing_(showing), state_(state),
@@ -61,16 +49,11 @@ Button::Button(
             break;
     }
 
-    configureSprite(normalSprite_,   width_, height_, topLeft_);
-    configureSprite(releasedSprite_, width_, height_, topLeft_);
-    configureSprite(hoveredSprite_,  width_, height_, topLeft_);
-    configureSprite(pressedSprite_,  width_, height_, topLeft_);
-
     sprite_ = normalSprite_;
 }
 
 Button::Button(
-    const Graphics::WindowPoint& topLeft, const Graphics::Sprite& oneSpriteForAll, 
+    const Engine::Point& topLeft, const Graphics::Sprite& oneSpriteForAll, 
     const CtorParams& otherParams
 ) : Button(
         topLeft, otherParams.width, otherParams.height, otherParams.showing, otherParams.state,
@@ -126,6 +109,17 @@ bool Button::update(Graphics::RenderWindow& window, const Graphics::Event& event
     return true;
 }
 
+void Button::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs)
+{
+    Graphics::WindowVector scale = cs.getScaleInPixels(Engine::Vector{width_, height_, 0});
+    Graphics::WindowPoint  pos   = cs.getPosInWindow(topLeft_);
+
+    sprite_.scaleInPixels({width_, height_});
+    sprite_.setPosition(pos);
+
+    renderWindow.drawSprite(sprite_);
+}
+
 void Button::onPress(Graphics::RenderWindow& window, const Graphics::Event& event)
 {
     return;
@@ -173,59 +167,22 @@ void Button::onUnhover(Graphics::RenderWindow& window, const Graphics::Event& ev
     }
 }
 
-
-void Button::draw(Graphics::RenderWindow& renderWindow)
+int Button::addAction(std::unique_ptr<Action>&& action)
 {
-    sprite_.scaleInPixels({width_, height_});
-    sprite_.setPosition(topLeft_);
-
-    renderWindow.drawSprite(sprite_);
-}
-
-Button::operator Graphics::Sprite()
-{
-    sprite_.scaleInPixels({width_, height_});
-    sprite_.setPosition(topLeft_);
-    
-    return sprite_;
-}
-
-int Button::addAction(Action* action)
-{
-    actions_.push_back(action);
+    actions_.push_back(std::move(action));
     return actions_.size() - 1;
 }
 
-int Button::addUndoAction(Action* action)
+int Button::addUndoAction(std::unique_ptr<Action>&& action)
 {
-    undoActions_.push_back(action);
+    undoActions_.push_back(std::move(action));
     return undoActions_.size() - 1;
 }
 
-void Button::deleteAction(Action* action)
+void completeActions(const std::vector< std::unique_ptr<Action> >& actions)
 {
-    std::remove(actions_.begin(), actions_.end(), action);
-}
-
-void Button::deleteUndoAction(Action* action)
-{
-    std::remove(undoActions_.begin(), undoActions_.end(), action);
-}
-
-void Button::deleteAction(int pos)
-{
-    actions_.erase(actions_.begin() + pos);
-}
-
-void Button::deleteUndoAction(int pos)
-{
-    undoActions_.erase(undoActions_.begin() + pos);
-}
-
-void completeActions(const std::vector< Action* >& actions)
-{
-    for (Action* action : actions)
-        (*action)();
+    for (auto& action : actions)
+        (*action.get())();
 }
 
 } // namespace Gui

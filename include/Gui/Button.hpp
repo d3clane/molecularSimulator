@@ -8,6 +8,10 @@
 
 #include "Gui/Window.hpp"
 
+#include "Engine/CoordsSystem.hpp"
+
+#include <memory>
+
 namespace Gui
 {
 
@@ -26,7 +30,7 @@ public:
 
     struct CtorParams
     {
-        Graphics::WindowPoint topLeft;
+        Engine::Point topLeft;
         unsigned int width;
         unsigned int height;
         bool showing;
@@ -37,7 +41,7 @@ public:
         Graphics::Sprite pressedSprite;
 
         CtorParams(
-            const Graphics::WindowPoint& topLeft, unsigned int width, unsigned int height, 
+            const Engine::Point& topLeft, unsigned int width, unsigned int height, 
             bool showing, State state, 
             const Graphics::Sprite& normalSprite, const Graphics::Sprite& hoverSprite,
             const Graphics::Sprite& releaseSprite, const Graphics::Sprite& pressedSprite
@@ -45,13 +49,13 @@ public:
     };
 
     Button(
-        const Graphics::WindowPoint& topLeft, unsigned int width, unsigned int height, bool showing, State state,
+        const Engine::Point& topLeft, unsigned int width, unsigned int height, bool showing, State state,
         const Graphics::Sprite& initNormalSprite, const Graphics::Sprite& initHoverSprite, 
         const Graphics::Sprite& initReleaseSprite, const Graphics::Sprite& initPressedSprite
     );
 
     Button(
-        const Graphics::WindowPoint& topLeft, const Graphics::Sprite& oneSpriteForAll, 
+        const Engine::Point& topLeft, const Graphics::Sprite& oneSpriteForAll, 
         const CtorParams& otherParams
     );
     
@@ -65,12 +69,8 @@ public:
     State state() const        { return state_; }
     void state(State newState) { state_ = newState; }
 
-    int  addAction       (Action* action);
-    int  addUndoAction   (Action* action);
-    void deleteAction    (Action* action);
-    void deleteUndoAction(Action* action);
-    void deleteAction    (int pos);
-    void deleteUndoAction(int pos);
+    int  addAction    (std::unique_ptr<Action>&& action);
+    int  addUndoAction(std::unique_ptr<Action>&& action);
 
     virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event  ) override;
     virtual void draw  (Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) override;
@@ -84,7 +84,7 @@ private:
     virtual void onUnhover  (Graphics::RenderWindow& window, const Graphics::Event& event);
 
 protected:
-    Graphics::WindowPoint topLeft_;
+    Engine::Point topLeft_;
     unsigned int width_, height_;
 
     Graphics::Sprite sprite_;
@@ -96,11 +96,11 @@ protected:
     Graphics::Sprite releasedSprite_;
     Graphics::Sprite pressedSprite_;
 
-    std::vector< Action* > actions_;
-    std::vector< Action* > undoActions_;
+    std::vector<std::unique_ptr<Action> > actions_;
+    std::vector<std::unique_ptr<Action> > undoActions_;
 };
 
-void completeActions(const std::vector< Action* >& actions);
+void completeActions(const std::vector<std::unique_ptr<Action> >& actions);
 
 } // namespace Gui
 
