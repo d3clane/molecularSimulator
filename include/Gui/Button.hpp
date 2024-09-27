@@ -73,7 +73,7 @@ public:
     void deleteUndoAction(int pos);
 
     virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event  ) override;
-    virtual void draw  (Graphics::RenderWindow& renderWindow) override;
+    virtual void draw  (Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) override;
 
     operator Graphics::Sprite();
 

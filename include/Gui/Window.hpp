@@ -1,13 +1,13 @@
 #ifndef GUI_WINDOW_HPP
 #define GUI_WINDOW_HPP
 
-#include "Graphics/Drawable.hpp"
 #include "Graphics/Updatable.hpp"
+#include "Scene/Drawable.hpp"
 
 namespace Gui
 {
 
-class Window : public Graphics::Drawable, public Graphics::Updatable
+class Window : public Scene::Drawable, public Graphics::Updatable
 {
 };
 

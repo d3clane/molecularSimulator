@@ -14,6 +14,14 @@ bool WindowManager::update(Graphics::RenderWindow& renderWindow, const Graphics:
     return updated;
 }
 
+void WindowManager::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs)
+{
+    for (auto& window : windows_)
+    {
+        window.get()->draw(renderWindow, cs);
+    }
+}
+
 WindowManager::IteratorType WindowManager::addWindow(std::unique_ptr<Window>&& window)
 {
     windows_.push_back(std::move(window));

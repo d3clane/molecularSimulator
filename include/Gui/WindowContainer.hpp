@@ -10,10 +10,11 @@
 namespace Gui
 {
 
-class WindowContainer : public Window, public WindowManager
+class WindowContainer : public Window, public WindowContainer
 {
 public:
-    virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
+    virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)   = 0;
+    virtual void draw  (Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) = 0;
 };
 
 } // namespace Gui

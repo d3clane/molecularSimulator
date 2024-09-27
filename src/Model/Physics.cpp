@@ -80,7 +80,7 @@ void processCollisionCircleCircle(Molecule* circleMolecule1, Molecule* circleMol
     //a.move(-3 * a.speed());
     //b.move(-3 * b.speed());
 
-    static const double alignCoeff = 1.2;
+    static const double alignCoeff = 1.;
     a.speed(aSpeedAfter / alignCoeff);
     b.speed(bSpeedAfter / alignCoeff);
 }

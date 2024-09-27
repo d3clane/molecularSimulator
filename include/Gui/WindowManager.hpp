@@ -3,6 +3,7 @@
 
 #include "Gui/Window.hpp"
 #include "Graphics/Updatable.hpp"
+#include "Scene/Drawable.hpp"
 
 #include <list>
 #include <memory>
@@ -10,7 +11,7 @@
 namespace Gui
 {
 
-class WindowManager : public Graphics::Updatable
+class WindowManager : public Graphics::Updatable, public Scene::Drawable
 {
 protected:
     std::list<std::unique_ptr<Window>> windows_;
@@ -23,7 +24,8 @@ public:
 
     size_t size() const;
 
-    virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) override;
+    virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event  ) override;
+    virtual void draw  (Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) override;
 };
 
 } // namespace Gui
