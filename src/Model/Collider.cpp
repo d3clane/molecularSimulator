@@ -82,11 +82,20 @@ bool checkCollisionRectRect(const Collider* rectangleCollider1, const Collider* 
 {
     const RectangleCollider& collider1 = *dynamic_cast<const RectangleCollider*>(rectangleCollider1);
     const RectangleCollider& collider2 = *dynamic_cast<const RectangleCollider*>(rectangleCollider2);
-    
-    return std::abs(collider1.topLeft_->x - collider2.topLeft_->x) < 
-                        (*collider1.width_  + *collider2.width_ ) / 2 &
-           std::abs(collider1.topLeft_->y - collider2.topLeft_->y) < 
-                        (*collider1.height_ + *collider2.height_) / 2;
+
+    double c1X = collider1.topLeft_->x;
+    double c2X = collider2.topLeft_->x;
+
+    double c1Y = collider1.topLeft_->y;
+    double c2Y = collider2.topLeft_->y;
+
+    double c1W = *collider1.width_;
+    double c2W = *collider2.width_;
+
+    double c1H = *collider1.height_;
+    double c2H = *collider2.height_;
+
+    return c2X < c1X + c1W && c1X < c2X + c2W && c2Y < c1Y + c1H && c1Y < c2Y + c2H;
 }
 
 

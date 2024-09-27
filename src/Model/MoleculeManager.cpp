@@ -4,6 +4,7 @@
 #include "src/Model/2DVtable.hpp"
 
 #include <iostream>
+#include <unordered_map>
 
 namespace Model
 {
@@ -17,38 +18,55 @@ struct MoleculesChanges
     std::vector<Molecule*> moleculesToAdd;
 };
 
+struct MoleculesIteratorWrap
+{
+    bool isDeleted;
+    ListIterator<std::unique_ptr<Molecule> > it;
+};
+
 MoleculesChanges processMoleculesInteraction(
-    const ListIterator<std::unique_ptr<Molecule> >& firstMoleculeIt, 
-    const ListIterator<std::unique_ptr<Molecule> >& secondMoleculeIt
+    MoleculesIteratorWrap& firstMoleculeIt, MoleculesIteratorWrap& secondMoleculeIt
 )
 {
-    if (!Molecules2DVtable::checkCollision(firstMoleculeIt->get(), secondMoleculeIt->get()))
+    if (!Molecules2DVtable::checkCollision(firstMoleculeIt.it->get(), secondMoleculeIt.it->get()))
         return {};
     
     MoleculesAfterChemistryReaction afterReaction = 
-        Molecules2DVtable::processChemistry(firstMoleculeIt->get(), secondMoleculeIt->get());
+        Molecules2DVtable::processChemistry(firstMoleculeIt.it->get(), secondMoleculeIt.it->get());
     
     if (!afterReaction.reacted)
     {
-        Molecules2DVtable::processPhysics(firstMoleculeIt->get(), secondMoleculeIt->get());
+        Molecules2DVtable::processPhysics(firstMoleculeIt.it->get(), secondMoleculeIt.it->get());
         return {};
     }
 
-    std::vector<Molecule* > beforeReaction = {firstMoleculeIt->get(), secondMoleculeIt->get()};
+    firstMoleculeIt.isDeleted  = true;
+    secondMoleculeIt.isDeleted = true;
+
+    std::vector<Molecule* > beforeReaction = {firstMoleculeIt.it->get(), secondMoleculeIt.it->get()};
 
     reorderEnergy(beforeReaction, afterReaction.moleculesAfterReaction);
 
+
     std::vector<ListIterator<std::unique_ptr<Molecule> > > moleculesToDeleteIts = 
-        {firstMoleculeIt, secondMoleculeIt};
+        {firstMoleculeIt.it, secondMoleculeIt.it};
     
     return {moleculesToDeleteIts, afterReaction.moleculesAfterReaction};
 }
 
-void handleCollisionBetweenMolecules(ListType<std::unique_ptr<Molecule> >& molecules)
+void handleCollisionBetweenMolecules(ListType<std::unique_ptr<Molecule> >& inputMolecules)
 {
     std::vector<MoleculesChanges> moleculesChanges;
 
-    for (auto firstMoleculeIt = molecules.begin(), itEnd = molecules.end(); 
+    ListType<MoleculesIteratorWrap> moleculesIts;
+    
+    for (auto moleculeIt = inputMolecules.begin(), itEnd = inputMolecules.end(); 
+         moleculeIt != itEnd; ++moleculeIt)
+    {
+        moleculesIts.push_back({false, moleculeIt}); // TODO: CTOR STRUCT
+    }
+
+    for (auto firstMoleculeIt = moleculesIts.begin(), itEnd = moleculesIts.end(); 
         firstMoleculeIt != itEnd; ++firstMoleculeIt)
     {
         auto secondMoleculeIt = firstMoleculeIt;
@@ -56,17 +74,19 @@ void handleCollisionBetweenMolecules(ListType<std::unique_ptr<Molecule> >& molec
         
         for (; secondMoleculeIt != itEnd; ++secondMoleculeIt)
         {
-            moleculesChanges.push_back(processMoleculesInteraction(firstMoleculeIt, secondMoleculeIt));
+            if (firstMoleculeIt->isDeleted)  break;
+            if (secondMoleculeIt->isDeleted) continue;
+
+            moleculesChanges.push_back(processMoleculesInteraction(*firstMoleculeIt, *secondMoleculeIt));
         }
     }
 
     for (auto& changes : moleculesChanges)
     {
         for (auto& toDelete : changes.moleculesToDeleteIts)
-            molecules.erase(toDelete);
-        
+            inputMolecules.erase(toDelete);
         for (auto& toAdd : changes.moleculesToAdd)
-            molecules.push_back(std::unique_ptr<Molecule>(toAdd));
+            inputMolecules.push_back(std::unique_ptr<Molecule>(toAdd));
     }
 }
 

@@ -17,7 +17,7 @@ MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1
     resultMolecule->speed(
         (molecule1.speed() * molecule1.mass() + molecule2.speed() * molecule2.mass()) / resultMolecule->mass()
     );
-    
+    //resultMolecule->height()
     result.moleculesAfterReaction.push_back(resultMolecule);
 
     return result;
@@ -37,7 +37,7 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
 
     double impulseValue = impulse.length();
 
-    double criticalReactionImpulseValue = 1;
+    double criticalReactionImpulseValue = 0.01;
 
     MoleculesAfterChemistryReaction result;
     if (impulseValue < criticalReactionImpulseValue)

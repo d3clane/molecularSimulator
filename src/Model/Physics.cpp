@@ -21,18 +21,17 @@ void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecul
 
     double energyForOne = energy / moleculesAfter.size();
 
-    // TODO: low of conservation of momentum
+    // TODO: law of conservation of momentum
     for (auto& molecule : moleculesAfter)
     {
         double myImpulse = std::sqrt(energyForOne * 2 * molecule->mass());
         double mySpeed = myImpulse / molecule->mass();
 
         double vXCoeff = (rand() % 101) / 100.0;
-        double vyCoeff = (rand() % 101) / 100.0;
-        if (vXCoeff * vXCoeff + vyCoeff * vyCoeff > 1) vyCoeff = std::sqrt(1 - vXCoeff * vXCoeff);
+        double vyCoeff = 1 - vXCoeff * vXCoeff;
+        vyCoeff = vyCoeff < 0 ? 0 : std::sqrt(vyCoeff);
 
-        double vZCoeff = std::sqrt(1 - vXCoeff * vXCoeff - vyCoeff * vyCoeff);
-        molecule->speed({mySpeed * vXCoeff, mySpeed * vyCoeff, mySpeed * vZCoeff});
+        molecule->speed({mySpeed * vXCoeff, mySpeed * vyCoeff, 0});
     }
 }
 
@@ -40,6 +39,10 @@ void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecul
 void bounceFromBoundary(Molecule* molecule, const Boundary* boundary)
 {
     Vector speed = molecule->speed();
+
+    assert(std::isfinite(speed.length()));
+    assert(std::isfinite(boundary->perpendicular().length()));
+    
     Vector newSpeed = -speed.reflectRelatively(boundary->perpendicular());
 
     molecule->speed(newSpeed);

@@ -3,16 +3,25 @@
 
 #include "Engine/Vector.hpp"
 
+#include "src/Loggers/Log.h"
+
 namespace Engine
 {
 
 double cos(const Vector& v1, const Vector& v2)
 {
+    assert(v1.length() != 0);
+    assert(v2.length() != 0);
+    
     return v1 ^ v2 / v1.length() / v2.length(); 
 }
 
 double Vector::length() const
 {
+    assert(std::isfinite(dx));
+    assert(std::isfinite(dy));
+    assert(std::isfinite(dz));
+    assert(sqrt(dx * dx + dy * dy + dz * dz));
     return sqrt(dx * dx + dy * dy + dz * dz);
 }
 
@@ -40,6 +49,11 @@ Vector Vector::getNormalizedVector() const
 
 Vector Vector::reflectRelatively(const Vector& pivot) const
 {
+    assert(length() != 0);
+    assert(pivot.length() != 0);
+    assert(std::isfinite(length()));
+    assert(std::isfinite(pivot.length()));
+
     return 2 * projectOnto(pivot) - *this;
 }
 
@@ -52,6 +66,9 @@ Vector Vector::projectOnto(const Vector& other) const
 {
     double myLen = length();
     if (myLen == 0) return *this; // TODO: double comparison
+    assert(myLen != 0);
+    assert(other.length() != 0);
+
     return other.getNormalizedVector() * cos(*this, other) * length();
 }
 
@@ -74,7 +91,7 @@ Vector& Vector::operator-=(const Vector& other)
 Vector& Vector::operator*=(const double coeff)
 {
     assert(std::isfinite(coeff));
-    
+
     dx *= coeff;
     dy *= coeff;
     dz *= coeff;
@@ -83,6 +100,12 @@ Vector& Vector::operator*=(const double coeff)
 
 Vector& Vector::operator/=(const double coeff)
 {
+    if (!std::isfinite(coeff))
+    {
+        LOG_BEGIN();
+        LOG_END();
+    }
+
     assert(std::isfinite(coeff));
     assert(coeff != 0);
 
