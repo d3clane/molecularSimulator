@@ -120,37 +120,6 @@ void handleCollisionWithBoundaries(
     }
 }
 
-bool isOutOfBoundary(const Molecule* molecule, const Point& boundaryTopLeft, const Point& boundaryBottomRight)
-{
-    Point moleculePos = molecule->pos();
-
-    const double deltaStuck = 2;
-
-    return moleculePos.x < boundaryTopLeft.x - deltaStuck ||
-           moleculePos.y < boundaryTopLeft.y - deltaStuck ||
-           moleculePos.x > boundaryBottomRight.x ||
-           moleculePos.y > boundaryBottomRight.y;
-}
-
-void returnOutOfBoundaries(
-    ListType<std::unique_ptr<Molecule> >& molecules, 
-    const Point& boundaryTopLeft, const Point& boundaryBottomRight)
-{
-    for (auto& molecule : molecules)
-    {
-        if (isOutOfBoundary(molecule.get(), boundaryTopLeft, boundaryBottomRight))
-        {
-            molecule.get()->pos(
-                {
-                    Utils::Rand(boundaryTopLeft.x, boundaryBottomRight.x),
-                    Utils::Rand(boundaryTopLeft.y, boundaryBottomRight.y), 
-                    0
-                }
-            );
-        }
-    }
-}
-
 std::chrono::nanoseconds calcDeltaTime(const std::chrono::steady_clock::time_point& prevTime)
 {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - prevTime);
@@ -177,8 +146,6 @@ void MoleculeManager::moveMolecules()
     handleCollisionWithBoundaries(molecules_, boundaries_);
 
     handleCollisionBetweenMolecules(molecules_);
-
-    //returnOutOfBoundaries(molecules_, boundaryTopLeft_, boundaryBottomRight_);
 
     prevTime_ = std::chrono::steady_clock::now();
 }

@@ -21,6 +21,9 @@ void setSpeedsAfterCollision(CircleMolecule& molecule1, CircleMolecule& molecule
     Vector relativeASpeedBefore = aSpeed - bSpeed;
 
     Vector centerDirection      = Vector(molecule1.topLeft(), molecule2.topLeft());
+    if (Engine::cos(centerDirection, relativeASpeedBefore) < 0) // problem - they went through each other
+        centerDirection = -centerDirection;
+
     Vector centerDirectionSpeed = relativeASpeedBefore.projectOnto(centerDirection);
 
     double v_x = centerDirectionSpeed.length();
@@ -32,7 +35,7 @@ void setSpeedsAfterCollision(CircleMolecule& molecule1, CircleMolecule& molecule
 
     Vector aSpeedAfter = bSpeed + relativeASpeedAfter;
     Vector bSpeedAfter = bSpeed + relativeBSpeedAfter;
-
+    
     molecule1.speed(aSpeedAfter);
     molecule2.speed(bSpeedAfter);
 }
@@ -115,7 +118,9 @@ void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecul
         impulse += molecule->mass() * molecule->speed();
     }
 
-    double energyForOne = energy / moleculesAfter.size() / 2;
+    energy /= 2;
+
+    double energyForOne = energy / moleculesAfter.size();
 
     // TODO: law of conservation of momentum
     for (auto& molecule : moleculesAfter)
@@ -123,9 +128,8 @@ void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecul
         double myImpulse = std::sqrt(energyForOne * 2 * molecule->mass());
         double mySpeed = myImpulse / molecule->mass();
 
-        double vXCoeff = Utils::Rand(0, 1);
-        double vyCoeff = 1 - vXCoeff * vXCoeff;
-        vyCoeff = vyCoeff < 0 ? 0 : std::sqrt(vyCoeff);
+        double vXCoeff = Utils::Rand(-1, 1);
+        double vyCoeff = std::sqrt(1 - vXCoeff * vXCoeff) * Utils::RandDirection();
 
         molecule->speed({mySpeed * vXCoeff, mySpeed * vyCoeff, 0});
     }

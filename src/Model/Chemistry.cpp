@@ -10,21 +10,21 @@ MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1
     RectangleMolecule& molecule1 = *static_cast<RectangleMolecule*>(rectMolecule1);
     RectangleMolecule& molecule2 = *static_cast<RectangleMolecule*>(rectMolecule2);
 
-    MoleculesAfterChemistryReaction result; result.reacted = false; return result;
+    MoleculesAfterChemistryReaction result;
     result.reacted = true;
 
     size_t numberOfMolecules = static_cast<size_t>(molecule1.mass() + molecule2.mass());
     Point topLeft = molecule1.topLeft();
 
+    const double basicRadius = CircleMolecule::basicRadius();
     for (size_t i = 0; i < numberOfMolecules; ++i)
     {
         CircleMolecule* newMolecule = new CircleMolecule{
-            CircleMolecule::basicRadius(),
-            Molecule::CtorParams{topLeft, CircleMolecule::basicMass(), Vector{0, 0, 0}}
+            basicRadius, Molecule::CtorParams{topLeft, CircleMolecule::basicMass(), Vector{0, 0, 0}}
         };
 
         result.moleculesAfterReaction.push_back(newMolecule);
-        //topLeft += Engine::Vector{20, 0, 0};
+        topLeft += Engine::Vector{2 * basicRadius, 0, 0};
     }
 
     return result;
@@ -87,11 +87,11 @@ MoleculesAfterChemistryReaction processChemistryRectCircle(Molecule* molecule1, 
 
     double basicMass = RectangleMolecule::basicMass();
 
-    double newMass  = rectMolecule.mass() + circleMolecule.mass();
+    double newMass   = rectMolecule.mass() + circleMolecule.mass();
     double newHeight = RectangleMolecule::basicHeight() * newMass / basicMass;
     double newWidth  = RectangleMolecule::basicWidth()  * newMass / basicMass;
 
-    Vector newSpeed = 
+    Vector newSpeed =
         (rectMolecule.speed() * rectMolecule.mass() + circleMolecule.speed() * circleMolecule.mass()) / newMass;
 
     RectangleMolecule* resultMolecule = new RectangleMolecule(rectMolecule);
