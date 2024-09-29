@@ -53,8 +53,8 @@ void bounceFromBoundary(Molecule* molecule, const Boundary* boundary)
 
 void processCollisionCircleCircle(Molecule* circleMolecule1, Molecule* circleMolecule2)
 {
-    CircleMolecule& a = *dynamic_cast<CircleMolecule*>(circleMolecule1);
-    CircleMolecule& b = *dynamic_cast<CircleMolecule*>(circleMolecule2);
+    CircleMolecule& a = *static_cast<CircleMolecule*>(circleMolecule1);
+    CircleMolecule& b = *static_cast<CircleMolecule*>(circleMolecule2);
 
     Vector aSpeed = a.speed();
     Vector bSpeed = b.speed();

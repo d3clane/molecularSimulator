@@ -7,8 +7,8 @@ namespace Simulator
 
 MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1, Molecule* rectMolecule2)
 {
-    RectangleMolecule& molecule1 = *dynamic_cast<RectangleMolecule*>(rectMolecule1);
-    RectangleMolecule& molecule2 = *dynamic_cast<RectangleMolecule*>(rectMolecule2);
+    RectangleMolecule& molecule1 = *static_cast<RectangleMolecule*>(rectMolecule1);
+    RectangleMolecule& molecule2 = *static_cast<RectangleMolecule*>(rectMolecule2);
 
     MoleculesAfterChemistryReaction result; result.reacted = false; return result;
     result.reacted = true;
@@ -34,8 +34,8 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
     Molecule* circleMolecule1, Molecule* circleMolecule2
 )
 {
-    CircleMolecule& molecule1 = *dynamic_cast<CircleMolecule*>(circleMolecule1);
-    CircleMolecule& molecule2 = *dynamic_cast<CircleMolecule*>(circleMolecule2);
+    CircleMolecule& molecule1 = *static_cast<CircleMolecule*>(circleMolecule1);
+    CircleMolecule& molecule2 = *static_cast<CircleMolecule*>(circleMolecule2);
 
     Vector centerLine = Vector(molecule1.topLeft(), molecule2.topLeft());
 
@@ -79,8 +79,8 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
 
 MoleculesAfterChemistryReaction processChemistryRectCircle(Molecule* molecule1, Molecule* molecule2)
 {
-    RectangleMolecule& rectMolecule   = *dynamic_cast<RectangleMolecule*>(molecule1);
-    CircleMolecule&    circleMolecule = *dynamic_cast<CircleMolecule*>   (molecule2);
+    RectangleMolecule& rectMolecule   = *static_cast<RectangleMolecule*>(molecule1);
+    CircleMolecule&    circleMolecule = *static_cast<CircleMolecule*>   (molecule2);
 
     MoleculesAfterChemistryReaction result;
     result.reacted = true;

@@ -38,8 +38,8 @@ RectangleCollider::RectangleCollider(const Point* topLeft, const double* width, 
 
 bool checkCollisionCircleCircle(const Collider* circleCollider1, const Collider* circleCollider2)
 {
-    const CircleCollider& collider1 = *dynamic_cast<const CircleCollider*>(circleCollider1);
-    const CircleCollider& collider2 = *dynamic_cast<const CircleCollider*>(circleCollider2);
+    const CircleCollider& collider1 = *static_cast<const CircleCollider*>(circleCollider1);
+    const CircleCollider& collider2 = *static_cast<const CircleCollider*>(circleCollider2);
 
     double criticalDistance = *collider1.radius_ + *collider2.radius_;
 
@@ -48,8 +48,8 @@ bool checkCollisionCircleCircle(const Collider* circleCollider1, const Collider*
 
 bool checkCollisionCircleRect(const Collider* circleCollider1,  const Collider* rectangleCollider2)
 {
-    const CircleCollider& collider1    = *dynamic_cast<const CircleCollider*>(circleCollider1);
-    const RectangleCollider& collider2 = *dynamic_cast<const RectangleCollider*>(rectangleCollider2);
+    const CircleCollider& collider1    = *static_cast<const CircleCollider*>(circleCollider1);
+    const RectangleCollider& collider2 = *static_cast<const RectangleCollider*>(rectangleCollider2);
 
     bool condition = 
         checkCollisionCircleToRectangleOneSide(
@@ -80,8 +80,8 @@ bool checkCollisionRectCircle(const Collider* rectangleCollider1, const Collider
 
 bool checkCollisionRectRect(const Collider* rectangleCollider1, const Collider* rectangleCollider2)
 {
-    const RectangleCollider& collider1 = *dynamic_cast<const RectangleCollider*>(rectangleCollider1);
-    const RectangleCollider& collider2 = *dynamic_cast<const RectangleCollider*>(rectangleCollider2);
+    const RectangleCollider& collider1 = *static_cast<const RectangleCollider*>(rectangleCollider1);
+    const RectangleCollider& collider2 = *static_cast<const RectangleCollider*>(rectangleCollider2);
 
     double c1X = collider1.topLeft_->x;
     double c2X = collider2.topLeft_->x;

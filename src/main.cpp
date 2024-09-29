@@ -34,7 +34,7 @@ int main(const int argc, const char* argv[])
     boundaries.push_back(Simulator::Boundary(Engine::Point{800, 0, 0}, bigWidth, 600, Engine::Vector(-1, 0, 0)));
 
     static const double basicMass     = 1;
-    static const double basicSpeedAbs = 1000;
+    static const double basicSpeedAbs = 400;
     static const double basicRadius   = 5;
     static const double basicHeight   = 5;
     static const double basicWidth    = 5;
