@@ -48,7 +48,7 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
     double basicMass     = CircleMolecule::basicMass();
     double basicSpeedAbs = CircleMolecule::basicSpeedAbs();
 
-    double criticalReactionImpulseValue = basicMass * basicSpeedAbs * 1.5;
+    double criticalReactionImpulseValue = basicMass * basicSpeedAbs * 1.7;
 
     MoleculesAfterChemistryReaction result;
     if (impulseValue < criticalReactionImpulseValue)

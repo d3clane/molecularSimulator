@@ -139,12 +139,11 @@ void returnOutOfBoundaries(
     }
 }
 
-std::chrono::milliseconds calcDeltaTime(const std::chrono::steady_clock::time_point& prevTime)
+std::chrono::nanoseconds calcDeltaTime(const std::chrono::steady_clock::time_point& prevTime)
 {
-    using ms = std::chrono::milliseconds;
-
-    return std::chrono::duration_cast<ms>(std::chrono::steady_clock::now() - prevTime);
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - prevTime);
 }
+
 } // namespace anon
 
 MoleculeManager::MoleculeManager(const Point& boundaryTopLeft, const Point& boundaryBottomRight) : 
@@ -154,9 +153,13 @@ MoleculeManager::MoleculeManager(const Point& boundaryTopLeft, const Point& boun
 
 void MoleculeManager::moveMolecules()
 {
+    
+    const double millisecondsPerSecond = 1e9;
+    const double deltaTime = calcDeltaTime(prevTime_).count() / millisecondsPerSecond;
+
     for (auto& molecule : molecules_)
     {
-       molecule->move(molecule->speed()); 
+       molecule->move(molecule->speed() * deltaTime);
     }
 
     handleCollisionWithBoundaries(molecules_, boundaries_);
@@ -164,6 +167,8 @@ void MoleculeManager::moveMolecules()
     handleCollisionBetweenMolecules(molecules_);
 
     returnOutOfBoundaries(molecules_, boundaryTopLeft_, boundaryBottomRight_);
+
+    prevTime_ = std::chrono::steady_clock::now();
 }
 
 void MoleculeManager::addMolecule(std::unique_ptr<Molecule> molecule)
