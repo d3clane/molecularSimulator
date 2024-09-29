@@ -20,6 +20,6 @@ public:
     std::list<std::unique_ptr<Simulator::Molecule> >& molecules() &;
 };
 
-} // namespace Controller
+} // namespace Simulator
 
 #endif // CONTROLLER_CONTROLLER_HPP

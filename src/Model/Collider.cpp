@@ -99,4 +99,4 @@ bool checkCollisionRectRect(const Collider* rectangleCollider1, const Collider* 
 }
 
 
-} // namespace Model
+} // namespace Simulator

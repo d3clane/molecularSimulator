@@ -38,6 +38,6 @@ MoleculesAfterChemistryReaction processChemistry(Molecule* molecule1, Molecule* 
 
 } // namespace Molecules2DVtable
 
-} // namespace Model
+} // namespace Simulator
 
 #endif // MODEL_2D_VTABLE_HPP

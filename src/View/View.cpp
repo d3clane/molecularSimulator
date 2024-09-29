@@ -134,4 +134,4 @@ Gui::WindowManager& View::windowManager() &
     return windowManager_;
 }
 
-} // namespace View
+} // namespace Simulator

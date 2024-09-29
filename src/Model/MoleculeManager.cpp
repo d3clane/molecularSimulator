@@ -139,6 +139,12 @@ void returnOutOfBoundaries(
     }
 }
 
+std::chrono::milliseconds calcDeltaTime(const std::chrono::steady_clock::time_point& prevTime)
+{
+    using ms = std::chrono::milliseconds;
+
+    return std::chrono::duration_cast<ms>(std::chrono::steady_clock::now() - prevTime);
+}
 } // namespace anon
 
 MoleculeManager::MoleculeManager(const Point& boundaryTopLeft, const Point& boundaryBottomRight) : 
@@ -192,4 +198,4 @@ Boundary::Boundary(const Boundary& other) :
 const RectangleCollider* Boundary::collider() const & { return collider_.get(); }
 const Vector& Boundary::perpendicular() const &       { return perpendicular_; }
 
-} // namespace Model
+} // namespace Simulator

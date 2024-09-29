@@ -60,4 +60,4 @@ std::list<std::unique_ptr<Simulator::Molecule> >& Controller::molecules() &
     return manager_.molecules();
 }
 
-} // namespace Controller
+} // namespace Simulator

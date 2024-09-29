@@ -45,6 +45,8 @@ class MoleculeManager
     Point boundaryTopLeft_;
     Point boundaryBottomRight_;
 
+    std::chrono::milliseconds deltaTime;
+    
 public:
     MoleculeManager(const Point& boundaryTopLeft, const Point& boundaryBottomRight);
     

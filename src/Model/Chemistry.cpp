@@ -111,4 +111,4 @@ MoleculesAfterChemistryReaction processChemistryCircleRect(Molecule* molecule1, 
     return processChemistryRectCircle(molecule2, molecule1);
 }
 
-} // namespace Model
+} // namespace Simulator

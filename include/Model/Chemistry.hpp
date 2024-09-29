@@ -22,6 +22,6 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(Molecule* molecule1
 MoleculesAfterChemistryReaction processChemistryCircleRect  (Molecule* molecule1, Molecule* molecule2);
 MoleculesAfterChemistryReaction processChemistryRectCircle  (Molecule* molecule1, Molecule* molecule2);
 
-} // namespace Model
+} // namespace Simulator
 
 #endif // MODEL_CHEMISTRY_HPP

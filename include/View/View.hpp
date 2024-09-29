@@ -33,6 +33,6 @@ public:
     Gui::WindowManager& windowManager() &;
 };
 
-} // namespace View
+} // namespace Simulator
 
 #endif // VIEW_VIEW_HPP

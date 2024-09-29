@@ -103,4 +103,4 @@ void processCollisionRectRect    (Molecule* molecule1, Molecule* molecule2)
     return; // Impossible in my model
 }
 
-} // namespace Model
+} // namespace Simulator

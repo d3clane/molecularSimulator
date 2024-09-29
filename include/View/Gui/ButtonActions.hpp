@@ -30,6 +30,6 @@ private:
     ActionType actionType_;
 };
 
-} // namespace View
+} // namespace Simulator
 
 #endif // VIEW_GUI_BUTTON_ACTIONS_HPP

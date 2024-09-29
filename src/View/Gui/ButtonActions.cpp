@@ -26,4 +26,4 @@ void ChangeMoleculesQuantityAction::operator()()
     }
 }
 
-} // namespace View
+} // namespace Simulator

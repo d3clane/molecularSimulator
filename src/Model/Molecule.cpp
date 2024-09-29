@@ -94,4 +94,4 @@ double RectangleMolecule::basicHeight() { return RectangleMolecule::basicHeight_
 void RectangleMolecule::basicWidth (const double newWidth)  { RectangleMolecule::basicWidth_  = newWidth;  }
 void RectangleMolecule::basicHeight(const double newHeight) { RectangleMolecule::basicHeight_ = newHeight; }
 
-} // namespace Model
+} // namespace Simulator
