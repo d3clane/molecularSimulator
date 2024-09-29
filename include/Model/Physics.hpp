@@ -8,13 +8,16 @@
 namespace Simulator
 {
 
-using PhysicsCollisionFuncType = void (*)(Molecule* molecule1, Molecule* molecule2);
-
 class Boundary;
+
+using PhysicsCollisionFuncType  = void (*)(Molecule* molecule1, Molecule* molecule2);
+using BoundaryCollisionFuncType = void (*)(Molecule* molecule, const Boundary* boundary);
+
 
 void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecule* >& moleculesAfter);
 
-void bounceFromBoundary(Molecule* molecule, const Boundary* boundary);
+void processCollisionCircleBoundary(Molecule* molecule, const Boundary* boundary);
+void processCollisionRectBoundary  (Molecule* molecule, const Boundary* boundary);
 
 void processCollisionCircleCircle(Molecule* molecule1, Molecule* molecule2);
 void processCollisionCircleRect  (Molecule* molecule1, Molecule* molecule2);

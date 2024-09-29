@@ -7,6 +7,99 @@
 namespace Simulator
 {
 
+namespace 
+{
+
+void setSpeedsAfterCollision(CircleMolecule& molecule1, CircleMolecule& molecule2)
+{
+    Vector aSpeed = molecule1.speed();
+    Vector bSpeed = molecule2.speed();
+
+    unsigned int aMass = molecule1.mass();
+    unsigned int bMass = molecule2.mass();
+
+    Vector relativeASpeedBefore = aSpeed - bSpeed;
+
+    Vector centerDirection      = Vector(molecule1.topLeft(), molecule2.topLeft());
+    Vector centerDirectionSpeed = relativeASpeedBefore.projectOnto(centerDirection);
+
+    double v_x = centerDirectionSpeed.length();
+
+    double relativeBSpeedAfterLen = 2 * aMass * bMass * v_x / (aMass * bMass + bMass * bMass);
+
+    Vector relativeBSpeedAfter = centerDirection.getNormalizedVector() * relativeBSpeedAfterLen;
+    Vector relativeASpeedAfter = relativeASpeedBefore - (bMass / aMass) * relativeBSpeedAfter;
+
+    Vector aSpeedAfter = bSpeed + relativeASpeedAfter;
+    Vector bSpeedAfter = bSpeed + relativeBSpeedAfter;
+
+    molecule1.speed(aSpeedAfter);
+    molecule2.speed(bSpeedAfter);
+}
+
+void resolveOverlap(CircleMolecule& molecule1, CircleMolecule& molecule2)
+{
+    float overlapping = molecule1.radius() + molecule2.radius() - 
+                        Engine::getDistance2D(molecule1.topLeft(), molecule2.topLeft());
+
+    if (overlapping <= 0) return;
+
+    Vector direction1 = molecule1.speed().getNormalizedVector();
+    Vector direction2 = molecule2.speed().getNormalizedVector();
+
+    Vector standardDirection = Vector{Utils::Rand(-1, 1), Utils::Rand(-1, 1), 0}.getNormalizedVector();
+
+    direction1 = direction1.isZero() ?  standardDirection : direction1;
+    direction2 = direction2.isZero() ? -standardDirection : direction2;
+
+    direction1 = (direction1 == direction2 ? -direction1 : direction1);
+
+    molecule1.move(direction1 * overlapping / 2);
+    molecule2.move(direction2 * overlapping / 2);
+}
+
+void bounceFromBoundary(Molecule* molecule, const Boundary* boundary) 
+{
+    Vector speed = molecule->speed();
+
+    Vector newSpeed = -speed.reflectRelatively(boundary->perpendicular());
+
+    molecule->speed(newSpeed);
+}
+
+void resolveOverlap(CircleMolecule& molecule, const Boundary& boundary)
+{
+    double radius = molecule.radius();
+    Point center = molecule.topLeft() + Vector(radius, radius, 0);
+
+    assert(boundary.perpendicular() == boundary.perpendicular().getNormalizedVector());
+
+    float overlap = radius - (-boundary.perpendicular() ^ Vector(center, boundary.pos()));
+
+    if (overlap <= 0) return;
+
+    molecule.move(boundary.perpendicular() * overlap);
+}
+
+void resolveOverlap(RectangleMolecule& molecule, const Boundary& boundary)
+{
+    double height = molecule.height();
+    double width  = molecule.width();
+
+    Point center = molecule.topLeft() + Vector(width / 2, height / 2, 0);
+
+    // TODO: works only in cases (-1, 0), (1, 0), (0, -1), (0, 1) perpendiculars
+    double criticalDistance = std::abs(Vector(width / 2, height / 2, 0) ^ boundary.perpendicular());
+
+    double overlap = criticalDistance - (-boundary.perpendicular() ^ Vector(center, boundary.pos()));
+
+    if (overlap <= 0) return;
+
+    molecule.move(boundary.perpendicular() * overlap);
+}
+
+} // namespace anon
+
 void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecule* >& moleculesAfter)
 {
     assert(moleculesBefore.size() > 0 && moleculesAfter.size() > 0);
@@ -38,51 +131,31 @@ void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecul
     }
 }
 
-
-void bounceFromBoundary(Molecule* molecule, const Boundary* boundary)
+void processCollisionCircleBoundary(Molecule* molecule, const Boundary* boundary)
 {
-    Vector speed = molecule->speed();
+    bounceFromBoundary(molecule, boundary);
 
-    assert(std::isfinite(speed.length()));
-    assert(std::isfinite(boundary->perpendicular().length()));
+    CircleMolecule& circleMolecule = *static_cast<CircleMolecule*>(molecule);
     
-    Vector newSpeed = -speed.reflectRelatively(boundary->perpendicular());
+    resolveOverlap(circleMolecule, *boundary);
+}
 
-    molecule->speed(newSpeed);
+void processCollisionRectBoundary(Molecule* molecule, const Boundary* boundary)
+{
+    bounceFromBoundary(molecule, boundary);
+
+    RectangleMolecule& rectangleMolecule = *static_cast<RectangleMolecule*>(molecule);
+
+    resolveOverlap(rectangleMolecule, *boundary);
 }
 
 void processCollisionCircleCircle(Molecule* circleMolecule1, Molecule* circleMolecule2)
 {
-    CircleMolecule& a = *static_cast<CircleMolecule*>(circleMolecule1);
-    CircleMolecule& b = *static_cast<CircleMolecule*>(circleMolecule2);
-
-    Vector aSpeed = a.speed();
-    Vector bSpeed = b.speed();
-
-    unsigned int aMass = a.mass();
-    unsigned int bMass = b.mass();
-
-    Vector relativeASpeedBefore = aSpeed - bSpeed;
-
-    Vector centerDirection      = Vector(a.topLeft(), b.topLeft());
-    Vector centerDirectionSpeed = relativeASpeedBefore.projectOnto(centerDirection);
-
-    double v_x = centerDirectionSpeed.length();
-
-    double relativeBSpeedAfterLen = 2 * aMass * bMass * v_x / (aMass * bMass + bMass * bMass);
-
-    Vector relativeBSpeedAfter = centerDirection.getNormalizedVector() * relativeBSpeedAfterLen;
-    Vector relativeASpeedAfter = relativeASpeedBefore - (bMass / aMass) * relativeBSpeedAfter;
-
-    Vector aSpeedAfter = bSpeed + relativeASpeedAfter;
-    Vector bSpeedAfter = bSpeed + relativeBSpeedAfter;
-
-    //a.move(-3 * a.speed());
-    //b.move(-3 * b.speed());
-
-    static const double alignCoeff = 1.;
-    a.speed(aSpeedAfter / alignCoeff);
-    b.speed(bSpeedAfter / alignCoeff);
+    CircleMolecule& molecule1 = *static_cast<CircleMolecule*>(circleMolecule1);
+    CircleMolecule& molecule2 = *static_cast<CircleMolecule*>(circleMolecule2);
+    
+    setSpeedsAfterCollision(molecule1, molecule2);
+    resolveOverlap(molecule1, molecule2);
 }
 
 void processCollisionCircleRect  (Molecule* molecule1, Molecule* molecule2)

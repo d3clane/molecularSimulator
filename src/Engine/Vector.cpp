@@ -34,6 +34,11 @@ void Vector::length(const double newLength)
     dz *= coeff;
 }
 
+bool Vector::isZero() const
+{
+    return dx == 0 && dy == 0 && dz == 0;
+}
+
 Vector Vector::getNormalizedVector() const
 {
     double len = length();
@@ -46,11 +51,6 @@ Vector Vector::getNormalizedVector() const
 
 Vector Vector::reflectRelatively(const Vector& pivot) const
 {
-    assert(length() != 0);
-    assert(pivot.length() != 0);
-    assert(std::isfinite(length()));
-    assert(std::isfinite(pivot.length()));
-
     return 2 * projectOnto(pivot) - *this;
 }
 
@@ -62,8 +62,8 @@ Vector Vector::getPerpendicular() const
 Vector Vector::projectOnto(const Vector& other) const
 {
     double myLen = length();
-    if (myLen == 0) return *this; // TODO: double comparison
-    assert(myLen != 0);
+    if (myLen <= 0) return *this; // TODO: double comparison
+    
     assert(other.length() != 0);
 
     return other.getNormalizedVector() * cos(*this, other) * length();
@@ -104,6 +104,11 @@ Vector& Vector::operator/=(const double coeff)
     dy /= coeff;
     dz /= coeff;
     return *this;
+}
+
+bool Vector::operator==(const Vector& other) const
+{
+    return dx == other.dx && dy == other.dy && dz == other.dz;
 }
 
 Vector operator -(const Vector& self)

@@ -18,6 +18,8 @@ struct Vector
 
     double length() const;
     void   length(const double newLength);
+
+    bool isZero() const;
     
     Vector reflectRelatively(const Vector& pivot) const;
     Vector getNormalizedVector() const;
@@ -30,6 +32,8 @@ struct Vector
     Vector& operator-=(const Vector& other);
     Vector& operator*=(const double coeff);
     Vector& operator/=(const double coeff);
+
+    bool operator==(const Vector& other) const;
     
     operator Point() const { return Point(dx, dy, dz); }
 };

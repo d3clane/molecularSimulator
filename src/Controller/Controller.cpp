@@ -29,6 +29,12 @@ Simulator::CircleMolecule generateCircleMolecule(
     double vX = Utils::Rand(-1, 1) * speedAbs;
     double vY = std::sqrt(speedAbs * speedAbs - vX * vX) * Utils::RandDirection();
 
+#if 0
+    topLeft.x = topLeftBoundary.x + width / 2;
+    topLeft.y = topLeftBoundary.y + height / 2;
+    vX = vY = 0; // TODO: delete
+#endif
+
     Vector speed = Vector(vX, vY, 0);
 
     return Simulator::CircleMolecule{radius, Simulator::Molecule::CtorParams{topLeft, mass, speed}};

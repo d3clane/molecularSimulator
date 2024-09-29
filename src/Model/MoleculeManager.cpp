@@ -92,17 +92,29 @@ void handleCollisionBetweenMolecules(ListType<std::unique_ptr<Molecule> >& input
     }
 }
 
+std::vector<BoundaryCollisionFuncType> fillBoundaryCollisions()
+{
+    std::vector<BoundaryCollisionFuncType> collisionFuncs(numberOfDifferentMolecules);
+
+    collisionFuncs[(size_t)MoleculeType::Circle]    = processCollisionCircleBoundary;
+    collisionFuncs[(size_t)MoleculeType::Rectangle] = processCollisionRectBoundary;
+
+    return collisionFuncs;
+}
+
 void handleCollisionWithBoundaries(
     ListType<std::unique_ptr<Molecule> >& molecules, ListType<Boundary> boundaries
 )
 {
+    static const std::vector<BoundaryCollisionFuncType> collisionFuncs = fillBoundaryCollisions();
+
     for (auto& molecule : molecules)
     {
         for (auto& boundary : boundaries)
         {
             if (Molecules2DVtable::checkCollision(molecule.get(), &boundary))
             {
-                bounceFromBoundary(molecule.get(), &boundary);
+                collisionFuncs[(size_t)molecule->id()](molecule.get(), &boundary);
             }
         }
     }
@@ -166,7 +178,7 @@ void MoleculeManager::moveMolecules()
 
     handleCollisionBetweenMolecules(molecules_);
 
-    returnOutOfBoundaries(molecules_, boundaryTopLeft_, boundaryBottomRight_);
+    //returnOutOfBoundaries(molecules_, boundaryTopLeft_, boundaryBottomRight_);
 
     prevTime_ = std::chrono::steady_clock::now();
 }

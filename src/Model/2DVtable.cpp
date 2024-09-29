@@ -8,6 +8,7 @@ namespace Simulator
 namespace Molecules2DVtable
 {
 
+// TODO: will broke when changing molecule type id's, should use enum
 static Molecules2DVtableFuncs 
     MoleculesCollisionsVTable[numberOfDifferentMolecules][numberOfDifferentMolecules] = 
 {
