@@ -4,7 +4,7 @@
 #include "Utils/Rand.hpp"
 
 #include <iostream>
-namespace Model
+namespace Simulator
 {
 
 void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecule* >& moleculesAfter)

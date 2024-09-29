@@ -6,7 +6,7 @@
 
 #include "Model/Molecule.hpp"
 
-namespace Model
+namespace Simulator
 {
 
 struct MoleculesAfterChemistryReaction

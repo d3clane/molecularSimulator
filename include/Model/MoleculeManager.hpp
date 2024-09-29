@@ -7,7 +7,7 @@
 #include <list>
 #include <memory>
 
-namespace Model
+namespace Simulator
 {
 
 class Boundary : public Engine::Transformable
@@ -50,14 +50,17 @@ public:
     
     void moveMolecules();
 
-    void addMolecules   (MoleculeType moleculeType);
-    void removeMolecules(MoleculeType moleculeType);
+    void addMolecule    (std::unique_ptr<Molecule> molecule);
+    void removeMolecules(const Point& topLeft, const Point& bottomRight);
 
     ListType<std::unique_ptr<Molecule> >& molecules() & { return molecules_;  }
     ListType<Boundary>& boundaries() &                  { return boundaries_; }
 
     const ListType<std::unique_ptr<Molecule> >& molecules() const & { return molecules_;  }
     const ListType<Boundary>& boundaries() const &                  { return boundaries_; }
+
+    Point boundaryTopLeft()     const { return boundaryTopLeft_; }
+    Point boundaryBottomRight() const { return boundaryBottomRight_; }
 };
 
 } // namespace Model

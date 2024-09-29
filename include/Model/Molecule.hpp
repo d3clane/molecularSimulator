@@ -11,7 +11,7 @@
 
 #include <memory>
 
-namespace Model
+namespace Simulator
 {
 
 using Engine::Point;

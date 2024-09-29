@@ -1,28 +1,28 @@
 #ifndef VIEW_VIEW_HPP
 #define VIEW_VIEW_HPP
 
-#include "Model/MoleculeManager.hpp" // TODO: move to controller
-#include "Gui/WindowManager.hpp"     // stay here
+#include "Gui/WindowManager.hpp"
 
 #include "Engine/CoordsSystem.hpp"
+#include "Controller/Controller.hpp"
 
-namespace View
+namespace Simulator
 {
 
 class View
 {
     Graphics::RenderWindow& renderWindow_;
     Engine::CoordsSystem&   coordsSystem_;
-    Model::MoleculeManager& manager_; // will be a controller
+    Simulator::Controller& controller_;
 
-    Gui::WindowManager windowManager_; // always have as a view
+    Gui::WindowManager windowManager_;
 
     std::vector<std::unique_ptr<Graphics::Texture> > textures_;
     
-    Graphics::Sprite moleculeSprites[Model::numberOfDifferentMolecules];
+    Graphics::Sprite moleculeSprites[Simulator::numberOfDifferentMolecules];
 public:
     View(
-        Model::MoleculeManager& manager, Graphics::RenderWindow& renderWindow, 
+        Simulator::Controller& controller, Graphics::RenderWindow& renderWindow, 
         Engine::CoordsSystem& coordsSystem
     );
 

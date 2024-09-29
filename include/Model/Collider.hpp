@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace Model
+namespace Simulator
 {
 
 class Collider;

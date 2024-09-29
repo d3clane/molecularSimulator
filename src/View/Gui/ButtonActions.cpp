@@ -1,11 +1,11 @@
 #include "View/Gui/ButtonActions.hpp"
 
-namespace View
+namespace Simulator
 {
 
 ChangeMoleculesQuantityAction::ChangeMoleculesQuantityAction(
-    Model::MoleculeManager& manager, Model::MoleculeType moleculesType, ActionType actionType
-) : moleculeManager_(manager), moleculesType_(moleculesType), actionType_(actionType)
+    Simulator::Controller& controller, Simulator::MoleculeType moleculesType, ActionType actionType
+) : controller_(controller), moleculesType_(moleculesType), actionType_(actionType)
 {
 }
 
@@ -14,11 +14,11 @@ void ChangeMoleculesQuantityAction::operator()()
     switch (actionType_)
     {
         case ActionType::Add:
-            moleculeManager_.addMolecules(moleculesType_);
+            controller_.addMolecules(moleculesType_);
             break;
         
         case ActionType::Remove:
-            moleculeManager_.removeMolecules(moleculesType_);
+            controller_.removeMolecules(moleculesType_);
             break;
             
         default:

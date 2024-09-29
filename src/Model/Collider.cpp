@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstdio>
 
-namespace Model
+namespace Simulator
 {
 
 namespace

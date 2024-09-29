@@ -7,7 +7,7 @@
 #include "Model/Chemistry.hpp"
 #include "Model/MoleculeManager.hpp"
 
-namespace Model
+namespace Simulator
 {
 
 namespace Molecules2DVtable

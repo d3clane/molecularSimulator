@@ -5,7 +5,7 @@
 
 #include "Model/Molecule.hpp"
 
-namespace Model
+namespace Simulator
 {
 
 using PhysicsCollisionFuncType = void (*)(Molecule* molecule1, Molecule* molecule2);

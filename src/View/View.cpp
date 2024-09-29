@@ -4,7 +4,7 @@
 
 #include "Gui/Action.hpp"
 
-namespace View
+namespace Simulator
 {
 
 namespace 
@@ -25,9 +25,9 @@ Graphics::Sprite loadSprite(std::vector<std::unique_ptr<Graphics::Texture > >& t
 
 
 void drawMolecule(
-    const Model::Molecule* molecule, Graphics::RenderWindow& renderWindow,
+    const Simulator::Molecule* molecule, Graphics::RenderWindow& renderWindow,
     const Engine::CoordsSystem& coordsSystem, 
-    const Graphics::Sprite (*moleculeSprites)[Model::numberOfDifferentMolecules]
+    const Graphics::Sprite (*moleculeSprites)[Simulator::numberOfDifferentMolecules]
 )
 {
     Graphics::Sprite moleculeSprite = (*moleculeSprites)[(size_t)molecule->id()];
@@ -36,9 +36,9 @@ void drawMolecule(
 
     switch (molecule->id())
     {
-        case Model::MoleculeType::Circle:
+        case Simulator::MoleculeType::Circle:
         {
-            const Model::CircleMolecule* circleMolecule = dynamic_cast<const Model::CircleMolecule*>(molecule);
+            const Simulator::CircleMolecule* circleMolecule = dynamic_cast<const Simulator::CircleMolecule*>(molecule);
 
             double radius = coordsSystem.getSizeInPixels(circleMolecule->radius());
 
@@ -46,10 +46,10 @@ void drawMolecule(
 
             break;
         }
-        case Model::MoleculeType::Rectangle:
+        case Simulator::MoleculeType::Rectangle:
         {
-            const Model::RectangleMolecule* rectangleMolecule = 
-                dynamic_cast<const Model::RectangleMolecule*>(molecule);
+            const Simulator::RectangleMolecule* rectangleMolecule = 
+                dynamic_cast<const Simulator::RectangleMolecule*>(molecule);
 
             double width  = coordsSystem.getSizeInPixels(rectangleMolecule->width());
             double height = coordsSystem.getSizeInPixels(rectangleMolecule->height());
@@ -68,9 +68,9 @@ void drawMolecule(
 } // namespace anon
 
 View::View(
-    Model::MoleculeManager& manager, Graphics::RenderWindow& renderWindow,
+    Simulator::Controller& controller, Graphics::RenderWindow& renderWindow,
     Engine::CoordsSystem& coordsSystem
-) : coordsSystem_(coordsSystem), renderWindow_(renderWindow), manager_(manager)
+) : coordsSystem_(coordsSystem), renderWindow_(renderWindow), controller_(controller)
 {
     Graphics::Sprite addMoleculesSprite    = loadSprite(textures_, "media/textures/plus.jpeg");
     Graphics::Sprite removeMoleculesSprite = loadSprite(textures_, "media/textures/minus.jpeg");
@@ -92,11 +92,11 @@ View::View(
     };
 
     auto* addMoleculesAction = new ChangeMoleculesQuantityAction{
-        manager_, Model::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Add
+        controller_, Simulator::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Add
     };
 
     auto* removeMoleculesAction = new ChangeMoleculesQuantityAction{
-        manager_, Model::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Remove
+        controller_, Simulator::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Remove
     };
 
     addMoleculesButton.get()->addAction(std::unique_ptr<Gui::Action>(addMoleculesAction));
@@ -105,10 +105,10 @@ View::View(
     windowManager_.addWindow(std::move(addMoleculesButton   ));
     windowManager_.addWindow(std::move(removeMoleculesButton));
 
-    moleculeSprites[(size_t)Model::MoleculeType::Circle] = 
+    moleculeSprites[(size_t)Simulator::MoleculeType::Circle] = 
         loadSprite(textures_, "media/textures/whiteCircle.png");
 
-    moleculeSprites[(size_t)Model::MoleculeType::Rectangle] = 
+    moleculeSprites[(size_t)Simulator::MoleculeType::Rectangle] = 
         loadSprite(textures_, "media/textures/red.jpeg");
 }
 
@@ -121,7 +121,7 @@ void View::draw()
 {
     windowManager_.draw(renderWindow_, coordsSystem_);
 
-    std::list<std::unique_ptr<Model::Molecule> >& molecules = manager_.molecules();
+    std::list<std::unique_ptr<Simulator::Molecule> >& molecules = controller_.molecules();
 
     for (auto& molecule : molecules)
     {

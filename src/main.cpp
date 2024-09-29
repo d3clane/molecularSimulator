@@ -13,6 +13,7 @@
 #include "Logger/Log.h"
 
 #include "View/View.hpp"
+#include "Controller/Controller.hpp"
 
 int main(const int argc, const char* argv[])
 {
@@ -20,17 +21,17 @@ int main(const int argc, const char* argv[])
 
     srand(time(NULL));
 
-    Model::MoleculeManager moleculeManager({0, 0, 0}, {800, 600, 0}); // TODO 
+    Simulator::MoleculeManager moleculeManager({0, 0, 0}, {800, 600, 0}); // TODO 
 
     auto& molecules  = moleculeManager.molecules();
     auto& boundaries = moleculeManager.boundaries();
 
     const double bigWidth = 10000;
 
-    boundaries.push_back(Model::Boundary(Engine::Point{-bigWidth, 0, 0}, bigWidth, 600,   Engine::Vector(1, 0, 0)));
-    boundaries.push_back(Model::Boundary(Engine::Point{0, -bigWidth, 0}, 800, bigWidth,   Engine::Vector(0, 1, 0)));
-    boundaries.push_back(Model::Boundary(Engine::Point{0, 600, 0}, 800, bigWidth, Engine::Vector(0, -1, 0)));
-    boundaries.push_back(Model::Boundary(Engine::Point{800, 0, 0}, bigWidth, 600, Engine::Vector(-1, 0, 0)));
+    boundaries.push_back(Simulator::Boundary(Engine::Point{-bigWidth, 0, 0}, bigWidth, 600,   Engine::Vector(1, 0, 0)));
+    boundaries.push_back(Simulator::Boundary(Engine::Point{0, -bigWidth, 0}, 800, bigWidth,   Engine::Vector(0, 1, 0)));
+    boundaries.push_back(Simulator::Boundary(Engine::Point{0, 600, 0}, 800, bigWidth, Engine::Vector(0, -1, 0)));
+    boundaries.push_back(Simulator::Boundary(Engine::Point{800, 0, 0}, bigWidth, 600, Engine::Vector(-1, 0, 0)));
 
     static const double basicMass     = 1;
     static const double basicSpeedAbs = 0.05;
@@ -38,11 +39,11 @@ int main(const int argc, const char* argv[])
     static const double basicHeight   = 5;
     static const double basicWidth    = 5;
 
-    Model::Molecule::basicMass           (basicMass);
-    Model::Molecule::basicSpeedAbs       (basicSpeedAbs);
-    Model::CircleMolecule::basicRadius   (basicRadius);
-    Model::RectangleMolecule::basicHeight(basicHeight);
-    Model::RectangleMolecule::basicWidth (basicWidth);
+    Simulator::Molecule::basicMass           (basicMass);
+    Simulator::Molecule::basicSpeedAbs       (basicSpeedAbs);
+    Simulator::CircleMolecule::basicRadius   (basicRadius);
+    Simulator::RectangleMolecule::basicHeight(basicHeight);
+    Simulator::RectangleMolecule::basicWidth (basicWidth);
 
     for (int i = 0; i < 20; ++i)
     {
@@ -53,20 +54,22 @@ int main(const int argc, const char* argv[])
         int dirX = rand() % 2 == 0 ? -1 : 1;
         int dirY = rand() % 2 == 0 ? -1 : 1;
 
-        Model::CircleMolecule* tmp = new Model::CircleMolecule{
-            basicRadius, Model::Molecule::CtorParams{
+        Simulator::CircleMolecule* tmp = new Simulator::CircleMolecule{
+            basicRadius, Simulator::Molecule::CtorParams{
                 Engine::Point(rand() % 600 + 50, rand() % 400 + 50, 0), basicMass,
                 Engine::Vector(dirX * vX, dirY * vY, 0)
             }
         };
 
-        molecules.push_back(std::unique_ptr<Model::Molecule>(tmp));
+        molecules.push_back(std::unique_ptr<Simulator::Molecule>(tmp));
     }
 
     Graphics::RenderWindow renderWindow{800, 600, "molecules"};
     Engine::CoordsSystem coordsSystem{1, {0, 0, 0}};
 
-    View::View view{moleculeManager, renderWindow, coordsSystem};
+    Simulator::Controller controller{moleculeManager};
+
+    Simulator::View view{controller, renderWindow, coordsSystem};
 
     while (renderWindow.isOpen())
     {

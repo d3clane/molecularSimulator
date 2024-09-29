@@ -2,7 +2,7 @@
 
 #include "src/Model/2DVtable.hpp"
 
-namespace Model
+namespace Simulator
 {
 
 namespace Molecules2DVtable

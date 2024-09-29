@@ -6,8 +6,10 @@
 #include "Utils/Rand.hpp"
 
 #include <iostream>
+#include <algorithm>
+#include <list>
 
-namespace Model
+namespace Simulator
 {
 
 namespace 
@@ -106,41 +108,6 @@ void handleCollisionWithBoundaries(
     }
 }
 
-CircleMolecule generateCircleMolecule(const Point& topLeftBoundary, const Point& bottomRightBoundary)
-{
-    double radius   = CircleMolecule::basicRadius();
-    double mass     = CircleMolecule::basicMass();
-    double speedAbs = CircleMolecule::basicSpeedAbs();
-
-    Point topLeft = topLeftBoundary;
-    const double width = bottomRightBoundary.x - topLeftBoundary.x;
-    const double height = bottomRightBoundary.y - topLeftBoundary.y;
-
-    topLeft.x += Utils::Rand(0, 1) * width;
-    topLeft.y += Utils::Rand(0, 1) * height;
-
-    double vX = Utils::Rand(0, 1) * speedAbs;
-    double vY = std::sqrt(speedAbs * speedAbs - vX * vX);
-
-    Vector speed = Vector(vX, vY, 0);
-
-    return CircleMolecule{radius, Molecule::CtorParams{topLeft, mass, speed}};
-}
-
-void generateCircleMolecules(
-    ListType<std::unique_ptr<Molecule> >& molecules, const Point& topLeft, const Point& bottomRight
-)
-{
-    static const size_t numberOfMoleculesToAdd = 10;
-
-    for (size_t i = 0; i < numberOfMoleculesToAdd; ++i)
-    {
-        molecules.push_back(
-            std::unique_ptr<Molecule>{new CircleMolecule{generateCircleMolecule(topLeft, bottomRight)}}
-        );
-    }
-}
-
 bool isOutOfBoundary(const Molecule* molecule, const Point& boundaryTopLeft, const Point& boundaryBottomRight)
 {
     Point moleculePos = molecule->pos();
@@ -193,27 +160,21 @@ void MoleculeManager::moveMolecules()
     returnOutOfBoundaries(molecules_, boundaryTopLeft_, boundaryBottomRight_);
 }
 
-void MoleculeManager::addMolecules(MoleculeType moleculeType)
+void MoleculeManager::addMolecule(std::unique_ptr<Molecule> molecule)
 {
-    switch (moleculeType)
-    {
-        case MoleculeType::Circle:
-            generateCircleMolecules(molecules_, boundaryTopLeft_, boundaryBottomRight_);
-            break;
-        
-        //TODO:
-
-        default:
-            assert(false);
-            break;
-    }
+    molecules_.push_back(std::move(molecule));
 }
 
-void MoleculeManager::removeMolecules(MoleculeType moleculeType)
+void MoleculeManager::removeMolecules(const Point& topLeft, const Point& bottomRight)
 {
-    // TODO: implement
+    molecules_.remove_if(
+        [&](auto& molecule) 
+        { 
+            return molecule->pos().x > topLeft.x && molecule->pos().x < bottomRight.x && 
+                   molecule->pos().y > topLeft.y && molecule->pos().y < bottomRight.y;
+        }
+    );
 }
-
 
 Boundary::Boundary(
     const Point& topLeft, const double width, const double height,

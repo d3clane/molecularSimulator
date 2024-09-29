@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace Model
+namespace Simulator
 {
 
 MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1, Molecule* rectMolecule2)

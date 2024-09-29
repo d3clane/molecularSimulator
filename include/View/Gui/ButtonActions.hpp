@@ -1,17 +1,17 @@
 #ifndef VIEW_GUI_BUTTON_ACTIONS_HPP
 #define VIEW_GUI_BUTTON_ACTIONS_HPP
 
-#include "Model/MoleculeManager.hpp"
+#include "Controller/Controller.hpp"
 #include "Model/Molecule.hpp"
 #include "Gui/Action.hpp"
 
-namespace View
+namespace Simulator
 {
 
 class ChangeMoleculesQuantityAction : public Gui::Action
 {
-    Model::MoleculeManager& moleculeManager_;
-    Model::MoleculeType  moleculesType_;
+    Simulator::Controller& controller_;
+    Simulator::MoleculeType  moleculesType_;
     
 public:
     enum class ActionType
@@ -21,7 +21,7 @@ public:
     };
 
     ChangeMoleculesQuantityAction(
-        Model::MoleculeManager& manager, Model::MoleculeType moleculesType, ActionType actionType
+        Simulator::Controller& controller, Simulator::MoleculeType moleculesType, ActionType actionType
     );
 
     virtual void operator()() override;
