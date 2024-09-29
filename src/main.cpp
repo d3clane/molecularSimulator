@@ -64,34 +64,6 @@ int main(const int argc, const char* argv[])
 
         renderWindow.clear();
     
-#if 0
-
-        for (auto& molecule : molecules)
-        {
-            Engine::Point topLeft = molecule.get()->topLeft();
-
-            Model::CircleMolecule* tmp = dynamic_cast<Model::CircleMolecule*>(molecule.get());
-            
-            if (tmp != nullptr)
-            {
-                whiteSprite.setPosition({topLeft.x, topLeft.y});
-                whiteSprite.scaleInPixels({tmp->radius(), tmp->radius()});
-                
-                renderWindow.drawSprite(whiteSprite);
-            }
-            else
-            {
-                Model::RectangleMolecule* tmp = dynamic_cast<Model::RectangleMolecule*>(molecule.get());
-
-                redSprite.setPosition({topLeft.x, topLeft.y});
-                redSprite.scaleInPixels({tmp->width(), tmp->height()});
-                
-                renderWindow.drawSprite(redSprite);
-            }
-
-        }
-#endif
-
         moleculeManager.moveMolecules();
 
         view.update(event);
