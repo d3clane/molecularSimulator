@@ -5,6 +5,8 @@
 
 #include "Engine/Vector.hpp"
 
+#include <iostream>
+
 namespace Gui
 {
 
@@ -114,7 +116,7 @@ void Button::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSyst
     Graphics::WindowVector scale = cs.getScaleInPixels(Engine::Vector{width_, height_, 0});
     Graphics::WindowPoint  pos   = cs.getPosInWindow(topLeft_);
 
-    sprite_.scaleInPixels({width_, height_});
+    sprite_.scaleInPixels(scale);
     sprite_.setPosition(pos);
 
     renderWindow.drawSprite(sprite_);
@@ -179,7 +181,7 @@ int Button::addUndoAction(std::unique_ptr<Action>&& action)
     return undoActions_.size() - 1;
 }
 
-void completeActions(const std::vector< std::unique_ptr<Action> >& actions)
+void completeActions(const std::vector<std::unique_ptr<Action> >& actions)
 {
     for (auto& action : actions)
         (*action.get())();

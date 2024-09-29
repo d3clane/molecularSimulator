@@ -1,6 +1,8 @@
 #include "Graphics/PixelsArray.hpp"
 #include "Gui/HoverAnimatedButton.hpp"
 
+#include "Gui/Action.hpp"
+
 namespace Gui
 {
 
@@ -63,7 +65,7 @@ HoverAnimatedButton::CtorParams::CtorParams(
 }
 
 HoverAnimatedButton::HoverAnimatedButton(
-    const Graphics::WindowPoint& topLeft, unsigned int width, unsigned int height, bool showing,
+    const Engine::Point& topLeft, unsigned int width, unsigned int height, bool showing,
     const Graphics::Sprite& normalSprite, const Graphics::Sprite& hoverSprite, 
     const Graphics::Sprite& releasedSprite, const Graphics::Sprite& pressedSprite,
     std::chrono::milliseconds interactionDuration
@@ -82,7 +84,7 @@ HoverAnimatedButton::HoverAnimatedButton(
 }
 
 HoverAnimatedButton::HoverAnimatedButton(
-    const Graphics::WindowPoint& topLeft, const CtorParams& otherParams
+    const Engine::Point& topLeft, const CtorParams& otherParams
 ) : HoverAnimatedButton(
         topLeft, otherParams.width, otherParams.height, otherParams.showing,
         otherParams.normalSprite, otherParams.hoverSprite, otherParams.releaseSprite, otherParams.pressedSprite,

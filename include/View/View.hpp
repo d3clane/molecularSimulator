@@ -18,6 +18,8 @@ class View
     Gui::WindowManager windowManager_; // always have as a view
 
     std::vector<std::unique_ptr<Graphics::Texture> > textures_;
+    
+    Graphics::Sprite moleculeSprites[Model::numberOfDifferentMolecules];
 public:
     View(
         Model::MoleculeManager& manager, Graphics::RenderWindow& renderWindow, 

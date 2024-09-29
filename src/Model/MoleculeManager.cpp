@@ -31,10 +31,10 @@ MoleculesChanges processMoleculesInteraction(
 {
     if (!Molecules2DVtable::checkCollision(firstMoleculeIt.it->get(), secondMoleculeIt.it->get()))
         return {};
-    
+
     MoleculesAfterChemistryReaction afterReaction = 
         Molecules2DVtable::processChemistry(firstMoleculeIt.it->get(), secondMoleculeIt.it->get());
-    
+
     if (!afterReaction.reacted)
     {
         Molecules2DVtable::processPhysics(firstMoleculeIt.it->get(), secondMoleculeIt.it->get());
@@ -48,10 +48,9 @@ MoleculesChanges processMoleculesInteraction(
 
     reorderEnergy(beforeReaction, afterReaction.moleculesAfterReaction);
 
-
     std::vector<ListIterator<std::unique_ptr<Molecule> > > moleculesToDeleteIts = 
         {firstMoleculeIt.it, secondMoleculeIt.it};
-    
+
     return {moleculesToDeleteIts, afterReaction.moleculesAfterReaction};
 }
 

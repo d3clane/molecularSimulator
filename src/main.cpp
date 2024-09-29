@@ -12,25 +12,18 @@
 
 #include "Logger/Log.h"
 
-#define TEXTURE_LOAD(FILE_NAME, TEXTURE_NAME, SPRITE_NAME)      \ 
-    Graphics::Texture TEXTURE_NAME;                             \
-    Graphics::Sprite  SPRITE_NAME;                              \
-    TEXTURE_NAME.loadFromFile(FILE_NAME);                       \
-    SPRITE_NAME.setTexture(TEXTURE_NAME); 
+#include "View/View.hpp"
 
 int main(const int argc, const char* argv[])
 {
     LogOpen(argv[0]);
 
-    //srand(time(NULL));
+    srand(time(NULL));
 
     Model::MoleculeManager moleculeManager({0, 0, 0}, {800, 600, 0}); // TODO 
 
     auto& molecules  = moleculeManager.molecules();
     auto& boundaries = moleculeManager.boundaries();
-
-    TEXTURE_LOAD("media/textures/whiteCircle.png", whiteTexture, whiteSprite);
-    TEXTURE_LOAD("media/textures/red.jpeg", redTexture, redSprite);
 
     const double bigWidth = 10000;
 
@@ -38,28 +31,6 @@ int main(const int argc, const char* argv[])
     boundaries.push_back(Model::Boundary(Engine::Point{0, -bigWidth, 0}, 800, bigWidth,   Engine::Vector(0, 1, 0)));
     boundaries.push_back(Model::Boundary(Engine::Point{0, 600, 0}, 800, bigWidth, Engine::Vector(0, -1, 0)));
     boundaries.push_back(Model::Boundary(Engine::Point{800, 0, 0}, bigWidth, 600, Engine::Vector(-1, 0, 0)));
-
-    // TODO: coords system
-
-#if 0
-    molecules.push_back(
-        std::unique_ptr<Model::Molecule>(new Model::CircleMolecule(
-            5, Model::Molecule::CtorParams(
-                Engine::Point(50, 300, 0), 1, 
-                Engine::Vector(0, 0.0001, 0)
-            ))
-        )
-    );
-
-    molecules.push_back(
-        std::unique_ptr<Model::Molecule>(new Model::CircleMolecule(
-            5, Model::Molecule::CtorParams(
-                Engine::Point(50, 300, 0), 1, 
-                Engine::Vector(0, -0.0001, 0)
-            ))
-        )
-    );
-#endif
 
     static const double basicMass     = 1;
     static const double basicSpeedAbs = 0.05;
@@ -83,7 +54,7 @@ int main(const int argc, const char* argv[])
         int dirY = rand() % 2 == 0 ? -1 : 1;
 
         Model::CircleMolecule* tmp = new Model::CircleMolecule{
-                basicRadius, Model::Molecule::CtorParams{
+            basicRadius, Model::Molecule::CtorParams{
                 Engine::Point(rand() % 600 + 50, rand() % 400 + 50, 0), basicMass,
                 Engine::Vector(dirX * vX, dirY * vY, 0)
             }
@@ -92,18 +63,23 @@ int main(const int argc, const char* argv[])
         molecules.push_back(std::unique_ptr<Model::Molecule>(tmp));
     }
 
-    Graphics::RenderWindow window{800, 600, "molecules"};
+    Graphics::RenderWindow renderWindow{800, 600, "molecules"};
+    Engine::CoordsSystem coordsSystem{1, {0, 0, 0}};
 
-    while (window.isOpen())
+    View::View view{moleculeManager, renderWindow, coordsSystem};
+
+    while (renderWindow.isOpen())
     {
         Graphics::Event event;
-        while (window.pollEvent(event))
+        while (renderWindow.pollEvent(event))
         {
             if (event.type == Graphics::Event::EventType::Closed)
-                window.close();
+                renderWindow.close();
         }
 
-        window.clear();
+        renderWindow.clear();
+    
+#if 0
 
         for (auto& molecule : molecules)
         {
@@ -116,7 +92,7 @@ int main(const int argc, const char* argv[])
                 whiteSprite.setPosition({topLeft.x, topLeft.y});
                 whiteSprite.scaleInPixels({tmp->radius(), tmp->radius()});
                 
-                window.drawSprite(whiteSprite);
+                renderWindow.drawSprite(whiteSprite);
             }
             else
             {
@@ -125,12 +101,16 @@ int main(const int argc, const char* argv[])
                 redSprite.setPosition({topLeft.x, topLeft.y});
                 redSprite.scaleInPixels({tmp->width(), tmp->height()});
                 
-                window.drawSprite(redSprite);
+                renderWindow.drawSprite(redSprite);
             }
 
         }
+#endif
 
         moleculeManager.moveMolecules();
-        window.display();
+
+        view.update(event);
+        view.draw();
+        renderWindow.display();
     }
 }
