@@ -11,9 +11,8 @@
 namespace Gui
 {
 
-class WindowManager : public Graphics::Updatable, public Scene::Drawable
+class WindowManager final : public Graphics::Updatable, public Scene::Renderable
 {
-protected:
     std::list<std::unique_ptr<Window>> windows_;
 
 public:

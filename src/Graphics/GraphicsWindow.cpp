@@ -2,6 +2,7 @@
 #include "Graphics/GraphicsWindow.hpp"
 #include "Graphics/PixelsArray.hpp"
 #include "Graphics/Sprite.hpp"
+#include "Graphics/Circle.hpp"
 
 #include "PrivateConverters.hpp"
 
@@ -59,6 +60,11 @@ void RenderWindow::drawPixels(const PixelsArray& pixels)
 void RenderWindow::drawSprite(const Sprite& sprite)
 {
     renderWindow_.draw(sprite.sprite_);
+}
+
+void RenderWindow::drawCircle(const Circle& circle)
+{
+    renderWindow_.draw(circle.circle_);
 }
 
 unsigned int RenderWindow::getWidth () const

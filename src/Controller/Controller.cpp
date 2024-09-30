@@ -66,4 +66,30 @@ std::list<std::unique_ptr<Simulator::Molecule> >& Controller::molecules() &
     return manager_.molecules();
 }
 
+double Controller::getTemperature() const
+{
+    auto& molecules = manager_.molecules();
+
+    double energy = 0;
+
+    for (auto& molecule : molecules)
+    {
+        double speed = molecule->speed().length();
+        energy += molecule->mass() * speed * speed / 2;
+    }
+
+    double temperature = (molecules.size() == 0 ? 0 : energy / molecules.size());
+
+    // TODO: BAD - CONTROLLER TRIES TO GUESS ALIGNING IN MODEL. MOVE TO MODEL
+    static const double aligningMassCoeff = 1e-3;
+
+    return temperature * aligningMassCoeff;
+}
+
+double Controller::getPressure() const
+{
+    // TODO: implement
+    return 10;
+}
+
 } // namespace Simulator

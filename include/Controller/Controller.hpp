@@ -17,6 +17,9 @@ public:
     void addMolecules   (Simulator::MoleculeType moleculeType);
     void removeMolecules(Simulator::MoleculeType moleculeType);
 
+    double getTemperature() const;
+    double getPressure() const;
+
     std::list<std::unique_ptr<Simulator::Molecule> >& molecules() &;
 };
 

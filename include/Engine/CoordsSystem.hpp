@@ -34,7 +34,7 @@ public:
     void moveCenter (const Vector& deltaPixels);
     void changeScale(const int delta);
 
-    unsigned int getSizeInPixels(const unsigned int size) const;
+    unsigned int getSizeInPixels(const double size) const;
     Graphics::WindowVector getScaleInPixels(const Vector& scale) const;
 
     Graphics::WindowPoint getPosInWindow(const Point& point) const;

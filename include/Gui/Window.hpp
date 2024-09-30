@@ -7,7 +7,7 @@
 namespace Gui
 {
 
-class Window : public Scene::Drawable, public Graphics::Updatable
+class Window : public Scene::Renderable, public Graphics::Updatable
 {
 };
 

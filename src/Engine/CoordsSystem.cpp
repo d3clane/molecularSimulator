@@ -2,6 +2,8 @@
 #include "Engine/CoordsSystem.hpp"
 #include "Engine/Vector.hpp"
 
+#include <iostream>
+
 namespace Engine
 {
 
@@ -59,7 +61,7 @@ void CoordsSystem::changeScale(const int delta)
     changeOneArgScale(stepInPixels_, delta);
 }
 
-unsigned int CoordsSystem::getSizeInPixels(const unsigned int size) const
+unsigned int CoordsSystem::getSizeInPixels(const double size) const
 {
     return size * stepInPixels_;
 }
@@ -71,6 +73,7 @@ Graphics::WindowVector CoordsSystem::getScaleInPixels(const Vector& scale) const
 
 Graphics::WindowPoint CoordsSystem::getPosInWindow(const Point& point) const
 {
+    //std::cout << "ME CENTER - " << center_.x << " " << center_.y << " POINT Y" << point.y << " AFTER SUM: " << center_.x + point.x * stepInPixels_ << " " << center_.y + point.y * stepInPixels_ << std::endl;
     return Graphics::WindowPoint(center_.x + point.x * stepInPixels_, center_.y + point.y * stepInPixels_);
 }
 

@@ -7,12 +7,12 @@
 namespace Scene
 {
 
-class Drawable
+class Renderable
 {
 public:
     virtual void draw(Graphics::RenderWindow& window, const Engine::CoordsSystem& coordsSystem) = 0;
 
-    virtual ~Drawable() = default;
+    virtual ~Renderable() = default;
 };
 
 } // namespace Scene

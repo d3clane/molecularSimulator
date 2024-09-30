@@ -1,6 +1,7 @@
 #include "View/View.hpp"
 #include "Gui/Button.hpp"
 #include "View/Gui/ButtonActions.hpp"
+#include "View/Gui/GraphsWindow.hpp"
 
 #include "Gui/Action.hpp"
 
@@ -110,6 +111,14 @@ View::View(
 
     moleculeSprites[(size_t)Simulator::MoleculeType::Rectangle] = 
         loadSprite(textures_, "media/textures/red.jpeg");
+
+    Engine::CoordsSystem tempCs{1, {0, 300, 0}};
+
+    auto* temperatureGraphsWindow = new Simulator::TemperatureGraphsWindow{
+        tempCs, {0, 0, 0}, 200, 300, std::chrono::milliseconds(100), 20, controller
+    };
+
+    windowManager_.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));
 }
 
 void View::update(const Graphics::Event& event)

@@ -14,6 +14,7 @@
 
 #include "View/View.hpp"
 #include "Controller/Controller.hpp"
+#include "View/Gui/GraphsWindow.hpp"
 
 int main(const int argc, const char* argv[])
 {
@@ -46,8 +47,7 @@ int main(const int argc, const char* argv[])
     Simulator::Controller controller{moleculeManager};
 
     Graphics::RenderWindow renderWindow{800, 600, "molecules"};
-    Engine::CoordsSystem coordsSystem{1, {0, 0, 0}};
-
+    Engine::CoordsSystem coordsSystem{1, {0, 0, 0}}; // TODO: FIX BTN
 
     Simulator::View view{controller, renderWindow, coordsSystem};
 
