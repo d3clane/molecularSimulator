@@ -21,19 +21,16 @@ void DrawableVector::draw(Graphics::RenderWindow& renderWindow, const Engine::Co
 
     renderWindow.drawLine(mainLine);
 
-    Engine::Vector normal = getPerpendicular();
+    Vector normal = getPerpendicular();
 
-    const double prettyLength = 0.2;
+    const double prettyLength = 0.05 * length();
     normal.length(prettyLength);
 
-    double normalLength = prettyLength;
     Vector coDirectionalVector = *this;
-    coDirectionalVector.length(normalLength);
+    coDirectionalVector.length(prettyLength);
 
     Vector arrowVector1 =  normal - coDirectionalVector;
     Vector arrowVector2 = -normal - coDirectionalVector;
-
-    // TODO: it should be function named shift
 
     Engine::Point endArrowVector1 = endPos + arrowVector1;
     Engine::Point endArrowVector2 = endPos + arrowVector2;
