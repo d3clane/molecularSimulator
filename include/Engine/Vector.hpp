@@ -36,6 +36,8 @@ struct Vector
     bool operator==(const Vector& other) const;
     
     operator Point() const { return Point(dx, dy, dz); }
+
+    virtual ~Vector() = default;
 };
 
 Vector operator -(const Vector& self);

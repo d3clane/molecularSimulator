@@ -122,7 +122,19 @@ void handleCollisionWithBoundaries(
 
 std::chrono::nanoseconds calcDeltaTime(const std::chrono::steady_clock::time_point& prevTime)
 {
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - prevTime);
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now() - prevTime
+    );
+}
+
+bool isOutOfBoundary(const Molecule* molecule, const Point& boundaryTopLeft, const Point& boundaryBottomRight)
+{
+    Point moleculePos = molecule->pos();
+
+    return moleculePos.x < boundaryTopLeft.x ||
+           moleculePos.y < boundaryTopLeft.y ||
+           moleculePos.x > boundaryBottomRight.x ||
+           moleculePos.y > boundaryBottomRight.y;
 }
 
 } // namespace anon
@@ -162,6 +174,13 @@ void MoleculeManager::removeMolecules(const Point& topLeft, const Point& bottomR
         { 
             return molecule->pos().x > topLeft.x && molecule->pos().x < bottomRight.x && 
                    molecule->pos().y > topLeft.y && molecule->pos().y < bottomRight.y;
+        }
+    );
+
+    molecules_.remove_if(
+        [&](auto& molecule)
+        {
+            return isOutOfBoundary(molecule.get(), topLeft, bottomRight);
         }
     );
 }

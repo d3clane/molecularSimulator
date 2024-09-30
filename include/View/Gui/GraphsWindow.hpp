@@ -28,6 +28,7 @@ protected:
     std::chrono::steady_clock::time_point prevTime_;
 
     Controller& controller_;
+
 public:
     GraphsWindow(
         const Engine::CoordsSystem& coordsSystem, const Engine::Point& topLeft,
@@ -38,6 +39,9 @@ public:
 
     void draw  (Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) override;
     bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event  ) = 0;
+
+private:
+    void drawGrid(Graphics::RenderWindow& renderWindow);
 };
 
 class TemperatureGraphsWindow : public GraphsWindow

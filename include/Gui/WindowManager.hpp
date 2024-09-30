@@ -3,7 +3,7 @@
 
 #include "Gui/Window.hpp"
 #include "Graphics/Updatable.hpp"
-#include "Scene/Drawable.hpp"
+#include "Scene/Renderable.hpp"
 
 #include <list>
 #include <memory>

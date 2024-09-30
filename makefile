@@ -38,7 +38,8 @@ CPPSRC = src/Graphics/Events.cpp src/Graphics/GraphicsWindow.cpp src/Graphics/Mo
 		 src/Model/MoleculeManager.cpp src/main.cpp src/Model/2DVtable.cpp src/Model/Chemistry.cpp \
 		 src/Model/Physics.cpp src/Logger/Log.cpp src/Gui/Button.cpp src/Gui/HoverAnimatedButton.cpp \
 		 src/Gui/WindowManager.cpp src/Utils/Rand.cpp src/View/View.cpp src/View/Gui/ButtonActions.cpp \
-		 src/Controller/Controller.cpp src/Graphics/Circle.cpp src/View/Gui/GraphsWindow.cpp
+		 src/Controller/Controller.cpp src/Graphics/Circle.cpp src/View/Gui/GraphsWindow.cpp \
+		 src/Scene/Vector.cpp
 
 CPPOBJ := $(addprefix $(OUT_O_DIR)/,$(CPPSRC:.cpp=.o))
 DEPS = $(CPPOBJ:.o=.d)

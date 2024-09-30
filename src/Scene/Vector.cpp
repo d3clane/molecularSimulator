@@ -1,0 +1,48 @@
+#include "Scene/Vector.hpp"
+
+namespace Scene
+{
+
+DrawableVector::DrawableVector(const Engine::Vector& v, const Engine::Point& beginPos) : 
+    Engine::Vector(v), beginPos(beginPos) 
+{
+}
+
+DrawableVector::operator Engine::Vector() { return Engine::Vector(dx, dy, dz); }
+
+void DrawableVector::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs)
+{
+    Engine::Point endPos = beginPos + Engine::Vector(dx, dy, dz);
+
+    Graphics::WindowPoint beginPosInWindow = cs.getPosInWindow(beginPos);
+    Graphics::WindowPoint endPosInWindow   = cs.getPosInWindow(endPos);
+
+    Graphics::WindowLine mainLine{beginPosInWindow, endPosInWindow};
+
+    renderWindow.drawLine(mainLine);
+
+    Engine::Vector normal = getPerpendicular();
+
+    const double prettyLength = 0.2;
+    normal.length(prettyLength);
+
+    double normalLength = prettyLength;
+    Vector coDirectionalVector = *this;
+    coDirectionalVector.length(normalLength);
+
+    Vector arrowVector1 =  normal - coDirectionalVector;
+    Vector arrowVector2 = -normal - coDirectionalVector;
+
+    // TODO: it should be function named shift
+
+    Engine::Point endArrowVector1 = endPos + arrowVector1;
+    Engine::Point endArrowVector2 = endPos + arrowVector2;
+
+    Graphics::WindowPoint endArrowVector1InWindow = cs.getPosInWindow(endArrowVector1);
+    Graphics::WindowPoint endArrowVector2InWindow = cs.getPosInWindow(endArrowVector2);
+
+    renderWindow.drawLine({endPosInWindow, endArrowVector1InWindow});
+    renderWindow.drawLine({endPosInWindow, endArrowVector2InWindow});
+}
+
+} // namespace Scene

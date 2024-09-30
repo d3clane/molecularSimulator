@@ -2,7 +2,7 @@
 #define GUI_WINDOW_HPP
 
 #include "Graphics/Updatable.hpp"
-#include "Scene/Drawable.hpp"
+#include "Scene/Renderable.hpp"
 
 namespace Gui
 {

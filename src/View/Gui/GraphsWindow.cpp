@@ -1,5 +1,6 @@
 #include "View/Gui/GraphsWindow.hpp"
 #include "Graphics/Circle.hpp"
+#include "Scene/Vector.hpp"
 
 #include <cmath>
 #include <cassert>
@@ -65,23 +66,44 @@ GraphsWindow::GraphsWindow(
     prevTime_ = std::chrono::steady_clock::now();
 }
 
-void GraphsWindow::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& unusedCs)
+void GraphsWindow::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& /* unused */)
 {
     static const double radiusAlignCoeff = 4;
     static const unsigned int basicPixelRadius = 2;
 
+    drawGrid(renderWindow);
+
     for (const auto& point : points_)
     {
+        if (point.x > width_ || point.y > height_) continue;
+
         Graphics::Circle circle{basicPixelRadius};
         Graphics::WindowPoint circlePos = coordsSystem_.getPosInWindow(point);
 
-        std::cout << "POS IN CS: " << point.x << " " << point.y << std::endl;
+        //std::cout << "POS IN CS: " << point.x << " " << point.y << std::endl;
         circle.setCenterPos(circlePos.x, circlePos.y);
 
         renderWindow.drawCircle(circle);
 
-        std::cout << "POS: " << circlePos.x << " " << circlePos.y << std::endl;
+        //std::cout << "POS: " << circlePos.x << " " << circlePos.y << std::endl;
     }
+}
+
+void GraphsWindow::drawGrid(Graphics::RenderWindow& renderWindow)
+{
+    const Engine::Point beginPos{0, 0, 0};
+    const Engine::Point endXPos {width_, 0, 0};
+    const Engine::Point endYPos {0, height_, 0};
+
+    Scene::DrawableVector xAxis = Scene::DrawableVector{
+        Engine::Vector{beginPos, endXPos}, beginPos
+    };
+    Scene::DrawableVector yAxis = Scene::DrawableVector{
+        Engine::Vector{beginPos, endYPos}, beginPos
+    };
+
+    xAxis.draw(renderWindow, coordsSystem_);
+    yAxis.draw(renderWindow, coordsSystem_);
 }
 
 // TODO: Think about copyPaste

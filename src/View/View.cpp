@@ -112,10 +112,10 @@ View::View(
     moleculeSprites[(size_t)Simulator::MoleculeType::Rectangle] = 
         loadSprite(textures_, "media/textures/red.jpeg");
 
-    Engine::CoordsSystem tempCs{1, {0, 300, 0}};
+    Engine::CoordsSystem tempCs{1, {1, 300, 0}};
 
     auto* temperatureGraphsWindow = new Simulator::TemperatureGraphsWindow{
-        tempCs, {0, 0, 0}, 200, 300, std::chrono::milliseconds(100), 20, controller
+        tempCs, {0, 0, 0}, 200, 300, std::chrono::milliseconds(10), 1, controller
     };
 
     windowManager_.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));
