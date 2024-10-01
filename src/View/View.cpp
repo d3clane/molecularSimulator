@@ -24,6 +24,15 @@ Graphics::Sprite loadSprite(std::vector<std::unique_ptr<Graphics::Texture > >& t
     return sprite;
 }
 
+const Graphics::Font* loadFont(std::vector<std::unique_ptr<Graphics::Font> >& fonts, const char* fileName)
+{
+    Graphics::Font* font = new Graphics::Font{};
+    font->loadFromFile(fileName);
+
+    fonts.push_back(std::unique_ptr<Graphics::Font>(font));
+
+    return font;
+}
 
 void drawMolecule(
     const Simulator::Molecule* molecule, Graphics::RenderWindow& renderWindow,
@@ -39,7 +48,8 @@ void drawMolecule(
     {
         case Simulator::MoleculeType::Circle:
         {
-            const Simulator::CircleMolecule* circleMolecule = dynamic_cast<const Simulator::CircleMolecule*>(molecule);
+            const Simulator::CircleMolecule* circleMolecule = 
+                static_cast<const Simulator::CircleMolecule*>(molecule);
 
             double radius = coordsSystem.getSizeInPixels(circleMolecule->radius());
 
@@ -50,7 +60,7 @@ void drawMolecule(
         case Simulator::MoleculeType::Rectangle:
         {
             const Simulator::RectangleMolecule* rectangleMolecule = 
-                dynamic_cast<const Simulator::RectangleMolecule*>(molecule);
+                static_cast<const Simulator::RectangleMolecule*>(molecule);
 
             double width  = coordsSystem.getSizeInPixels(rectangleMolecule->width());
             double height = coordsSystem.getSizeInPixels(rectangleMolecule->height());
@@ -75,6 +85,8 @@ View::View(
 {
     Graphics::Sprite addMoleculesSprite    = loadSprite(textures_, "media/textures/plus.jpeg");
     Graphics::Sprite removeMoleculesSprite = loadSprite(textures_, "media/textures/minus.jpeg");
+
+    const Graphics::Font* font = loadFont(fonts_, "media/fonts/arial.ttf");
 
     static const unsigned int buttonWidth  = 64;
     static const unsigned int buttonHeight = 32;
@@ -112,11 +124,28 @@ View::View(
     moleculeSprites[(size_t)Simulator::MoleculeType::Rectangle] = 
         loadSprite(textures_, "media/textures/red.jpeg");
 
+
     Engine::CoordsSystem temperatureCs{{1, 0, 0}, {0, -1, 0}, {0, 0, 1}, {1, 600, 0}};
 
     auto* temperatureGraphsWindow = new Simulator::TemperatureGraphsWindow{
         temperatureCs, {0, 0, 0}, 200, 300, std::chrono::milliseconds(10), 1, controller
     };
+
+    auto temperatureGraphTemperature = new Graphics::Text{};
+    auto temperatureGraphTime        = new Graphics::Text{};
+
+    // TODO: 100% create text in scene with coords system
+
+    temperatureGraphTemperature->setFont(*font);
+    temperatureGraphTemperature->setString("Temperature");
+    temperatureGraphTemperature->setPosition({1, 300});
+
+    temperatureGraphTime->setFont(*font);
+    temperatureGraphTime->setString("Time");
+    temperatureGraphTime->setPosition({201, 550});
+
+    graphicsRenderables_.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTemperature));
+    graphicsRenderables_.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTime));
 
     windowManager_.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));
 }
@@ -128,6 +157,11 @@ void View::update(const Graphics::Event& event)
 
 void View::draw()
 {
+    for (auto& renderable : graphicsRenderables_)
+    {
+        renderable.get()->draw(renderWindow_);
+    }
+
     windowManager_.draw(renderWindow_, coordsSystem_);
 
     std::list<std::unique_ptr<Simulator::Molecule> >& molecules = controller_.molecules();

@@ -6,6 +6,11 @@
 #include "Engine/CoordsSystem.hpp"
 #include "Controller/Controller.hpp"
 
+#include "Graphics/Texture.hpp"
+#include "Graphics/Font.hpp"
+
+#include "Scene/Renderable.hpp"
+
 namespace Simulator
 {
 
@@ -18,8 +23,13 @@ class View
     Gui::WindowManager windowManager_;
 
     std::vector<std::unique_ptr<Graphics::Texture> > textures_;
+    std::vector<std::unique_ptr<Graphics::Font> >    fonts_;
     
     Graphics::Sprite moleculeSprites[Simulator::numberOfDifferentMolecules];
+
+    std::vector<std::unique_ptr<Graphics::Renderable> > graphicsRenderables_; 
+    // TODO: think about creating only scene renderables (create some text in scene, using coordsSystem maybe)
+
 public:
     View(
         Simulator::Controller& controller, Graphics::RenderWindow& renderWindow, 

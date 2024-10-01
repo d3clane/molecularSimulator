@@ -43,6 +43,7 @@ struct WindowLine
 class PixelsArray;
 class Sprite;
 class Circle;
+class Text;
 
 class RenderWindow
 {
@@ -62,6 +63,7 @@ public:
     void drawPixels(const PixelsArray& pixels);
     void drawSprite(const Sprite& sprite);
     void drawCircle(const Circle& circle);
+    void drawText  (const Text& text);
 
     void display();
 
