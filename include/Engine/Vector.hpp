@@ -3,18 +3,21 @@
 
 #include <stddef.h>
 
-#include "Engine/CoordsSystem.hpp"
-
 namespace Engine
 {
+
+struct Point;
 
 struct Vector
 {
     double dx, dy, dz;
 
-    Vector(double dx, double dy, double dz) : dx(dx), dy(dy), dz(dz) {}
-    Vector(const Point& begin, const Point& end) : 
-        dx(end.x - begin.x), dy(end.y - begin.y), dz(end.z - begin.z) {}
+    Vector(double dx, double dy, double dz);
+    Vector(const Point& begin, const Point& end);    
+    
+    explicit Vector(const Point& point);
+
+    double lengthSquare() const;
 
     double length() const;
     void   length(const double newLength);
@@ -35,7 +38,7 @@ struct Vector
 
     bool operator==(const Vector& other) const;
     
-    operator Point() const { return Point(dx, dy, dz); }
+    operator Point() const;
 
     virtual ~Vector() = default;
 };

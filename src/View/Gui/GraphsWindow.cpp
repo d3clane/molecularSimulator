@@ -78,7 +78,7 @@ void GraphsWindow::draw(Graphics::RenderWindow& renderWindow, const Engine::Coor
         if (point.x > width_ || point.y > height_) continue;
 
         Graphics::Circle circle{basicPixelRadius};
-        Graphics::WindowPoint circlePos = coordsSystem_.getPosInWindow(point);
+        Graphics::WindowPoint circlePos = coordsSystem_.getPointInWindow(point);
 
         //std::cout << "POS IN CS: " << point.x << " " << point.y << std::endl;
         circle.setCenterPos(circlePos.x, circlePos.y);

@@ -114,7 +114,7 @@ bool Button::update(Graphics::RenderWindow& window, const Graphics::Event& event
 void Button::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs)
 {
     Graphics::WindowVector scale = cs.getScaleInPixels(Engine::Vector{width_, height_, 0});
-    Graphics::WindowPoint  pos   = cs.getPosInWindow(topLeft_);
+    Graphics::WindowPoint  pos   = cs.getPointInWindow(topLeft_);
 
     sprite_.scaleInPixels(scale);
     sprite_.setPosition(pos);

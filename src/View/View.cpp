@@ -33,7 +33,7 @@ void drawMolecule(
 {
     Graphics::Sprite moleculeSprite = (*moleculeSprites)[(size_t)molecule->id()];
 
-    moleculeSprite.setPosition(coordsSystem.getPosInWindow(molecule->pos()));
+    moleculeSprite.setPosition(coordsSystem.getPointInWindow(molecule->pos()));
 
     switch (molecule->id())
     {
@@ -112,10 +112,10 @@ View::View(
     moleculeSprites[(size_t)Simulator::MoleculeType::Rectangle] = 
         loadSprite(textures_, "media/textures/red.jpeg");
 
-    Engine::CoordsSystem tempCs{1, {1, 300, 0}};
+    Engine::CoordsSystem temperatureCs{{1, 0, 0}, {0, -1, 0}, {0, 0, 1}, {1, 600, 0}};
 
     auto* temperatureGraphsWindow = new Simulator::TemperatureGraphsWindow{
-        tempCs, {0, 0, 0}, 200, 300, std::chrono::milliseconds(10), 1, controller
+        temperatureCs, {0, 0, 0}, 200, 300, std::chrono::milliseconds(10), 1, controller
     };
 
     windowManager_.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));

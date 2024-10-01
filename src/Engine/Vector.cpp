@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "Engine/Vector.hpp"
+#include "Engine/CoordsSystem.hpp"
 
 namespace Engine
 {
@@ -14,12 +15,36 @@ double cos(const Vector& v1, const Vector& v2)
     return v1 ^ v2 / v1.length() / v2.length(); 
 }
 
-double Vector::length() const
+Vector::Vector(double dx, double dy, double dz) : dx(dx), dy(dy), dz(dz) 
+{
+}
+
+Vector::Vector(const Point& begin, const Point& end) : 
+    dx(end.x - begin.x), dy(end.y - begin.y), dz(end.z - begin.z) 
+{
+}
+
+Vector::Vector(const Point& point) : Vector(Point{0, 0, 0}, point) 
+{
+}
+
+Vector::operator Point() const 
+{ 
+    return Point(dx, dy, dz); 
+}
+
+double Vector::lengthSquare() const
 {
     assert(std::isfinite(dx));
     assert(std::isfinite(dy));
     assert(std::isfinite(dz));
-    return sqrt(dx * dx + dy * dy + dz * dz);
+
+    return dx * dx + dy * dy + dz * dz;
+}
+
+double Vector::length() const
+{
+    return std::sqrt(lengthSquare());    
 }
 
 void Vector::length(const double newLength)

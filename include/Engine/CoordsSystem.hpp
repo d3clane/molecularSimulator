@@ -2,11 +2,10 @@
 #define ENGINE_COORDS_SYSTEM_HPP
 
 #include "Graphics/GraphicsWindow.hpp"
+#include "Engine/Vector.hpp"
 
 namespace Engine
 {
-
-class Vector;
 
 struct Point
 {
@@ -25,21 +24,33 @@ Point operator-(const Point& self, const Point& other);
 class CoordsSystem
 {
     Point center_;
-    unsigned int stepInPixels_;
+    Vector xBasisVector_, yBasisVector_, zBasisVector_;
 
 public:
-    CoordsSystem(const unsigned int stepInPixels, const Point& centerInPixels) : 
-        stepInPixels_(stepInPixels), center_(centerInPixels) {}
+    CoordsSystem(const unsigned int stepInPixels, const Point&);
+
+    CoordsSystem(
+        const Vector& xBasisVector, const Vector& yBasisVector, const Vector& zBasisVector,
+        const Point& center
+    );
 
     void moveCenter (const Vector& deltaPixels);
+    
+#if 0
     void changeScale(const int delta);
+#endif
 
-    unsigned int getSizeInPixels(const double size) const;
+    double getSizeInPixels(const double size) const;
     Graphics::WindowVector getScaleInPixels(const Vector& scale) const;
 
-    Graphics::WindowPoint getPosInWindow(const Point& point) const;
+    Vector getVectorInBaseCoordsSystem(const Vector& vector) const;
+    Point  getPointInBaseCoordsSystem (const Point& point  ) const;
 
-    Point getPosInCoordsSystem(const Graphics::WindowPoint& point) const;
+    Graphics::WindowPoint getPointInWindow(const Point& point) const;
+
+#if 0
+    Point getPointInCoordsSystem(const Graphics::WindowPoint& point) const;
+#endif
 };
 
 double getDistanceSquare3D(const Point& p1, const Point& p2);

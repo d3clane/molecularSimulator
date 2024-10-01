@@ -1,6 +1,7 @@
 #include "Graphics/PixelsArray.hpp"
 #include "Engine/CoordsSystem.hpp"
 #include "Engine/Vector.hpp"
+#include "Utils/Doubles.hpp"
 
 #include <iostream>
 
@@ -50,39 +51,84 @@ Point operator-(const Point& self, const Point& other)
     return selfCpy -= other;
 }
 
+CoordsSystem::CoordsSystem(
+    const Vector& xBasisVector, const Vector& yBasisVector, const Vector& zBasisVector,
+    const Point& center
+) : center_(center), 
+    xBasisVector_(xBasisVector), 
+    yBasisVector_(yBasisVector), 
+    zBasisVector_(zBasisVector)
+{
+    // TODO: assert on linear independence
+    assert(
+        Utils::compare(xBasisVector.lengthSquare(), yBasisVector.lengthSquare()) == 
+            Utils::ComparisonResult::Equal &&
+        Utils::compare(xBasisVector.lengthSquare(), zBasisVector.lengthSquare()) ==
+            Utils::ComparisonResult::Equal
+    );
+    
+    // TODO: IS_OK for classes like point, vector etc
+}
+
+CoordsSystem::CoordsSystem(const unsigned int stepInPixels, const Point& center) :
+    CoordsSystem({stepInPixels, 0, 0}, {0, stepInPixels, 0}, {0, 0, stepInPixels}, center)
+{
+}
+
 void CoordsSystem::moveCenter(const Vector& delta)
 {
     center_ += delta;
 }
 
+#if 0
 void CoordsSystem::changeScale(const int delta)
 {
     changeOneArgScale(stepInPixels_, delta);
     changeOneArgScale(stepInPixels_, delta);
 }
+#endif 
 
-unsigned int CoordsSystem::getSizeInPixels(const double size) const
+double CoordsSystem::getSizeInPixels(const double size) const
 {
-    return size * stepInPixels_;
+    assert(std::isfinite(size));
+    assert(size >= 0);
+    assert(xBasisVector_.length() == yBasisVector_.length() && 
+           xBasisVector_.length() == zBasisVector_.length());
+    
+    return getVectorInBaseCoordsSystem(Vector{size, 0, 0}).length();
 }
 
 Graphics::WindowVector CoordsSystem::getScaleInPixels(const Vector& scale) const
 {
-    return Graphics::WindowVector{getSizeInPixels(scale.dx), getSizeInPixels(scale.dy)};
+    Vector scaleInPixels = getVectorInBaseCoordsSystem(scale);
+    return Graphics::WindowVector{scaleInPixels.dx, scaleInPixels.dy};
 }
 
-Graphics::WindowPoint CoordsSystem::getPosInWindow(const Point& point) const
+Vector CoordsSystem::getVectorInBaseCoordsSystem(const Vector& vector) const
 {
-    //std::cout << "ME CENTER - " << center_.x << " " << center_.y << " POINT Y" << point.y << " AFTER SUM: " << center_.x + point.x * stepInPixels_ << " " << center_.y + point.y * stepInPixels_ << std::endl;
-    return Graphics::WindowPoint(center_.x + point.x * stepInPixels_, center_.y + point.y * stepInPixels_);
+    return xBasisVector_ * vector.dx + yBasisVector_ * vector.dy + zBasisVector_ * vector.dz;
 }
 
-Point CoordsSystem::getPosInCoordsSystem(const Graphics::WindowPoint& point) const
+Point CoordsSystem::getPointInBaseCoordsSystem(const Point& point) const
+{
+    return center_ + getVectorInBaseCoordsSystem(Vector{point});
+}
+
+Graphics::WindowPoint CoordsSystem::getPointInWindow(const Point& point) const
+{
+    Point baseCsPoint = getPointInBaseCoordsSystem(point);
+
+    return Graphics::WindowPoint{baseCsPoint.x, baseCsPoint.y};
+}
+
+#if 0
+Point CoordsSystem::getPointInCoordsSystem(const Graphics::WindowPoint& point) const
 {
     return Point((point.x - center_.x) / stepInPixels_, 
                  (point.y - center_.y) / stepInPixels_, 
                  0);
 }
+#endif
 
 double getDistance3D(const Point& p1, const Point& p2)
 {
@@ -106,4 +152,5 @@ double getDistanceSquare3D(const Point& p1, const Point& p2)
            (p1.y - p2.y) * (p1.y - p2.y) + 
            (p1.z - p2.z) * (p1.z - p2.z);
 }
+
 } // namespace Engine
