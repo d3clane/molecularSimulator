@@ -29,12 +29,6 @@ Simulator::CircleMolecule generateCircleMolecule(
     double vX = Utils::Rand(-1, 1) * speedAbs;
     double vY = std::sqrt(speedAbs * speedAbs - vX * vX) * Utils::RandDirection();
 
-#if 0
-    topLeft.x = topLeftBoundary.x + width / 2;
-    topLeft.y = topLeftBoundary.y + height / 2;
-    vX = vY = 0; // TODO: delete
-#endif
-
     Vector speed = Vector(vX, vY, 0);
 
     return Simulator::CircleMolecule{radius, Simulator::Molecule::CtorParams{topLeft, mass, speed}};
@@ -68,28 +62,12 @@ std::list<std::unique_ptr<Simulator::Molecule> >& Controller::molecules() &
 
 double Controller::getTemperature() const
 {
-    auto& molecules = manager_.molecules();
-
-    double energy = 0;
-
-    for (auto& molecule : molecules)
-    {
-        double speed = molecule->speed().length();
-        energy += molecule->mass() * speed * speed / 2;
-    }
-
-    double temperature = (molecules.size() == 0 ? 0 : energy / molecules.size());
-
-    // TODO: BAD - CONTROLLER TRIES TO GUESS ALIGNING IN MODEL. MOVE TO MODEL
-    static const double aligningMassCoeff = 1e-3;
-
-    return temperature * aligningMassCoeff;
+    return manager_.getTemperature();
 }
 
 double Controller::getPressure() const
 {
-    // TODO: implement
-    return 10;
+    return manager_.getPressure();
 }
 
 } // namespace Simulator

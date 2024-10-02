@@ -188,6 +188,28 @@ void MoleculeManager::removeMolecules(const Point& topLeft, const Point& bottomR
     );
 }
 
+double MoleculeManager::getTemperature() const
+{
+    double energy = 0;
+
+    for (auto& molecule : molecules_)
+    {
+        double speed = molecule->speed().length();
+        energy += molecule->mass() * speed * speed / 2;
+    }
+
+    double temperature = (molecules_.size() == 0 ? 0 : energy / molecules_.size());
+
+    static const double aligningMassCoeff = 1e-3;
+
+    return temperature * aligningMassCoeff;
+}
+
+double MoleculeManager::getPressure() const
+{
+    return 0; // TODO: Implement
+}
+
 Boundary::Boundary(
     const Point& topLeft, const double width, const double height,
     const Vector& perpendicular

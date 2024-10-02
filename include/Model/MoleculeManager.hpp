@@ -55,6 +55,9 @@ public:
     void addMolecule    (std::unique_ptr<Molecule> molecule);
     void removeMolecules(const Point& topLeft, const Point& bottomRight);
 
+    double getTemperature() const;
+    double getPressure()    const;
+
     ListType<std::unique_ptr<Molecule> >& molecules() & { return molecules_;  }
     ListType<Boundary>& boundaries() &                  { return boundaries_; }
 
