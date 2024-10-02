@@ -20,6 +20,11 @@ struct MoleculesChanges
 {
     std::vector<ListIterator<std::unique_ptr<Molecule> > > moleculesToDeleteIts;
     std::vector<Molecule*> moleculesToAdd;
+
+    MoleculesChanges(
+        const std::vector<ListIterator<std::unique_ptr<Molecule> > >& moleculesToDeleteIts,
+        const std::vector<Molecule*>& moleculesToAdd
+    ) : moleculesToDeleteIts(moleculesToDeleteIts), moleculesToAdd(moleculesToAdd) {}
 };
 
 struct MoleculesIteratorWrap
@@ -31,29 +36,52 @@ struct MoleculesIteratorWrap
         : isDeleted(isDeleted), it(it) {}
 };
 
-MoleculesChanges processMoleculesInteraction(
-    MoleculesIteratorWrap& firstMoleculeIt, MoleculesIteratorWrap& secondMoleculeIt
+MoleculesChanges processPhysicsReaction(
+    MoleculesIteratorWrap& firstMoleculeIt, MoleculesIteratorWrap& secondMoleculeIt,
+    MoleculesAfterChemistryReaction& afterReaction
 )
 {
-    if (!Molecules2DVtable::checkCollision(firstMoleculeIt.it->get(), secondMoleculeIt.it->get()))
-        return {};
+    std::vector<Molecule* > beforeReaction = {firstMoleculeIt.it->get(), secondMoleculeIt.it->get()};
 
-    MoleculesAfterChemistryReaction afterReaction = 
-        Molecules2DVtable::processChemistry(firstMoleculeIt.it->get(), secondMoleculeIt.it->get());
-
-    if (!afterReaction.reacted)
+    switch (afterReaction.requiredPhysics)
     {
-        Molecules2DVtable::processPhysics(firstMoleculeIt.it->get(), secondMoleculeIt.it->get());
-        return {};
+        case RequiredPhysics::Nothing:
+            Molecules2DVtable::processPhysics(firstMoleculeIt.it->get(), secondMoleculeIt.it->get());
+            return MoleculesChanges{{}, {}};
+
+        case RequiredPhysics::ReorderEnergy:
+            reorderEnergy(beforeReaction, afterReaction.moleculesAfterReaction);
+            break;
+
+        case RequiredPhysics::ReorderImpulse:
+            assert(afterReaction.moleculesAfterReaction.size() == 1);
+            reorderImpulse(beforeReaction, afterReaction.moleculesAfterReaction[0]);
+            break;
+
+
+        default:
+            break;
     }
 
     firstMoleculeIt .isDeleted = true;
     secondMoleculeIt.isDeleted = true;
 
-    std::vector<Molecule* > beforeReaction = {firstMoleculeIt.it->get(), secondMoleculeIt.it->get()};
+    auto moleculesToDeleteIts = {firstMoleculeIt.it, secondMoleculeIt.it};
 
-    // TODO: need reordering impulse, not energy in case they collide
-    reorderEnergy(beforeReaction, afterReaction.moleculesAfterReaction);
+    return MoleculesChanges{moleculesToDeleteIts, afterReaction.moleculesAfterReaction};
+}
+
+MoleculesChanges processMoleculesInteraction(
+    MoleculesIteratorWrap& firstMoleculeIt, MoleculesIteratorWrap& secondMoleculeIt
+)
+{
+    if (!Molecules2DVtable::checkCollision(firstMoleculeIt.it->get(), secondMoleculeIt.it->get()))
+        return {{}, {}};
+
+    MoleculesAfterChemistryReaction afterReaction = 
+        Molecules2DVtable::processChemistry(firstMoleculeIt.it->get(), secondMoleculeIt.it->get());
+
+    return processPhysicsReaction(firstMoleculeIt, secondMoleculeIt, afterReaction);
 
     std::vector<ListIterator<std::unique_ptr<Molecule> > > moleculesToDeleteIts = 
         {firstMoleculeIt.it, secondMoleculeIt.it};

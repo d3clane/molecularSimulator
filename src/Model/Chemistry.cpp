@@ -5,6 +5,16 @@
 namespace Simulator
 {
 
+namespace 
+{
+
+double getNewRectMoleculeSize(const double mass, const double basicMass, const double basicWidth)
+{
+    return std::sqrt(mass / basicMass) * basicWidth;
+}
+
+} // namespace anon
+
 MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1, Molecule* rectMolecule2)
 {
     assert(rectMolecule1);
@@ -14,7 +24,7 @@ MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1
     RectangleMolecule& molecule2 = *static_cast<RectangleMolecule*>(rectMolecule2);
 
     MoleculesAfterChemistryReaction result;
-    result.reacted = true;
+    result.requiredPhysics = RequiredPhysics::ReorderEnergy;
 
     size_t numberOfMolecules = static_cast<size_t>(molecule1.mass() + molecule2.mass());
     Point topLeft = molecule1.topLeft();
@@ -59,23 +69,20 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
     MoleculesAfterChemistryReaction result;
     if (impulseValue < criticalReactionImpulseValue)
     {
-        result.reacted = false;
+        result.requiredPhysics = RequiredPhysics::Nothing;
         return result;
     }
 
-    result.reacted = true;
+    result.requiredPhysics = RequiredPhysics::ReorderImpulse;
     
     double rectangleBasicMass = RectangleMolecule::basicMass();
 
     double newMass   = molecule1.mass() + molecule2.mass();
-    double newHeight = RectangleMolecule::basicHeight() * newMass / rectangleBasicMass;
-    double newWidth  = RectangleMolecule::basicWidth()  * newMass / rectangleBasicMass;
-    
-    Vector newSpeed = 
-        (molecule1.speed() * molecule1.mass() + molecule2.speed() * molecule2.mass()) / newMass;
+    double newHeight = getNewRectMoleculeSize(newMass, basicMass, RectangleMolecule::basicHeight());
+    double newWidth  = getNewRectMoleculeSize(newMass, basicMass, RectangleMolecule::basicWidth ());
     
     RectangleMolecule* resultMolecule = new RectangleMolecule(
-        newHeight, newHeight, Molecule::CtorParams{molecule1.topLeft(), newMass, newSpeed}
+        newHeight, newHeight, Molecule::CtorParams{molecule1.topLeft(), newMass, {0, 0, 0}}
     );
 
     result.moleculesAfterReaction.push_back(resultMolecule);
@@ -92,21 +99,17 @@ MoleculesAfterChemistryReaction processChemistryRectCircle(Molecule* molecule1, 
     CircleMolecule&    circleMolecule = *static_cast<CircleMolecule*>   (molecule2);
 
     MoleculesAfterChemistryReaction result;
-    result.reacted = true;
+    result.requiredPhysics = RequiredPhysics::ReorderImpulse;
 
     double basicMass = RectangleMolecule::basicMass();
 
     double newMass   = rectMolecule.mass() + circleMolecule.mass();
-    double newHeight = RectangleMolecule::basicHeight() * newMass / basicMass;
-    double newWidth  = RectangleMolecule::basicWidth()  * newMass / basicMass;
-
-    Vector newSpeed =
-        (rectMolecule.speed() * rectMolecule.mass() + circleMolecule.speed() * circleMolecule.mass()) / newMass;
+    double newHeight = getNewRectMoleculeSize(newMass, basicMass, RectangleMolecule::basicHeight());
+    double newWidth  = getNewRectMoleculeSize(newMass, basicMass, RectangleMolecule::basicWidth ());
 
     auto* resultMolecule = new RectangleMolecule(rectMolecule);
 
     resultMolecule->mass  (newMass);
-    resultMolecule->speed (newSpeed);
     resultMolecule->height(newHeight);
     resultMolecule->width (newWidth);
 

@@ -14,7 +14,8 @@ using PhysicsCollisionFuncType  = void (*)(Molecule* molecule1, Molecule* molecu
 using BoundaryCollisionFuncType = void (*)(Molecule* molecule, const Boundary* boundary);
 
 
-void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecule* >& moleculesAfter);
+void reorderEnergy (std::vector<Molecule* >& moleculesBefore, std::vector<Molecule* >& moleculesAfter);
+void reorderImpulse(std::vector<Molecule* >& moleculesBefore, Molecule* moleculeAfter);
 
 void processCollisionCircleBoundary(Molecule* molecule, const Boundary* boundary);
 void processCollisionRectBoundary  (Molecule* molecule, const Boundary* boundary);

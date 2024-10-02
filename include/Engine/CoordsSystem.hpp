@@ -40,7 +40,7 @@ public:
     void changeScale(const int delta);
 #endif
 
-    double getSizeInPixels(const double size) const;
+    unsigned int getSizeInPixels(const double size) const;
     Graphics::WindowVector getScaleInPixels(const Vector& scale) const;
 
     Vector getVectorInBaseCoordsSystem(const Vector& vector) const;

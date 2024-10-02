@@ -9,9 +9,16 @@
 namespace Simulator
 {
 
+enum class RequiredPhysics
+{
+    Nothing,
+    ReorderEnergy,
+    ReorderImpulse,
+};
+
 struct MoleculesAfterChemistryReaction
 {
-    bool reacted;
+    RequiredPhysics requiredPhysics;
     std::vector<Molecule*> moleculesAfterReaction;
 };
 

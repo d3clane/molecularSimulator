@@ -58,7 +58,6 @@ int main(const int argc, const char* argv[])
         static const size_t width  = 1500;
         static const size_t height = 1000;
         
-        
         static const size_t moleculeManagerWidth  = 1000;
         static const size_t moleculeManagerHeight = 600;
 
@@ -74,7 +73,7 @@ int main(const int argc, const char* argv[])
         addBoundaries(moleculeManager);
 
         static const double basicMass     = 1;
-        static const double basicSpeedAbs = 400;
+        static const double basicSpeedAbs = 1000;
         static const double basicRadius   = 5;
         static const double basicHeight   = 5;
         static const double basicWidth    = 5;

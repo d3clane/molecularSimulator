@@ -161,13 +161,13 @@ void addGraphs(
     Gui::WindowManager& windowManager, 
     std::vector<std::unique_ptr<Graphics::Font> >& fonts, 
     std::vector<std::unique_ptr<Graphics::Renderable> >& graphicsRenderables,
-    const size_t width, const size_t height
+    const size_t renderWindowWidth, const size_t renderWindowHeight
 )
 {
-    Engine::CoordsSystem temperatureCs{{1, 0, 0}, {0, -1, 0}, {0, 0, 1}, {1, height, 0}};
+    Engine::CoordsSystem temperatureCs{{0.5, 0, 0}, {0, -0.5, 0}, {0, 0, 0.5}, {1, renderWindowHeight, 0}};
 
-    static const size_t temperatureGraphsWindowHeight = 300;
-    static const size_t temperatureGraphsWindowWidth  = 200;
+    static const double temperatureGraphsWindowHeight = 600;
+    static const double temperatureGraphsWindowWidth  = 400;
     static const long long durationBetweenMeasurementsInMs = 50;
     static const double stepBetweenPoints = 5;
     static const Point temperatureGraphsBeginPoint{0, 0, 0};
@@ -185,11 +185,15 @@ void addGraphs(
 
     temperatureGraphTemperature->setFont(*font);
     temperatureGraphTemperature->setString("Temperature");
-    temperatureGraphTemperature->setPosition({1, height - temperatureGraphsWindowHeight});
+    temperatureGraphTemperature->setPosition(
+        {1, renderWindowHeight - temperatureCs.getSizeInPixels(temperatureGraphsWindowHeight)}
+    );
 
     temperatureGraphTime->setFont(*font);
     temperatureGraphTime->setString("Time");
-    temperatureGraphTime->setPosition({1 + temperatureGraphsWindowWidth, height - 50}); // TODO: magic number
+    temperatureGraphTime->setPosition(
+        {1 + temperatureCs.getSizeInPixels(temperatureGraphsWindowWidth), renderWindowHeight - 50}
+    );
 
     graphicsRenderables.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTemperature));
     graphicsRenderables.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTime));
@@ -204,12 +208,12 @@ View::View(
     Engine::CoordsSystem& coordsSystem
 ) : coordsSystem_(coordsSystem), renderWindow_(renderWindow), controller_(controller)
 {
-    const size_t width = renderWindow.getWidth();
-    const size_t height = renderWindow.getHeight();
+    const size_t renderWindowWidth = renderWindow.getWidth();
+    const size_t renderWindowHeight = renderWindow.getHeight();
 
-    addButtons(controller_, windowManager_, width, height, textures_);
+    addButtons(controller_, windowManager_, renderWindowWidth, renderWindowHeight, textures_);
     addMoleculesSprites(&moleculeSprites_, textures_);
-    addGraphs(controller_, windowManager_, fonts_, graphicsRenderables_, width, height);
+    addGraphs(controller_, windowManager_, fonts_, graphicsRenderables_, renderWindowWidth, renderWindowHeight);
 }
 
 void View::update(const Graphics::Event& event)

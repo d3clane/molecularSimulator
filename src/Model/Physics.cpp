@@ -80,7 +80,7 @@ void resolveOverlap(CircleMolecule& molecule, const Boundary& boundary)
     assert(boundary.perpendicular() == boundary.perpendicular().getNormalizedVector());
 
     // TODO: doesn't understand width of the boundary
-    
+
     float overlap = radius - (-boundary.perpendicular() ^ Vector(center, boundary.pos()));
 
     if (overlap <= 0) return;
@@ -144,6 +144,18 @@ void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecul
 
         molecule->speed({mySpeed * vXCoeff, mySpeed * vyCoeff, 0});
     }
+}
+
+void reorderImpulse(std::vector<Molecule* >& moleculesBefore, Molecule* moleculeAfter)
+{
+    Vector impulse{0, 0, 0};
+
+    for (auto& molecule : moleculesBefore)
+    {
+        impulse += molecule->speed() * molecule->mass();
+    }
+
+    moleculeAfter->speed(impulse / moleculeAfter->mass());
 }
 
 void processCollisionCircleBoundary(Molecule* molecule, const Boundary* boundary)

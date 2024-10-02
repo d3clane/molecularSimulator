@@ -95,7 +95,7 @@ void CoordsSystem::changeScale(const int delta)
 }
 #endif 
 
-double CoordsSystem::getSizeInPixels(const double size) const
+unsigned int CoordsSystem::getSizeInPixels(const double size) const
 {
     if (!std::isfinite(size) || size < 0)
         throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
@@ -104,7 +104,7 @@ double CoordsSystem::getSizeInPixels(const double size) const
             nullptr
         );
     
-    return getVectorInBaseCoordsSystem(Vector{size, 0, 0}).length();
+    return getVectorInBaseCoordsSystem(Vector{size, 0, 0}).dx;
 }
 
 Graphics::WindowVector CoordsSystem::getScaleInPixels(const Vector& scale) const
