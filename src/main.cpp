@@ -25,12 +25,6 @@ int main(const int argc, const char* argv[])
     Simulator::MoleculeManager moleculeManager({0, 0, 0}, {800, 600, 0}); // TODO 
 
     auto& molecules  = moleculeManager.molecules();
-    auto& boundaries = moleculeManager.boundaries();
-
-    boundaries.push_back(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, 600,   Engine::Vector(1, 0, 0)));
-    boundaries.push_back(Simulator::Boundary(Engine::Point{0, 0, 0}, 800, 0,   Engine::Vector(0, 1, 0)));
-    boundaries.push_back(Simulator::Boundary(Engine::Point{0, 600, 0}, 800, 0, Engine::Vector(0, -1, 0)));
-    boundaries.push_back(Simulator::Boundary(Engine::Point{800, 0, 0}, 0, 600, Engine::Vector(-1, 0, 0)));
 
     static const double basicMass     = 1;
     static const double basicSpeedAbs = 400;

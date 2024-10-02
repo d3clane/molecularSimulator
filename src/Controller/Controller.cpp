@@ -70,4 +70,11 @@ double Controller::getPressure() const
     return manager_.getPressure();
 }
 
+void Controller::addBoundary(const Boundary& boundary)
+{
+    auto& boundaries = manager_.boundaries();
+
+    boundaries.push_back(boundary);
+}
+
 } // namespace Simulator

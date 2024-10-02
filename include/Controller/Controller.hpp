@@ -20,6 +20,8 @@ public:
     double getTemperature() const;
     double getPressure() const;
 
+    void addBoundary(const Boundary& boundary);
+
     std::list<std::unique_ptr<Simulator::Molecule> >& molecules() &;
 };
 

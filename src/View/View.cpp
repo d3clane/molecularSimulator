@@ -83,6 +83,11 @@ View::View(
     Engine::CoordsSystem& coordsSystem
 ) : coordsSystem_(coordsSystem), renderWindow_(renderWindow), controller_(controller)
 {
+    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, 600,   Engine::Vector(1, 0, 0)));
+    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 800, 0,   Engine::Vector(0, 1, 0)));
+    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 600, 0}, 800, 0, Engine::Vector(0, -1, 0)));
+    controller_.addBoundary(Simulator::Boundary(Engine::Point{800, 0, 0}, 0, 600, Engine::Vector(-1, 0, 0)));
+    
     Graphics::Sprite addMoleculesSprite    = loadSprite(textures_, "media/textures/plus.jpeg");
     Graphics::Sprite removeMoleculesSprite = loadSprite(textures_, "media/textures/minus.jpeg");
 
