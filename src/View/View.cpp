@@ -5,6 +5,9 @@
 
 #include "Gui/Action.hpp"
 
+#include "Utils/Exceptions.hpp"
+#include <iostream>
+
 namespace Simulator
 {
 
@@ -83,11 +86,12 @@ View::View(
     Engine::CoordsSystem& coordsSystem
 ) : coordsSystem_(coordsSystem), renderWindow_(renderWindow), controller_(controller)
 {
+    // TODO: SPLIT ON FUNCTIONS
     controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, 600,   Engine::Vector(1, 0, 0)));
     controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 800, 0,   Engine::Vector(0, 1, 0)));
     controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 600, 0}, 800, 0, Engine::Vector(0, -1, 0)));
     controller_.addBoundary(Simulator::Boundary(Engine::Point{800, 0, 0}, 0, 600, Engine::Vector(-1, 0, 0)));
-    
+
     Graphics::Sprite addMoleculesSprite    = loadSprite(textures_, "media/textures/plus.jpeg");
     Graphics::Sprite removeMoleculesSprite = loadSprite(textures_, "media/textures/minus.jpeg");
 
@@ -153,6 +157,8 @@ View::View(
     graphicsRenderables_.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTime));
 
     windowManager_.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));
+
+    throw Utils::ExceptionWithReason::createNextException("no reason, just testing.", nullptr);
 }
 
 void View::update(const Graphics::Event& event)
