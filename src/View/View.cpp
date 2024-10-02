@@ -86,11 +86,13 @@ View::View(
     Engine::CoordsSystem& coordsSystem
 ) : coordsSystem_(coordsSystem), renderWindow_(renderWindow), controller_(controller)
 {
+    const size_t width = renderWindow.getWidth();
+    const size_t height = renderWindow.getHeight();
     // TODO: SPLIT ON FUNCTIONS
-    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, 600,   Engine::Vector(1, 0, 0)));
-    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 800, 0,   Engine::Vector(0, 1, 0)));
-    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 600, 0}, 800, 0, Engine::Vector(0, -1, 0)));
-    controller_.addBoundary(Simulator::Boundary(Engine::Point{800, 0, 0}, 0, 600, Engine::Vector(-1, 0, 0)));
+    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, height,     Engine::Vector(1, 0, 0)));
+    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, width, 0,      Engine::Vector(0, 1, 0)));
+    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, height, 0}, width, 0, Engine::Vector(0, -1, 0)));
+    controller_.addBoundary(Simulator::Boundary(Engine::Point{width, 0, 0}, 0, height, Engine::Vector(-1, 0, 0)));
 
     Graphics::Sprite addMoleculesSprite    = loadSprite(textures_, "media/textures/plus.jpeg");
     Graphics::Sprite removeMoleculesSprite = loadSprite(textures_, "media/textures/minus.jpeg");
@@ -134,10 +136,18 @@ View::View(
         loadSprite(textures_, "media/textures/red.jpeg");
 
 
-    Engine::CoordsSystem temperatureCs{{1, 0, 0}, {0, -1, 0}, {0, 0, 1}, {1, 600, 0}};
+    Engine::CoordsSystem temperatureCs{{1, 0, 0}, {0, -1, 0}, {0, 0, 1}, {1, height, 0}};
+
+    static const size_t temperatureGraphsWindowHeight = 300;
+    static const size_t temperatureGraphsWindowWidth  = 200;
+    static const long long durationBetweenMeasurementsInMs = 50;
+    static const double stepBetweenPoints = 5;
+    static const Point temperatureGraphsBeginPoint{0, 0, 0};
 
     auto* temperatureGraphsWindow = new Simulator::TemperatureGraphsWindow{
-        temperatureCs, {0, 0, 0}, 200, 300, std::chrono::milliseconds(10), 1, controller
+        temperatureCs, temperatureGraphsBeginPoint, 
+        temperatureGraphsWindowWidth, temperatureGraphsWindowHeight, 
+        std::chrono::milliseconds(durationBetweenMeasurementsInMs), stepBetweenPoints, controller
     };
 
     auto temperatureGraphTemperature = new Graphics::Text{};
@@ -157,8 +167,6 @@ View::View(
     graphicsRenderables_.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTime));
 
     windowManager_.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));
-
-    throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION("no reason, just testing.", nullptr);
 }
 
 void View::update(const Graphics::Event& event)

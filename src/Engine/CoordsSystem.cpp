@@ -2,11 +2,14 @@
 #include "Engine/CoordsSystem.hpp"
 #include "Engine/Vector.hpp"
 #include "Utils/Doubles.hpp"
+#include "Utils/Exceptions.hpp"
 
 #include <iostream>
 
 namespace Engine
 {
+
+#if 0
 
 namespace 
 {
@@ -20,6 +23,8 @@ void changeOneArgScale(unsigned int& step, const int delta)
 }
 
 } // anonymous namespace
+
+#endif 
 
 using Graphics::WindowLine;
 
@@ -60,14 +65,16 @@ CoordsSystem::CoordsSystem(
     zBasisVector_(zBasisVector)
 {
     // TODO: assert on linear independence
-    assert(
-        Utils::compare(xBasisVector.lengthSquare(), yBasisVector.lengthSquare()) == 
+    if (!(Utils::compare(xBasisVector.lengthSquare(), yBasisVector.lengthSquare()) == 
             Utils::ComparisonResult::Equal &&
-        Utils::compare(xBasisVector.lengthSquare(), zBasisVector.lengthSquare()) ==
-            Utils::ComparisonResult::Equal
-    );
-    
-    // TODO: IS_OK for classes like point, vector etc
+          Utils::compare(xBasisVector.lengthSquare(), zBasisVector.lengthSquare()) ==
+            Utils::ComparisonResult::Equal))
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidBasisVectorsInCoordsSystem,
+            "Basis vectors in coords system have different length",
+            nullptr);
+    }
 }
 
 CoordsSystem::CoordsSystem(const unsigned int stepInPixels, const Point& center) :
@@ -90,10 +97,12 @@ void CoordsSystem::changeScale(const int delta)
 
 double CoordsSystem::getSizeInPixels(const double size) const
 {
-    assert(std::isfinite(size));
-    assert(size >= 0);
-    assert(xBasisVector_.length() == yBasisVector_.length() && 
-           xBasisVector_.length() == zBasisVector_.length());
+    if (!std::isfinite(size) || size < 0)
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidSize,
+            "size have to be finite and >= 0",
+            nullptr
+        );
     
     return getVectorInBaseCoordsSystem(Vector{size, 0, 0}).length();
 }
@@ -132,12 +141,12 @@ Point CoordsSystem::getPointInCoordsSystem(const Graphics::WindowPoint& point) c
 
 double getDistance3D(const Point& p1, const Point& p2)
 {
-    return sqrt(getDistance3D(p1, p2));
+    return std::sqrt(getDistance3D(p1, p2));
 }
 
 double getDistance2D(const Point& p1, const Point& p2)
 {
-    return sqrt(getDistanceSquare2D(p1, p2));
+    return std::sqrt(getDistanceSquare2D(p1, p2));
 }
 
 double getDistanceSquare2D(const Point& p1, const Point& p2)

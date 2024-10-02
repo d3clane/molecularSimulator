@@ -8,7 +8,7 @@ ExceptionWithReason::ExceptionWithReason() noexcept
 }
 
 ExceptionWithReason* ExceptionWithReason::createNextException(
-    const char* reason, std::unique_ptr<ExceptionWithReason>&& prevException
+    SimulatorErrors error, const char* reason, std::unique_ptr<ExceptionWithReason>&& prevException
 ) noexcept
 {
     ExceptionWithReason* nextException = nullptr;
@@ -36,12 +36,13 @@ ExceptionWithReason* ExceptionWithReason::createNextException(
     
     nextException->prevException_.reset(prevException.release());
     nextException->reasonString_.reset(strdup(reason));
+    nextException->error_ = error;
 
     return nextException;
 }
 
 ExceptionWithReason* ExceptionWithReason::createNextException(
-    const char* reason, std::unique_ptr<ExceptionWithReason>&& prevException,
+    SimulatorErrors error, const char* reason, std::unique_ptr<ExceptionWithReason>&& prevException,
     const char* funcWithErr, const char* fileWithErr, const size_t lineWithErr
 ) noexcept
 {
@@ -53,7 +54,7 @@ ExceptionWithReason* ExceptionWithReason::createNextException(
         reason, funcWithErr, fileWithErr, lineWithErr
     );
     
-    return ExceptionWithReason::createNextException(extendedReason, std::move(prevException));
+    return ExceptionWithReason::createNextException(error, extendedReason, std::move(prevException));
 }
 
 const char* ExceptionWithReason::what() const noexcept
@@ -73,7 +74,10 @@ const char* ExceptionWithReason::what() const noexcept
 
         if (reason) 
         {
-            fprintf(stderr, "%zu. %s ", reasonId, reason);
+            fprintf(
+                stderr, "%zu. %s Error code - %d\n", reasonId, reason, static_cast<int>(exceptionNow->error_)
+            );
+            
             reasonId++;
         }
 
