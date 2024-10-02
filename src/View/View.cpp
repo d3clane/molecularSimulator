@@ -185,11 +185,11 @@ void addGraphs(
 
     temperatureGraphTemperature->setFont(*font);
     temperatureGraphTemperature->setString("Temperature");
-    temperatureGraphTemperature->setPosition({1, 300});
+    temperatureGraphTemperature->setPosition({1, height - temperatureGraphsWindowHeight});
 
     temperatureGraphTime->setFont(*font);
     temperatureGraphTime->setString("Time");
-    temperatureGraphTime->setPosition({201, 550});
+    temperatureGraphTime->setPosition({1 + temperatureGraphsWindowWidth, height - 50}); // TODO: magic number
 
     graphicsRenderables.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTemperature));
     graphicsRenderables.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTime));

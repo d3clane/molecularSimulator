@@ -121,7 +121,6 @@ bool TemperatureGraphsWindow::update(Graphics::RenderWindow& renderWindow, const
     return true;
 }
 
-
 bool PressureGraphsWindow::update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)
 {
     std::chrono::milliseconds deltaTime = getDeltaTime(prevTime_);
