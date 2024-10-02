@@ -19,15 +19,28 @@
 
 #include "Utils/Exceptions.hpp"
 
-void addBoundaries(Simulator::Controller& controller, const size_t width, const size_t height)
+void addBoundaries(Simulator::MoleculeManager& moleculeManager)
 {
     static const size_t infiniteSize = 10000;
 
-    controller.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, height,     Engine::Vector(1, 0, 0)));
-    controller.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, width, 0,      Engine::Vector(0, 1, 0)));
-    controller.addBoundary(Simulator::Boundary(Engine::Point{0, height, 0}, width, 0, Engine::Vector(0, -1, 0)));
+    auto& boundaries = moleculeManager.boundaries();
 
-    //controller.addBoundary(Simulator::Boundary(Engine::Point{width, 0, 0}, 0, height, Engine::Vector(-1, 0, 0)));
+    auto topLeftPoint     = moleculeManager.boundaryTopLeft();
+    auto bottomRightPoint = moleculeManager.boundaryBottomRight();
+    size_t width  = bottomRightPoint.x - topLeftPoint.x;
+    size_t height = bottomRightPoint.y - topLeftPoint.y;
+
+    boundaries.push_back(
+        Simulator::Boundary(topLeftPoint, 0, height, Engine::Vector(1, 0, 0))
+    );
+    boundaries.push_back(
+        Simulator::Boundary(topLeftPoint, width, 0, Engine::Vector(0, 1, 0))
+    );
+    boundaries.push_back(
+        Simulator::Boundary(
+            Engine::Point{topLeftPoint.x, bottomRightPoint.y, 0}, 
+            width, infiniteSize, Engine::Vector(0, -1, 0))
+    );
 }
 
 int main(const int argc, const char* argv[])
@@ -42,19 +55,23 @@ int main(const int argc, const char* argv[])
         static const Engine::Point basicCsBeginPoint{0, 0, 0};
         Engine::CoordsSystem coordsSystem{stepInPixelsBasicCs, basicCsBeginPoint};
 
-        static const size_t width  = 800;
-        static const size_t height = 600;
+        static const size_t width  = 1500;
+        static const size_t height = 1000;
         
-        static const size_t forcerX = 700;
-        static const size_t forcerHeight = 600;
-        static const size_t forcerWidth = 10000;
         
-        Simulator::Forcer forcer{Engine::Point{forcerX, 0, 0}, forcerWidth, height, {-1, 0, 0}};
-        Simulator::MoleculeManager moleculeManager({0, 0, 0}, {forcerX, height, 0});
+        static const size_t moleculeManagerWidth  = 1000;
+        static const size_t moleculeManagerHeight = 600;
+
+        static const size_t infiniteWidth = 10000;
+        static const size_t forcerRealWidth = 10;
+        static const size_t forcerX = moleculeManagerWidth - forcerRealWidth;
+
+        Simulator::Forcer forcer{Engine::Point{forcerX, 0, 0}, infiniteWidth, moleculeManagerHeight, {-1, 0, 0}};
+        Simulator::MoleculeManager moleculeManager({0, 0, 0}, {moleculeManagerWidth, moleculeManagerHeight, 0});
         moleculeManager.forcer(forcer);
 
         Simulator::Controller controller{moleculeManager};
-        addBoundaries(controller, width, height);
+        addBoundaries(moleculeManager);
 
         static const double basicMass     = 1;
         static const double basicSpeedAbs = 400;
