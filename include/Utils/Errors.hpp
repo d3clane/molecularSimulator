@@ -12,7 +12,11 @@ enum class SimulatorErrors
     NoErr,
     InvalidBasisVectorsInCoordsSystem,
     InvalidSize,
-    
+    InvalidMass,
+    InvalidSpeedAbs,
+    ChemistryErr,
+    PhysicsErr,
+    LoadingFromFileErr,
 };
 
 } // namespace Utils

@@ -61,6 +61,9 @@ void addProcessChemistry(
 
 bool checkCollision  (const Molecule* molecule1, const Molecule* molecule2)
 {
+    assert(molecule1);
+    assert(molecule2);
+
     return MoleculesCollisionsVTable[(size_t)molecule1->id()][(size_t)molecule2->id()].checkCollision(
         molecule1->collider(), molecule2->collider()
     );
@@ -68,6 +71,9 @@ bool checkCollision  (const Molecule* molecule1, const Molecule* molecule2)
 
 bool checkCollision  (const Molecule* molecule, const Boundary* boundary)
 {
+    assert(molecule);
+    assert(boundary);
+
     return MoleculesCollisionsVTable[(size_t)molecule->id()][(size_t)MoleculeType::Rectangle].checkCollision(
         molecule->collider(), boundary->collider() 
     );
@@ -75,11 +81,17 @@ bool checkCollision  (const Molecule* molecule, const Boundary* boundary)
 
 void processPhysics  (Molecule* molecule1, Molecule* molecule2)
 {
+    assert(molecule1);
+    assert(molecule2);
+
     MoleculesCollisionsVTable[(size_t)molecule1->id()][(size_t)molecule2->id()].processPhysics(molecule1, molecule2);
 }
 
 MoleculesAfterChemistryReaction processChemistry(Molecule* molecule1, Molecule* molecule2)
 {
+    assert(molecule1);
+    assert(molecule2);
+
     return MoleculesCollisionsVTable[(size_t)molecule1->id()][(size_t)molecule2->id()].processChemistry(
         molecule1, molecule2
     );

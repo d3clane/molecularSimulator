@@ -38,6 +38,9 @@ RectangleCollider::RectangleCollider(const Point* topLeft, const double* width, 
 
 bool checkCollisionCircleCircle(const Collider* circleCollider1, const Collider* circleCollider2)
 {
+    assert(circleCollider1);
+    assert(circleCollider2);
+
     const CircleCollider& collider1 = *static_cast<const CircleCollider*>(circleCollider1);
     const CircleCollider& collider2 = *static_cast<const CircleCollider*>(circleCollider2);
 
@@ -46,10 +49,13 @@ bool checkCollisionCircleCircle(const Collider* circleCollider1, const Collider*
     return getDistanceSquare2D(*collider1.topLeft_, *collider2.topLeft_) < criticalDistance * criticalDistance;
 }
 
-bool checkCollisionCircleRect(const Collider* circleCollider1,  const Collider* rectangleCollider2)
+bool checkCollisionCircleRect(const Collider* circleCollider,  const Collider* rectangleCollider)
 {
-    const CircleCollider& collider1    = *static_cast<const CircleCollider*>(circleCollider1);
-    const RectangleCollider& collider2 = *static_cast<const RectangleCollider*>(rectangleCollider2);
+    assert(circleCollider);
+    assert(rectangleCollider);
+
+    const CircleCollider& collider1    = *static_cast<const CircleCollider*>(circleCollider);
+    const RectangleCollider& collider2 = *static_cast<const RectangleCollider*>(rectangleCollider);
 
     bool condition = 
         checkCollisionCircleToRectangleOneSide(
@@ -73,13 +79,16 @@ bool checkCollisionCircleRect(const Collider* circleCollider1,  const Collider* 
     return condition;
 }
 
-bool checkCollisionRectCircle(const Collider* rectangleCollider1, const Collider* circleCollider2)
+bool checkCollisionRectCircle(const Collider* rectangleCollider, const Collider* circleCollider)
 {
-    return checkCollisionCircleRect(circleCollider2, rectangleCollider1);
+    return checkCollisionCircleRect(circleCollider, rectangleCollider);
 }
 
 bool checkCollisionRectRect(const Collider* rectangleCollider1, const Collider* rectangleCollider2)
 {
+    assert(rectangleCollider1);
+    assert(rectangleCollider2);
+
     const RectangleCollider& collider1 = *static_cast<const RectangleCollider*>(rectangleCollider1);
     const RectangleCollider& collider2 = *static_cast<const RectangleCollider*>(rectangleCollider2);
 
@@ -97,6 +106,5 @@ bool checkCollisionRectRect(const Collider* rectangleCollider1, const Collider* 
 
     return c2X < c1X + c1W && c1X < c2X + c2W && c2Y < c1Y + c1H && c1Y < c2Y + c2H;
 }
-
 
 } // namespace Simulator

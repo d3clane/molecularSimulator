@@ -7,6 +7,9 @@ namespace Simulator
 
 MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1, Molecule* rectMolecule2)
 {
+    assert(rectMolecule1);
+    assert(rectMolecule2);
+
     RectangleMolecule& molecule1 = *static_cast<RectangleMolecule*>(rectMolecule1);
     RectangleMolecule& molecule2 = *static_cast<RectangleMolecule*>(rectMolecule2);
 
@@ -34,6 +37,9 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
     Molecule* circleMolecule1, Molecule* circleMolecule2
 )
 {
+    assert(circleMolecule1);
+    assert(circleMolecule2);
+
     CircleMolecule& molecule1 = *static_cast<CircleMolecule*>(circleMolecule1);
     CircleMolecule& molecule2 = *static_cast<CircleMolecule*>(circleMolecule2);
 
@@ -79,6 +85,9 @@ MoleculesAfterChemistryReaction processChemistryCircleCircle(
 
 MoleculesAfterChemistryReaction processChemistryRectCircle(Molecule* molecule1, Molecule* molecule2)
 {
+    assert(molecule1);
+    assert(molecule2);
+
     RectangleMolecule& rectMolecule   = *static_cast<RectangleMolecule*>(molecule1);
     CircleMolecule&    circleMolecule = *static_cast<CircleMolecule*>   (molecule2);
 
@@ -108,6 +117,9 @@ MoleculesAfterChemistryReaction processChemistryRectCircle(Molecule* molecule1, 
 
 MoleculesAfterChemistryReaction processChemistryCircleRect(Molecule* molecule1, Molecule* molecule2)
 {
+    assert(molecule1);
+    assert(molecule2);
+    
     return processChemistryRectCircle(molecule2, molecule1);
 }
 

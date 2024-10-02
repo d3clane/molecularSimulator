@@ -4,28 +4,60 @@
 #include "Engine/Vector.hpp"
 #include "Engine/CoordsSystem.hpp"
 
+#include "Utils/Exceptions.hpp"
+
 namespace Engine
 {
 
 double cos(const Vector& v1, const Vector& v2)
 {
-    assert(v1.length() != 0);
-    assert(v2.length() != 0);
-    
+    if (v1.length() <= 0 || v2.length() <= 0)
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidSize,
+            "Vector length have to be more > 0 when finding cos",
+            nullptr
+        );
+    }
+
     return v1 ^ v2 / v1.length() / v2.length(); 
 }
 
 Vector::Vector(double dx, double dy, double dz) : dx(dx), dy(dy), dz(dz) 
 {
+    if (!std::isfinite(dx) || !std::isfinite(dy) || !std::isfinite(dz))
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidSize,
+            "Vector deltas have to be finite",
+            nullptr
+        );
+    }
 }
 
 Vector::Vector(const Point& begin, const Point& end) : 
     dx(end.x - begin.x), dy(end.y - begin.y), dz(end.z - begin.z) 
 {
+    if (!std::isfinite(dx) || !std::isfinite(dy) || !std::isfinite(dz))
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidSize,
+            "Vector deltas have to be finite",
+            nullptr
+        );
+    }   
 }
 
 Vector::Vector(const Point& point) : Vector(Point{0, 0, 0}, point) 
 {
+    if (!std::isfinite(dx) || !std::isfinite(dy) || !std::isfinite(dz))
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidSize,
+            "Vector deltas have to be finite",
+            nullptr
+        );
+    }
 }
 
 Vector::operator Point() const 
@@ -112,7 +144,14 @@ Vector& Vector::operator-=(const Vector& other)
 
 Vector& Vector::operator*=(const double coeff)
 {
-    assert(std::isfinite(coeff));
+    if (!std::isfinite(coeff))
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidSize,
+            "Can't multiply vector by infinite coeff",
+            nullptr
+        );
+    }
 
     dx *= coeff;
     dy *= coeff;
@@ -122,8 +161,14 @@ Vector& Vector::operator*=(const double coeff)
 
 Vector& Vector::operator/=(const double coeff)
 {
-    assert(std::isfinite(coeff));
-    assert(coeff != 0);
+    if (!std::isfinite(coeff) || coeff == 0)
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidSize,
+            "Can't divide vector on infinite coeff or zero",
+            nullptr
+        );
+    }
 
     dx /= coeff;
     dy /= coeff;

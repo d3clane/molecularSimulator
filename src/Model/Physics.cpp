@@ -2,8 +2,10 @@
 #include "Model/MoleculeManager.hpp"
 
 #include "Utils/Rand.hpp"
+#include "Utils/Exceptions.hpp"
 
 #include <iostream>
+
 namespace Simulator
 {
 
@@ -105,7 +107,14 @@ void resolveOverlap(RectangleMolecule& molecule, const Boundary& boundary)
 
 void reorderEnergy(std::vector<Molecule* >& moleculesBefore, std::vector<Molecule* >& moleculesAfter)
 {
-    assert(moleculesBefore.size() > 0 && moleculesAfter.size() > 0);
+    if (moleculesAfter.size() == 0 || moleculesBefore.size() == 0)
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::PhysicsErr,
+            "can't reorder energy when there is zero molecules in one of the cases",
+            nullptr
+        );
+    }
 
     double energy = 0;
     Vector impulse{0, 0, 0};

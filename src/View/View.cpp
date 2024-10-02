@@ -16,8 +16,19 @@ namespace
 
 Graphics::Sprite loadSprite(std::vector<std::unique_ptr<Graphics::Texture > >& textures, const char* fileName)
 {
+    assert(fileName);
+
     Graphics::Texture* texture = new Graphics::Texture{};
-    texture->loadFromFile(fileName);
+    bool loadingSuccess = texture->loadFromFile(fileName);
+
+    if (!loadingSuccess)
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::LoadingFromFileErr,
+            "can't load texture from file",
+            nullptr
+        );
+    }
 
     Graphics::Sprite sprite;
     sprite.setTexture(*texture);
@@ -29,8 +40,19 @@ Graphics::Sprite loadSprite(std::vector<std::unique_ptr<Graphics::Texture > >& t
 
 const Graphics::Font* loadFont(std::vector<std::unique_ptr<Graphics::Font> >& fonts, const char* fileName)
 {
+    assert(fileName);
+
     Graphics::Font* font = new Graphics::Font{};
-    font->loadFromFile(fileName);
+    bool loadingSuccess = font->loadFromFile(fileName);
+
+    if (!loadingSuccess)
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::LoadingFromFileErr,
+            "can't load font from file",
+            nullptr
+        );
+    }
 
     fonts.push_back(std::unique_ptr<Graphics::Font>(font));
 
@@ -40,10 +62,13 @@ const Graphics::Font* loadFont(std::vector<std::unique_ptr<Graphics::Font> >& fo
 void drawMolecule(
     const Simulator::Molecule* molecule, Graphics::RenderWindow& renderWindow,
     const Engine::CoordsSystem& coordsSystem, 
-    const Graphics::Sprite (*moleculeSprites)[Simulator::numberOfDifferentMolecules]
+    const Graphics::Sprite (*moleculesSprites)[Simulator::numberOfDifferentMolecules]
 )
 {
-    Graphics::Sprite moleculeSprite = (*moleculeSprites)[(size_t)molecule->id()];
+    assert(molecule);
+    assert(moleculesSprites);
+
+    Graphics::Sprite moleculeSprite = (*moleculesSprites)[(size_t)molecule->id()];
 
     moleculeSprite.setPosition(coordsSystem.getPointInWindow(molecule->pos()));
 

@@ -132,6 +132,8 @@ std::chrono::nanoseconds calcDeltaTime(const std::chrono::steady_clock::time_poi
 
 bool isOutOfBoundary(const Molecule* molecule, const Point& boundaryTopLeft, const Point& boundaryBottomRight)
 {
+    assert(molecule);
+
     Point moleculePos = molecule->pos();
 
     return moleculePos.x < boundaryTopLeft.x ||
@@ -149,7 +151,6 @@ MoleculeManager::MoleculeManager(const Point& boundaryTopLeft, const Point& boun
 
 void MoleculeManager::moveMolecules()
 {
-    
     const double millisecondsPerSecond = 1e9;
     const double deltaTime = calcDeltaTime(prevTime_).count() / millisecondsPerSecond;
 
