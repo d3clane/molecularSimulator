@@ -53,4 +53,9 @@ Color Sprite::getColor() const
     return (Color)sprite_.getColor();
 }
 
+void Sprite::draw(RenderWindow& window)
+{
+    window.drawSprite(*this);
+}
+
 } // namespace Graphics

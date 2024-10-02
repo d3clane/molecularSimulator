@@ -25,6 +25,9 @@ struct MoleculesIteratorWrap
 {
     bool isDeleted;
     ListIterator<std::unique_ptr<Molecule> > it;
+
+    MoleculesIteratorWrap(bool isDeleted, ListIterator<std::unique_ptr<Molecule> > it)
+        : isDeleted(isDeleted), it(it) {}
 };
 
 MoleculesChanges processMoleculesInteraction(
@@ -65,7 +68,7 @@ void handleCollisionBetweenMolecules(ListType<std::unique_ptr<Molecule> >& input
     for (auto moleculeIt = inputMolecules.begin(), itEnd = inputMolecules.end(); 
          moleculeIt != itEnd; ++moleculeIt)
     {
-        moleculesIts.push_back({false, moleculeIt}); // TODO: CTOR STRUCT
+        moleculesIts.push_back(MoleculesIteratorWrap{false, moleculeIt});
     }
 
     for (auto firstMoleculeIt = moleculesIts.begin(), itEnd = moleculesIts.end(); 

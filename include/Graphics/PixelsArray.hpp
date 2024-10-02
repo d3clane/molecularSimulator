@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Graphics/GraphicsWindow.hpp"
+#include "Graphics/Renderable.hpp"
 
 namespace Graphics
 {
@@ -30,7 +31,7 @@ public:
     explicit operator sf::Color() { return sf::Color(red_, green_, blue_, alpha_); }
 };
 
-class PixelsArray
+class PixelsArray : public Renderable
 {
 private:
     sf::Uint8* pixels_;
@@ -60,6 +61,8 @@ public:
     {
         return topLeftPixelWindowPos_ + Graphics::WindowPoint{width_ / 2, height_ / 2};
     }
+
+    void draw(RenderWindow& window) override;
 
     friend void RenderWindow::drawPixels(const PixelsArray& pixels);
 };

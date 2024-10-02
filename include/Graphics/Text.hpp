@@ -16,8 +16,8 @@ class Text : public Renderable
     sf::Text text_;
 
 public:
-    void setFont  (const Font& font);
-    void setString(const std::string& string);
+    void setFont    (const Font& font);
+    void setString  (const std::string& string);
     void setPosition(const WindowPoint& position);
 
     void draw(Graphics::RenderWindow& renderWindow) override; // TODO: make this for every renderable

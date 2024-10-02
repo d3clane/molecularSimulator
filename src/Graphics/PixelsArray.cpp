@@ -173,6 +173,11 @@ void PixelsArray::moveImage(Graphics::WindowVector direction)
     moveImageByY(direction.y);
 }
 
+void PixelsArray::draw(RenderWindow& window)
+{
+    window.drawPixels(*this);
+}
+
 /*
 const PixelsArray& PixelsArray::operator =(const PixelsArray& pixels)
 {

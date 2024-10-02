@@ -2,7 +2,8 @@
 #define GRAPHICS_HPP
 
 #include <SFML/Graphics.hpp>
-#include "Mouse.hpp"
+#include "Graphics/Mouse.hpp"
+#include "Graphics/Renderable.hpp"
 
 namespace Graphics
 {
@@ -33,11 +34,15 @@ inline WindowPoint operator -(const WindowPoint& left, const WindowPoint& right)
 
 using WindowVector = WindowPoint;
 
-struct WindowLine
+class RenderWindow;
+
+struct WindowLine : public Renderable
 {
     WindowPoint start, end;
 
     WindowLine(const WindowPoint& start, const WindowPoint& end) : start(start), end(end) {}
+
+    void draw(RenderWindow& window) override;
 };
 
 class PixelsArray;
@@ -59,7 +64,7 @@ public:
     void close();
     void clear();
 
-    void drawLine  (WindowLine line);
+    void drawLine  (const WindowLine& line);
     void drawPixels(const PixelsArray& pixels);
     void drawSprite(const Sprite& sprite);
     void drawCircle(const Circle& circle);

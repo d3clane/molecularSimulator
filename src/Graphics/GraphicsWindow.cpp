@@ -10,6 +10,11 @@
 namespace Graphics
 {
 
+void WindowLine::draw(RenderWindow& window)
+{
+    window.drawLine(*this);
+}
+
 RenderWindow::RenderWindow(int width, int height, const char* title) : 
         renderWindow_(sf::VideoMode(width, height), title), height_(height), width_(width)
 {
@@ -35,7 +40,7 @@ void RenderWindow::clear()
     renderWindow_.clear();
 }
 
-void RenderWindow::drawLine(WindowLine line)
+void RenderWindow::drawLine(const WindowLine& line)
 {
     sf::Vertex drewLine[] =
     {

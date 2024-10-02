@@ -2,10 +2,11 @@
 #define GRAPHICS_RENDERABLE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "Graphics/GraphicsWindow.hpp"
 
 namespace Graphics
 {
+
+class RenderWindow;
 
 class Renderable
 {

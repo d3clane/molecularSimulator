@@ -30,4 +30,9 @@ Color Circle::getColor()
     return {sfColor.r, sfColor.g, sfColor.b, sfColor.a};
 }
 
+void Circle::draw(RenderWindow& window)
+{
+    window.drawCircle(*this);
+}
+
 } // namespace Graphics

@@ -5,6 +5,7 @@
 #include <chrono>
 
 #include "Graphics/GraphicsWindow.hpp"
+#include "Graphics/Renderable.hpp"
 
 namespace Graphics
 {
@@ -12,7 +13,7 @@ namespace Graphics
 struct Color;
 class Texture;
 
-class Sprite
+class Sprite : public Renderable
 {
     sf::Sprite sprite_;
 
@@ -28,6 +29,8 @@ public:
 
     void  setColor(const Color& color);
     Color getColor() const;
+
+    void draw(RenderWindow& window) override;
 
     friend void RenderWindow::drawSprite(const Sprite& sprite);
 };

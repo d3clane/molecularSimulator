@@ -87,7 +87,7 @@ Vector Vector::getPerpendicular() const
 Vector Vector::projectOnto(const Vector& other) const
 {
     double myLen = length();
-    if (myLen <= 0) return *this; // TODO: double comparison
+    if (myLen <= 0) return *this;
     
     assert(other.length() != 0);
 
