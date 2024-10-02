@@ -79,6 +79,8 @@ void resolveOverlap(CircleMolecule& molecule, const Boundary& boundary)
 
     assert(boundary.perpendicular() == boundary.perpendicular().getNormalizedVector());
 
+    // TODO: doesn't understand width of the boundary
+    
     float overlap = radius - (-boundary.perpendicular() ^ Vector(center, boundary.pos()));
 
     if (overlap <= 0) return;

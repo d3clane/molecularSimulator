@@ -4,6 +4,7 @@
 #include "src/Model/2DVtable.hpp"
 
 #include "Utils/Rand.hpp"
+#include "Utils/Exceptions.hpp"
 
 #include <iostream>
 #include <algorithm>
@@ -46,11 +47,12 @@ MoleculesChanges processMoleculesInteraction(
         return {};
     }
 
-    firstMoleculeIt.isDeleted  = true;
+    firstMoleculeIt .isDeleted = true;
     secondMoleculeIt.isDeleted = true;
 
     std::vector<Molecule* > beforeReaction = {firstMoleculeIt.it->get(), secondMoleculeIt.it->get()};
 
+    // TODO: need reordering impulse, not energy in case they collide
     reorderEnergy(beforeReaction, afterReaction.moleculesAfterReaction);
 
     std::vector<ListIterator<std::unique_ptr<Molecule> > > moleculesToDeleteIts = 
@@ -144,8 +146,9 @@ bool isOutOfBoundary(const Molecule* molecule, const Point& boundaryTopLeft, con
 
 } // namespace anon
 
-MoleculeManager::MoleculeManager(const Point& boundaryTopLeft, const Point& boundaryBottomRight) : 
-    boundaryTopLeft_(boundaryTopLeft), boundaryBottomRight_(boundaryBottomRight)
+MoleculeManager::MoleculeManager(
+    const Point& boundaryTopLeft, const Point& boundaryBottomRight
+) : boundaryTopLeft_(boundaryTopLeft), boundaryBottomRight_(boundaryBottomRight)
 {
 }
 
@@ -211,20 +214,33 @@ double MoleculeManager::getPressure() const
     return 0; // TODO: Implement
 }
 
-Boundary::Boundary(
-    const Point& topLeft, const double width, const double height,
-    const Vector& perpendicular
-) : Engine::Transformable(topLeft), width_(width), height_(height), perpendicular_(perpendicular),
-    collider_(new RectangleCollider(&transformablePos_, &width_, &height_))
+Forcer& MoleculeManager::forcer() &
 {
+    if (forcerPosInBoundariesList_ < 0)
+    {
+        throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(
+            Utils::SimulatorErrors::InvalidIterator, 
+            "invalid iterator when trying to access forcer",
+            nullptr
+        );
+    }
+
+    auto forcerIt = boundaries_.begin();
+    std::advance(forcerIt, forcerPosInBoundariesList_);
+    return *forcerIt;
 }
 
-Boundary::Boundary(const Boundary& other) : 
-    Boundary(other.transformablePos_, other.width_, other.height_, other.perpendicular_)
+void MoleculeManager::forcer(const Forcer& forcer)
 {
-}
+    if (forcerPosInBoundariesList_ >= 0)
+    {
+        auto forcerIt = boundaries_.begin();
+        std::advance(forcerIt, forcerPosInBoundariesList_); 
+        boundaries_.erase(forcerIt);
+    }
 
-const RectangleCollider* Boundary::collider() const & { return collider_.get(); }
-const Vector& Boundary::perpendicular() const &       { return perpendicular_; }
+    boundaries_.push_back(forcer);
+    forcerPosInBoundariesList_ = static_cast<int>(boundaries_.size()) - 1;
+}
 
 } // namespace Simulator

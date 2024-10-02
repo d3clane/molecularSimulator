@@ -36,7 +36,7 @@ Simulator::CircleMolecule generateCircleMolecule(
 
 } // namespace anon
 
-Controller::Controller(Simulator::MoleculeManager& manager) : manager_(manager) {}
+Controller::Controller(Simulator::MoleculeManager& manager) : moleculeManager_(manager) {}
 void Controller::addCircleMolecules()
 {
     static const size_t numberOfMoleculesToAdd = 10;
@@ -44,37 +44,51 @@ void Controller::addCircleMolecules()
     for (size_t i = 0; i < numberOfMoleculesToAdd; ++i)
     {
         Simulator::CircleMolecule circleMolecule = generateCircleMolecule(
-            manager_.boundaryTopLeft(), manager_.boundaryBottomRight()
+            moleculeManager_.boundaryTopLeft(), moleculeManager_.boundaryBottomRight()
         );
 
-        manager_.addMolecule(std::unique_ptr<Simulator::Molecule>{new Simulator::CircleMolecule{circleMolecule}});
+        moleculeManager_.addMolecule(std::unique_ptr<Simulator::Molecule>{new Simulator::CircleMolecule{circleMolecule}});
     }
 }
 void Controller::removeMolecules()
 {
-    manager_.removeMolecules(manager_.boundaryTopLeft(), manager_.boundaryBottomRight());
+    moleculeManager_.removeMolecules(moleculeManager_.boundaryTopLeft(), moleculeManager_.boundaryBottomRight());
 }
 
 std::list<std::unique_ptr<Simulator::Molecule> >& Controller::molecules() &
 {
-    return manager_.molecules();
+    return moleculeManager_.molecules();
 }
 
 double Controller::getTemperature() const
 {
-    return manager_.getTemperature();
+    return moleculeManager_.getTemperature();
 }
 
 double Controller::getPressure() const
 {
-    return manager_.getPressure();
+    return moleculeManager_.getPressure();
 }
 
 void Controller::addBoundary(const Boundary& boundary)
 {
-    auto& boundaries = manager_.boundaries();
+    auto& boundaries = moleculeManager_.boundaries();
 
     boundaries.push_back(boundary);
+}
+
+void Controller::moveForcerUp(std::chrono::milliseconds deltaTime)
+{
+    static Engine::Vector up{0, -0.01, 0};
+
+    moleculeManager_.forcer().move(up * deltaTime.count());
+}
+
+void Controller::moveForcerDown(std::chrono::milliseconds deltaTime)
+{
+    static Engine::Vector down{0, 0.01, 0};
+
+    moleculeManager_.forcer().move(down * deltaTime.count());
 }
 
 } // namespace Simulator

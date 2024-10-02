@@ -25,6 +25,15 @@ bool checkCollisionCircleToRectangleOneSide(
     return condition;
 }
 
+bool circleIsInsideRectangle(
+    const Engine::Point& topLeftCircle, 
+    const Engine::Point& topLeftCollider, const Engine::Point& bottomRightCollider
+)
+{
+    return topLeftCollider.x <= topLeftCircle.x && topLeftCircle.x <= bottomRightCollider.x &&
+           topLeftCollider.y <= topLeftCircle.y && topLeftCircle.y <= bottomRightCollider.y;
+}
+
 } // namespace anonymous
 
 CircleCollider::CircleCollider(const Point* topLeft, const double* radius) : topLeft_(topLeft), radius_(radius) 
@@ -73,7 +82,11 @@ bool checkCollisionCircleRect(const Collider* circleCollider,  const Collider* r
         checkCollisionCircleToRectangleOneSide(
             collider2.topLeft_->y + *collider2.height_, *collider1.radius_, 
             collider2.topLeft_->x, collider2.topLeft_->x + *collider2.width_, 
-            collider1.topLeft_->x + *collider1.radius_, collider1.topLeft_->y + *collider1.radius_);
+            collider1.topLeft_->x + *collider1.radius_, collider1.topLeft_->y + *collider1.radius_) |
+        circleIsInsideRectangle(
+            *collider1.topLeft_, *collider2.topLeft_, 
+            *collider2.topLeft_ + Engine::Point{*collider2.width_, *collider2.height_, 0}
+        );
 
 
     return condition;

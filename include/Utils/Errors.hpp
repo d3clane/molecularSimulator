@@ -17,6 +17,7 @@ enum class SimulatorErrors
     ChemistryErr,
     PhysicsErr,
     LoadingFromFileErr,
+    InvalidIterator,
 };
 
 } // namespace Utils

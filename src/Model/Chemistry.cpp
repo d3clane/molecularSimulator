@@ -103,7 +103,7 @@ MoleculesAfterChemistryReaction processChemistryRectCircle(Molecule* molecule1, 
     Vector newSpeed =
         (rectMolecule.speed() * rectMolecule.mass() + circleMolecule.speed() * circleMolecule.mass()) / newMass;
 
-    RectangleMolecule* resultMolecule = new RectangleMolecule(rectMolecule);
+    auto* resultMolecule = new RectangleMolecule(rectMolecule);
 
     resultMolecule->mass  (newMass);
     resultMolecule->speed (newSpeed);

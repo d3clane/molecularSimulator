@@ -107,7 +107,8 @@ CircleMolecule::CircleMolecule(CircleMolecule&& other) : CircleMolecule(other)
 {
 }
 
-double CircleMolecule::radius() const           { return radius_;      }
+double CircleMolecule::radius() const { return radius_; }
+
 void   CircleMolecule::radius(double newRadius)
 { 
     if (!std::isfinite(newRadius) || newRadius < 0)

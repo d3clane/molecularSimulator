@@ -9,9 +9,9 @@ namespace Simulator
 
 class Controller final
 {
-    Simulator::MoleculeManager& manager_;
-public:
+    Simulator::MoleculeManager& moleculeManager_;
 
+public:
     Controller(Simulator::MoleculeManager& manager);
 
     void addCircleMolecules();
@@ -21,6 +21,15 @@ public:
     double getPressure() const;
 
     void addBoundary(const Boundary& boundary);
+
+    void moveForcerUp  (std::chrono::milliseconds deltaTime);
+    void moveForcerDown(std::chrono::milliseconds deltaTime);
+
+    // view: controller.updateModel()
+    // btn.action() -> controller.moveForcerUp() -> forcer moves
+    // controller.updateForcer()
+    // controller
+    // model - doesn't interact. Interaction only on press
 
     std::list<std::unique_ptr<Simulator::Molecule> >& molecules() &;
 };

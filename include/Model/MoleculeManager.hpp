@@ -3,33 +3,14 @@
 
 
 #include "Model/Molecule.hpp"
+#include "Model/Boundary.hpp"
+#include "Model/Forcer.hpp"
 
 #include <list>
 #include <memory>
 
 namespace Simulator
 {
-
-class Boundary : public Engine::Transformable
-{
-    double width_;
-    double height_;
-
-    std::unique_ptr<RectangleCollider> collider_;
-
-    Vector perpendicular_;
-
-public:
-    Boundary(
-        const Point& topLeft, const double width, const double height,
-        const Vector& perpendicular
-    );
-
-    Boundary(const Boundary& other);
-    
-    const RectangleCollider* collider() const &;
-    const Vector& perpendicular() const &;
-};
 
 template<typename T>
 using ListType = typename std::list<T>;
@@ -47,6 +28,9 @@ class MoleculeManager
 
     std::chrono::steady_clock::time_point prevTime_;
 
+    int forcerPosInBoundariesList_ = -1;
+    //ListIterator<Boundary> forcerIterator; // TODO: don't know how to check iterator on isValid
+
 public:
     MoleculeManager(const Point& boundaryTopLeft, const Point& boundaryBottomRight);
     
@@ -54,6 +38,9 @@ public:
 
     void addMolecule    (std::unique_ptr<Molecule> molecule);
     void removeMolecules(const Point& topLeft, const Point& bottomRight);
+
+    Forcer& forcer() &;
+    void forcer(const Forcer& forcer);
 
     double getTemperature() const;
     double getPressure()    const;

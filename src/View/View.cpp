@@ -104,14 +104,6 @@ void drawMolecule(
     renderWindow.drawSprite(moleculeSprite);
 }
 
-void addBoundaries(Simulator::Controller& controller, const size_t width, const size_t height)
-{
-    controller.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, height,     Engine::Vector(1, 0, 0)));
-    controller.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, width, 0,      Engine::Vector(0, 1, 0)));
-    controller.addBoundary(Simulator::Boundary(Engine::Point{0, height, 0}, width, 0, Engine::Vector(0, -1, 0)));
-    controller.addBoundary(Simulator::Boundary(Engine::Point{width, 0, 0}, 0, height, Engine::Vector(-1, 0, 0)));
-}
-
 void addButtons(
     Controller& controller,
     Gui::WindowManager& windowManager, const size_t width, const size_t height,
@@ -215,7 +207,6 @@ View::View(
     const size_t width = renderWindow.getWidth();
     const size_t height = renderWindow.getHeight();
 
-    addBoundaries(controller_, width, height);
     addButtons(controller_, windowManager_, width, height, textures_);
     addMoleculesSprites(&moleculeSprites_, textures_);
     addGraphs(controller_, windowManager_, fonts_, graphicsRenderables_, width, height);

@@ -5,6 +5,7 @@
 
 #include "Model/Molecule.hpp"
 #include "Model/MoleculeManager.hpp"
+#include "Model/Forcer.hpp"
 
 #include "Utils/Rand.hpp"
 
@@ -18,6 +19,17 @@
 
 #include "Utils/Exceptions.hpp"
 
+void addBoundaries(Simulator::Controller& controller, const size_t width, const size_t height)
+{
+    static const size_t infiniteSize = 10000;
+
+    controller.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, height,     Engine::Vector(1, 0, 0)));
+    controller.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, width, 0,      Engine::Vector(0, 1, 0)));
+    controller.addBoundary(Simulator::Boundary(Engine::Point{0, height, 0}, width, 0, Engine::Vector(0, -1, 0)));
+
+    //controller.addBoundary(Simulator::Boundary(Engine::Point{width, 0, 0}, 0, height, Engine::Vector(-1, 0, 0)));
+}
+
 int main(const int argc, const char* argv[])
 {
     try
@@ -26,12 +38,23 @@ int main(const int argc, const char* argv[])
 
         srand(time(NULL));
 
+        static const size_t stepInPixelsBasicCs = 1;
+        static const Engine::Point basicCsBeginPoint{0, 0, 0};
+        Engine::CoordsSystem coordsSystem{stepInPixelsBasicCs, basicCsBeginPoint};
+
         static const size_t width  = 800;
         static const size_t height = 600;
+        
+        static const size_t forcerX = 700;
+        static const size_t forcerHeight = 600;
+        static const size_t forcerWidth = 10000;
+        
+        Simulator::Forcer forcer{Engine::Point{forcerX, 0, 0}, forcerWidth, height, {-1, 0, 0}};
+        Simulator::MoleculeManager moleculeManager({0, 0, 0}, {forcerX, height, 0});
+        moleculeManager.forcer(forcer);
 
-        Simulator::MoleculeManager moleculeManager({0, 0, 0}, {width, height, 0});
-
-        auto& molecules  = moleculeManager.molecules();
+        Simulator::Controller controller{moleculeManager};
+        addBoundaries(controller, width, height);
 
         static const double basicMass     = 1;
         static const double basicSpeedAbs = 400;
@@ -45,13 +68,7 @@ int main(const int argc, const char* argv[])
         Simulator::RectangleMolecule::basicHeight(basicHeight);
         Simulator::RectangleMolecule::basicWidth (basicWidth);
 
-        Simulator::Controller controller{moleculeManager};
-
         Graphics::RenderWindow renderWindow{width, height, "molecules"};
-
-        static const size_t stepInPixelsBasicCs = 1;
-        static const Engine::Point basicCsBeginPoint{0, 0, 0};
-        Engine::CoordsSystem coordsSystem{stepInPixelsBasicCs, basicCsBeginPoint};
 
         Simulator::View view{controller, renderWindow, coordsSystem};
 
@@ -71,6 +88,8 @@ int main(const int argc, const char* argv[])
             view.update(event);
             view.draw();
             renderWindow.display();
+
+            //controller.moveForcerUp(std::chrono::milliseconds(1));
         }
     }
     catch(int e)
