@@ -8,10 +8,14 @@
 namespace Utils
 {
 
+#define EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION(REASON, PREV_EXCEPTION) \
+    Utils::ExceptionWithReason::createNextException(REASON, PREV_EXCEPTION, __func__, __FILE__, __LINE__)
+
 class ExceptionWithReason : public std::exception
 {
     std::unique_ptr<char> reasonString_;
     std::unique_ptr<ExceptionWithReason> prevException_;
+
 
 public:
     ExceptionWithReason() noexcept;
@@ -22,7 +26,10 @@ public:
         const char* reason, std::unique_ptr<ExceptionWithReason>&& prevException
     ) noexcept;
 
-    //void* operator new(size_t size) = delete;
+    static ExceptionWithReason* createNextException(
+        const char* reason, std::unique_ptr<ExceptionWithReason>&& prevException,
+        const char* funcWithErr, const char* fileWithErr, const size_t lineWithErr
+    ) noexcept;
 };
 
 } // namespace Utils

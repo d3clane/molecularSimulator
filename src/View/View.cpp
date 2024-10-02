@@ -158,7 +158,7 @@ View::View(
 
     windowManager_.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));
 
-    throw Utils::ExceptionWithReason::createNextException("no reason, just testing.", nullptr);
+    throw EXCEPTION_WITH_REASON_CREATE_NEXT_EXCEPTION("no reason, just testing.", nullptr);
 }
 
 void View::update(const Graphics::Event& event)
