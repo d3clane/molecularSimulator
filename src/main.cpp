@@ -26,7 +26,10 @@ int main(const int argc, const char* argv[])
 
         srand(time(NULL));
 
-        Simulator::MoleculeManager moleculeManager({0, 0, 0}, {800, 600, 0}); // TODO 
+        static const size_t width  = 800;
+        static const size_t height = 600;
+
+        Simulator::MoleculeManager moleculeManager({0, 0, 0}, {width, height, 0});
 
         auto& molecules  = moleculeManager.molecules();
 
@@ -44,9 +47,11 @@ int main(const int argc, const char* argv[])
 
         Simulator::Controller controller{moleculeManager};
 
-        Graphics::RenderWindow renderWindow{800, 600, "molecules"};
+        Graphics::RenderWindow renderWindow{width, height, "molecules"};
 
-        Engine::CoordsSystem coordsSystem{1, {0, 0, 0}}; // TODO: FIX BTN
+        static const size_t stepInPixelsBasicCs = 1;
+        static const Engine::Point basicCsBeginPoint{0, 0, 0};
+        Engine::CoordsSystem coordsSystem{stepInPixelsBasicCs, basicCsBeginPoint};
 
         Simulator::View view{controller, renderWindow, coordsSystem};
 

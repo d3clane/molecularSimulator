@@ -1,4 +1,5 @@
 #include "Gui/WindowManager.hpp"
+#include <iostream>
 
 namespace Gui
 {

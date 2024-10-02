@@ -14,7 +14,7 @@ namespace Simulator
 namespace 
 {
 
-Graphics::Sprite loadSprite(std::vector<std::unique_ptr<Graphics::Texture > >& textures, const char* fileName)
+Graphics::Sprite loadSprite(std::vector<std::unique_ptr<Graphics::Texture> >& textures, const char* fileName)
 {
     assert(fileName);
 
@@ -104,63 +104,74 @@ void drawMolecule(
     renderWindow.drawSprite(moleculeSprite);
 }
 
-} // namespace anon
-
-View::View(
-    Simulator::Controller& controller, Graphics::RenderWindow& renderWindow,
-    Engine::CoordsSystem& coordsSystem
-) : coordsSystem_(coordsSystem), renderWindow_(renderWindow), controller_(controller)
+void addBoundaries(Simulator::Controller& controller, const size_t width, const size_t height)
 {
-    const size_t width = renderWindow.getWidth();
-    const size_t height = renderWindow.getHeight();
-    // TODO: SPLIT ON FUNCTIONS
-    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, height,     Engine::Vector(1, 0, 0)));
-    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, width, 0,      Engine::Vector(0, 1, 0)));
-    controller_.addBoundary(Simulator::Boundary(Engine::Point{0, height, 0}, width, 0, Engine::Vector(0, -1, 0)));
-    controller_.addBoundary(Simulator::Boundary(Engine::Point{width, 0, 0}, 0, height, Engine::Vector(-1, 0, 0)));
+    controller.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, 0, height,     Engine::Vector(1, 0, 0)));
+    controller.addBoundary(Simulator::Boundary(Engine::Point{0, 0, 0}, width, 0,      Engine::Vector(0, 1, 0)));
+    controller.addBoundary(Simulator::Boundary(Engine::Point{0, height, 0}, width, 0, Engine::Vector(0, -1, 0)));
+    controller.addBoundary(Simulator::Boundary(Engine::Point{width, 0, 0}, 0, height, Engine::Vector(-1, 0, 0)));
+}
 
-    Graphics::Sprite addMoleculesSprite    = loadSprite(textures_, "media/textures/plus.jpeg");
-    Graphics::Sprite removeMoleculesSprite = loadSprite(textures_, "media/textures/minus.jpeg");
-
-    const Graphics::Font* font = loadFont(fonts_, "media/fonts/arial.ttf");
-
+void addButtons(
+    Controller& controller,
+    Gui::WindowManager& windowManager, const size_t width, const size_t height,
+    std::vector<std::unique_ptr<Graphics::Texture> >& textures
+)
+{
+    Graphics::Sprite addMoleculesSprite    = loadSprite(textures, "media/textures/plus.jpeg");
+    Graphics::Sprite removeMoleculesSprite = loadSprite(textures, "media/textures/minus.jpeg");
+    
     static const unsigned int buttonWidth  = 64;
-    static const unsigned int buttonHeight = 32;
+    static const unsigned int buttonHeight = 64;
 
     Gui::Button::CtorParams staticParams{
         {0, 0, 0}, buttonWidth, buttonHeight, true, Gui::Button::State::Normal, 
         addMoleculesSprite, addMoleculesSprite, addMoleculesSprite, addMoleculesSprite
     };
 
-    std::unique_ptr<Gui::Button> addMoleculesButton{
+    Gui::Button* addMoleculesButton{
         new Gui::Button{{0, 0, 0}, addMoleculesSprite, staticParams}
     };
 
-    std::unique_ptr<Gui::Button> removeMoleculesButton{
+    Gui::Button* removeMoleculesButton{
         new Gui::Button{{buttonWidth, 0, 0}, removeMoleculesSprite, staticParams}
     };
 
     auto* addMoleculesAction = new ChangeMoleculesQuantityAction{
-        controller_, Simulator::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Add
+        controller, Simulator::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Add
     };
 
     auto* removeMoleculesAction = new ChangeMoleculesQuantityAction{
-        controller_, Simulator::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Remove
+        controller, Simulator::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Remove
     };
 
-    addMoleculesButton.get()->addAction(std::unique_ptr<Gui::Action>(addMoleculesAction));
-    removeMoleculesButton.get()->addAction(std::unique_ptr<Gui::Action>(removeMoleculesAction));
+    addMoleculesButton->addAction(std::unique_ptr<Gui::Action>(addMoleculesAction));
+    removeMoleculesButton->addAction(std::unique_ptr<Gui::Action>(removeMoleculesAction));
 
-    windowManager_.addWindow(std::move(addMoleculesButton   ));
-    windowManager_.addWindow(std::move(removeMoleculesButton));
+    windowManager.addWindow(std::unique_ptr<Gui::Button>(addMoleculesButton));
+    windowManager.addWindow(std::unique_ptr<Gui::Button>(removeMoleculesButton));
+}
 
-    moleculeSprites[(size_t)Simulator::MoleculeType::Circle] = 
-        loadSprite(textures_, "media/textures/whiteCircle.png");
+void addMoleculesSprites(
+    Graphics::Sprite (*moleculesSprites)[Simulator::numberOfDifferentMolecules],
+    std::vector<std::unique_ptr<Graphics::Texture> >& textures
+)
+{
+    (*moleculesSprites)[(size_t)Simulator::MoleculeType::Circle] = 
+        loadSprite(textures, "media/textures/whiteCircle.png");
 
-    moleculeSprites[(size_t)Simulator::MoleculeType::Rectangle] = 
-        loadSprite(textures_, "media/textures/red.jpeg");
+    (*moleculesSprites)[(size_t)Simulator::MoleculeType::Rectangle] = 
+        loadSprite(textures, "media/textures/red.jpeg");
+}
 
-
+void addGraphs(
+    Controller& controller, 
+    Gui::WindowManager& windowManager, 
+    std::vector<std::unique_ptr<Graphics::Font> >& fonts, 
+    std::vector<std::unique_ptr<Graphics::Renderable> >& graphicsRenderables,
+    const size_t width, const size_t height
+)
+{
     Engine::CoordsSystem temperatureCs{{1, 0, 0}, {0, -1, 0}, {0, 0, 1}, {1, height, 0}};
 
     static const size_t temperatureGraphsWindowHeight = 300;
@@ -178,7 +189,7 @@ View::View(
     auto temperatureGraphTemperature = new Graphics::Text{};
     auto temperatureGraphTime        = new Graphics::Text{};
 
-    // TODO: 100% create text in scene with coords system
+    const Graphics::Font* font = loadFont(fonts, "media/fonts/arial.ttf");
 
     temperatureGraphTemperature->setFont(*font);
     temperatureGraphTemperature->setString("Temperature");
@@ -188,10 +199,26 @@ View::View(
     temperatureGraphTime->setString("Time");
     temperatureGraphTime->setPosition({201, 550});
 
-    graphicsRenderables_.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTemperature));
-    graphicsRenderables_.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTime));
+    graphicsRenderables.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTemperature));
+    graphicsRenderables.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTime));
 
-    windowManager_.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));
+    windowManager.addWindow(std::unique_ptr<Gui::Window>(temperatureGraphsWindow));
+}
+
+} // namespace anon
+
+View::View(
+    Simulator::Controller& controller, Graphics::RenderWindow& renderWindow,
+    Engine::CoordsSystem& coordsSystem
+) : coordsSystem_(coordsSystem), renderWindow_(renderWindow), controller_(controller)
+{
+    const size_t width = renderWindow.getWidth();
+    const size_t height = renderWindow.getHeight();
+
+    addBoundaries(controller_, width, height);
+    addButtons(controller_, windowManager_, width, height, textures_);
+    addMoleculesSprites(&moleculeSprites_, textures_);
+    addGraphs(controller_, windowManager_, fonts_, graphicsRenderables_, width, height);
 }
 
 void View::update(const Graphics::Event& event)
@@ -212,7 +239,7 @@ void View::draw()
 
     for (auto& molecule : molecules)
     {
-        drawMolecule(molecule.get(), renderWindow_, coordsSystem_, &moleculeSprites);
+        drawMolecule(molecule.get(), renderWindow_, coordsSystem_, &moleculeSprites_);
     }
 }
 

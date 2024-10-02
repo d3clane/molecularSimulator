@@ -37,7 +37,7 @@ Simulator::CircleMolecule generateCircleMolecule(
 } // namespace anon
 
 Controller::Controller(Simulator::MoleculeManager& manager) : manager_(manager) {}
-void Controller::addMolecules(Simulator::MoleculeType moleculeType) // TODO: implement based on moleculeType
+void Controller::addCircleMolecules()
 {
     static const size_t numberOfMoleculesToAdd = 10;
 
@@ -50,7 +50,7 @@ void Controller::addMolecules(Simulator::MoleculeType moleculeType) // TODO: imp
         manager_.addMolecule(std::unique_ptr<Simulator::Molecule>{new Simulator::CircleMolecule{circleMolecule}});
     }
 }
-void Controller::removeMolecules(Simulator::MoleculeType moleculeType)
+void Controller::removeMolecules()
 {
     manager_.removeMolecules(manager_.boundaryTopLeft(), manager_.boundaryBottomRight());
 }

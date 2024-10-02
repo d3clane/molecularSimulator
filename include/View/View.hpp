@@ -25,10 +25,9 @@ class View
     std::vector<std::unique_ptr<Graphics::Texture> > textures_;
     std::vector<std::unique_ptr<Graphics::Font> >    fonts_;
     
-    Graphics::Sprite moleculeSprites[Simulator::numberOfDifferentMolecules];
+    Graphics::Sprite moleculeSprites_[Simulator::numberOfDifferentMolecules];
 
     std::vector<std::unique_ptr<Graphics::Renderable> > graphicsRenderables_; 
-    // TODO: think about creating only scene renderables (create some text in scene, using coordsSystem maybe)
 
 public:
     View(

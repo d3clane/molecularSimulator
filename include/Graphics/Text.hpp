@@ -20,7 +20,7 @@ public:
     void setString  (const std::string& string);
     void setPosition(const WindowPoint& position);
 
-    void draw(Graphics::RenderWindow& renderWindow) override; // TODO: make this for every renderable
+    void draw(Graphics::RenderWindow& renderWindow) override;
     
     friend void RenderWindow::drawText(const Text& text);
 };

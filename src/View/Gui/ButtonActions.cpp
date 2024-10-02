@@ -14,11 +14,11 @@ void ChangeMoleculesQuantityAction::operator()()
     switch (actionType_)
     {
         case ActionType::Add:
-            controller_.addMolecules(moleculesType_);
+            controller_.addCircleMolecules();
             break;
         
         case ActionType::Remove:
-            controller_.removeMolecules(moleculesType_);
+            controller_.removeMolecules();
             break;
             
         default:

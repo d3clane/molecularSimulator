@@ -14,8 +14,8 @@ public:
 
     Controller(Simulator::MoleculeManager& manager);
 
-    void addMolecules   (Simulator::MoleculeType moleculeType);
-    void removeMolecules(Simulator::MoleculeType moleculeType);
+    void addCircleMolecules();
+    void removeMolecules();
 
     double getTemperature() const;
     double getPressure() const;
