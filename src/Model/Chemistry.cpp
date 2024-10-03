@@ -27,17 +27,21 @@ MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1
     result.requiredPhysics = RequiredPhysics::ReorderEnergy;
 
     size_t numberOfMolecules = static_cast<size_t>(molecule1.mass() + molecule2.mass());
-    Point topLeft = molecule1.topLeft();
+    Point centerForMolecules = (Vector{molecule1.topLeft()} + Vector{molecule2.topLeft()}) / 2;
 
     const double basicRadius = CircleMolecule::basicRadius();
+    const double basicMass   = CircleMolecule::basicMass();
     for (size_t i = 0; i < numberOfMolecules; ++i)
     {
+        double angle = 2 * M_PI * i / numberOfMolecules;
+        Point offset{basicRadius * std::cos(angle), basicRadius * std::sin(angle), 0};
+        Point newMoleculePosition = molecule1.topLeft() + offset;
+
         CircleMolecule* newMolecule = new CircleMolecule{
-            basicRadius, Molecule::CtorParams{topLeft, CircleMolecule::basicMass(), Vector{0, 0, 0}}
+            basicRadius, Molecule::CtorParams{newMoleculePosition, basicMass, Vector{0, 0, 0}}
         };
 
         result.moleculesAfterReaction.push_back(newMolecule);
-        topLeft += Engine::Vector{2 * basicRadius, 0, 0};
     }
 
     return result;
