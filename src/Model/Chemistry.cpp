@@ -31,10 +31,13 @@ MoleculesAfterChemistryReaction processChemistryRectRect(Molecule* rectMolecule1
 
     const double basicRadius = CircleMolecule::basicRadius();
     const double basicMass   = CircleMolecule::basicMass();
+
+    const double offsetFromCenter = 2 * basicRadius;
+
     for (size_t i = 0; i < numberOfMolecules; ++i)
     {
         double angle = 2 * M_PI * i / numberOfMolecules;
-        Point offset{basicRadius * std::cos(angle), basicRadius * std::sin(angle), 0};
+        Point offset{offsetFromCenter * std::cos(angle), offsetFromCenter * std::sin(angle), 0};
         Point newMoleculePosition = molecule1.topLeft() + offset;
 
         CircleMolecule* newMolecule = new CircleMolecule{
