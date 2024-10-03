@@ -1,5 +1,5 @@
-#ifndef BUTTON_HPP
-#define BUTTON_HPP
+#ifndef GUI_BUTTON_HPP
+#define GUI_BUTTON_HPP
 
 #include "Graphics/GraphicsWindow.hpp"
 #include "Graphics/Sprite.hpp"
@@ -54,13 +54,10 @@ public:
         const Graphics::Sprite& initReleaseSprite, const Graphics::Sprite& initPressedSprite
     );
 
-    Button(
-        const Engine::Point& topLeft, const Graphics::Sprite& oneSpriteForAll, 
-        const CtorParams& otherParams
-    );
+    Button(const CtorParams& params);
     
     // functions
-    bool isHovered(const Graphics::RenderWindow& window) const;
+    bool isHovered(const Graphics::RenderWindow& renderWindow) const;
     bool isHovered(int mousePosX, int mousePosY)   const;
     
     bool showing() const                   { return showing_; }
@@ -72,16 +69,15 @@ public:
     int  addAction    (std::unique_ptr<Action>&& action);
     int  addUndoAction(std::unique_ptr<Action>&& action);
 
-    virtual bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event  ) override;
-    virtual void draw  (Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) override;
+    operator Graphics::Sprite() const;
 
-    operator Graphics::Sprite();
-
+    void draw  (Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) override;
+    bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event  ) override;
 private:
-    virtual void onPress    (Graphics::RenderWindow& window, const Graphics::Event& event);
-    virtual void onRelease  (Graphics::RenderWindow& window, const Graphics::Event& event);
-    virtual void onHover    (Graphics::RenderWindow& window, const Graphics::Event& event);
-    virtual void onUnhover  (Graphics::RenderWindow& window, const Graphics::Event& event);
+    virtual void onPress    (Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
+    virtual void onRelease  (Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
+    virtual void onHover    (Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
+    virtual void onUnhover  (Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
 
 protected:
     Engine::Point topLeft_;
@@ -104,4 +100,4 @@ void completeActions(const std::vector<std::unique_ptr<Action> >& actions);
 
 } // namespace Gui
 
-#endif
+#endif // GUI_BUTTON_HPP

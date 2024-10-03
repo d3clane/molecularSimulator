@@ -1,5 +1,5 @@
 #include "View/View.hpp"
-#include "Gui/Button.hpp"
+#include "Gui/OnReleaseButton.hpp"
 #include "View/Gui/ButtonActions.hpp"
 #include "View/Gui/GraphsWindow.hpp"
 
@@ -121,12 +121,12 @@ void addButtons(
         addMoleculesSprite, addMoleculesSprite, addMoleculesSprite, addMoleculesSprite
     };
 
-    Gui::Button* addMoleculesButton{
-        new Gui::Button{{0, 0, 0}, addMoleculesSprite, staticParams}
+    Gui::OnReleaseButton* addMoleculesButton{
+        new Gui::OnReleaseButton{{0, 0, 0}, addMoleculesSprite, staticParams}
     };
 
-    Gui::Button* removeMoleculesButton{
-        new Gui::Button{{buttonWidth, 0, 0}, removeMoleculesSprite, staticParams}
+    Gui::OnReleaseButton* removeMoleculesButton{
+        new Gui::OnReleaseButton{{buttonWidth, 0, 0}, removeMoleculesSprite, staticParams}
     };
 
     auto* addMoleculesAction = new ChangeMoleculesQuantityAction{

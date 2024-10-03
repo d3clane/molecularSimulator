@@ -5,8 +5,6 @@
 
 #include "Engine/Vector.hpp"
 
-#include <iostream>
-
 namespace Gui
 {
 
@@ -54,19 +52,17 @@ Button::Button(
     sprite_ = normalSprite_;
 }
 
-Button::Button(
-    const Engine::Point& topLeft, const Graphics::Sprite& oneSpriteForAll, 
-    const CtorParams& otherParams
-) : Button(
-        topLeft, otherParams.width, otherParams.height, otherParams.showing, otherParams.state,
-        oneSpriteForAll, oneSpriteForAll, oneSpriteForAll, oneSpriteForAll
+Button::Button(const Button::CtorParams& ctorParams) :
+    Button(
+        ctorParams.topLeft, ctorParams.width, ctorParams.height, ctorParams.showing, ctorParams.state,
+        ctorParams.normalSprite, ctorParams.hoverSprite, ctorParams.releaseSprite, ctorParams.pressedSprite
     )
 {
 }
 
-bool Button::isHovered(const Graphics::RenderWindow& window) const
+bool Button::isHovered(const Graphics::RenderWindow& renderWindow) const
 {
-    Graphics::WindowPoint mousePos = Graphics::Mouse::getPosition(window);
+    Graphics::WindowPoint mousePos = Graphics::Mouse::getPosition(renderWindow);
 
     return isHovered(mousePos.x, mousePos.y);
 }
@@ -80,35 +76,21 @@ bool Button::isHovered(int mousePosX, int mousePosY) const
     return false;    
 }
 
-bool Button::update(Graphics::RenderWindow& window, const Graphics::Event& event)
+int Button::addAction(std::unique_ptr<Action>&& action)
 {
-    bool hoveredByInteractionMouse = 
-        (event.type == Graphics::Event::EventType::MouseButtonReleased || 
-         event.type == Graphics::Event::EventType::MouseButtonPressed) &&
-        isHovered(event.mouseButton.x, event.mouseButton.y);
+    actions_.push_back(std::move(action));
+    return actions_.size() - 1;
+}
 
-    if (!isHovered(window) && !hoveredByInteractionMouse)
-    {
-        onUnhover(window, event);
-        return true;
-    }
+int Button::addUndoAction(std::unique_ptr<Action>&& action)
+{
+    undoActions_.push_back(std::move(action));
+    return undoActions_.size() - 1;
+}
 
-    switch (event.type)
-    {
-        case Graphics::Event::EventType::MouseButtonReleased:
-            onRelease(window, event);
-            break;
-        
-        case Graphics::Event::EventType::MouseButtonPressed:
-            onPress(window, event);
-            break;
-        
-        default:
-            onHover(window, event);
-            break;
-    }
-
-    return true;
+Button::operator Graphics::Sprite() const
+{
+    return sprite_;
 }
 
 void Button::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs)
@@ -122,63 +104,35 @@ void Button::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSyst
     renderWindow.drawSprite(sprite_);
 }
 
-void Button::onPress(Graphics::RenderWindow& window, const Graphics::Event& event)
+bool Button::update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)
 {
-    return;
-}
+    bool hoveredByInteractionMouse = 
+        (event.type == Graphics::Event::EventType::MouseButtonReleased || 
+         event.type == Graphics::Event::EventType::MouseButtonPressed) &&
+        isHovered(event.mouseButton.x, event.mouseButton.y);
 
-void Button::onRelease(Graphics::RenderWindow& window, const Graphics::Event& event)
-{
-    if (state_ == State::Released)
+    if (!isHovered(renderWindow) && !hoveredByInteractionMouse)
     {
-        state_  = State::Normal;
-        sprite_ = normalSprite_;
-
-        completeActions(undoActions_);
+        onUnhover(renderWindow, event);
+        return true;
     }
-    else
+
+    switch (event.type)
     {
-        sprite_ = releasedSprite_;
-
-        completeActions(actions_);
-    }
-}
-
-void Button::onHover  (Graphics::RenderWindow& window, const Graphics::Event& event)
-{
-    if (state_ != State::Released)
-        sprite_ = hoveredSprite_;
-    else
-        completeActions(actions_);
-}
-
-void Button::onUnhover(Graphics::RenderWindow& window, const Graphics::Event& event)
-{
-    switch (state_)
-    {
-        case State::Released:
-            completeActions(actions_);
+        case Graphics::Event::EventType::MouseButtonReleased:
+            onRelease(renderWindow, event);
             break;
-
-        case State::Normal:
+        
+        case Graphics::Event::EventType::MouseButtonPressed:
+            onPress(renderWindow, event);
             break;
-
-        default: // unreachable
-            assert(false);
+        
+        default:
+            onHover(renderWindow, event);
             break;
     }
-}
 
-int Button::addAction(std::unique_ptr<Action>&& action)
-{
-    actions_.push_back(std::move(action));
-    return actions_.size() - 1;
-}
-
-int Button::addUndoAction(std::unique_ptr<Action>&& action)
-{
-    undoActions_.push_back(std::move(action));
-    return undoActions_.size() - 1;
+    return true;
 }
 
 void completeActions(const std::vector<std::unique_ptr<Action> >& actions)
