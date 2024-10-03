@@ -1,5 +1,6 @@
 #include "View/View.hpp"
 #include "Gui/OnReleaseButton.hpp"
+#include "Gui/HoverAnimatedButton.hpp"
 #include "View/Gui/ButtonActions.hpp"
 #include "View/Gui/GraphsWindow.hpp"
 

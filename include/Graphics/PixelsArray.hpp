@@ -13,20 +13,24 @@ static const size_t kBytesPerPixel = 4;
 
 struct Color
 {
-private:
+public:
     static const uint8_t maxColorValue_ = 255;
 
-public:
     uint8_t red_, green_, blue_, alpha_;
 
     Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) noexcept
         : red_{red}, green_{green}, blue_{blue}, alpha_{alpha} {}
-    Color() : Color(0, 0, 0, 255) {}
+    Color() : Color(0, 0, 0, maxColorValue_) {}
     explicit Color(const sf::Color& color) : Color(color.r, color.g, color.b, color.a) {}
 
     Color operator +(const Color& other)  const;
     Color operator *(const double& coeff) const;
     Color operator *(const Color& other)  const;
+
+    void red  (uint8_t initRed)   { red_ = initRed;     }
+    void green(uint8_t initGreen) { green_ = initGreen; }
+    void blue (uint8_t initBlue)  { blue_ = initBlue;   }
+    void alpha(uint8_t initAlpha) { alpha_ = initAlpha; }
 
     explicit operator sf::Color() { return sf::Color(red_, green_, blue_, alpha_); }
 };

@@ -31,44 +31,17 @@ void OnReleaseButton::onPress(Graphics::RenderWindow& renderWindow, const Graphi
 
 void OnReleaseButton::onRelease(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)
 {
-    if (state_ == State::Released)
-    {
-        state_  = State::Normal;
-        sprite_ = normalSprite_;
-
-        completeActions(undoActions_);
-    }
-    else
-    {
-        sprite_ = releasedSprite_;
-
-        completeActions(actions_);
-    }
+    completeActions(actions_);
 }
 
 void OnReleaseButton::onHover(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)
 {
-    if (state_ != State::Released)
-        sprite_ = hoveredSprite_;
-    else
-        completeActions(actions_);
+    return;
 }
 
 void OnReleaseButton::onUnhover(Graphics::RenderWindow& renderWindow, const Graphics::Event& event)
 {
-    switch (state_)
-    {
-        case State::Released:
-            completeActions(actions_);
-            break;
-
-        case State::Normal:
-            break;
-
-        default: // unreachable
-            assert(false);
-            break;
-    }
+    return;
 }
 
 } // namespace Gui

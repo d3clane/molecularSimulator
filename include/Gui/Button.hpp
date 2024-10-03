@@ -73,6 +73,8 @@ public:
 
     void draw  (Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) override;
     bool update(Graphics::RenderWindow& renderWindow, const Graphics::Event& event  ) override;
+
+    virtual ~Button() = default;
 private:
     virtual void onPress    (Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;
     virtual void onRelease  (Graphics::RenderWindow& renderWindow, const Graphics::Event& event) = 0;

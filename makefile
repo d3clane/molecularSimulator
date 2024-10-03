@@ -41,7 +41,8 @@ CPPSRC = src/Graphics/Events.cpp src/Graphics/GraphicsWindow.cpp src/Graphics/Mo
 		 src/Controller/Controller.cpp src/Graphics/Circle.cpp src/View/Gui/GraphsWindow.cpp \
 		 src/Scene/Vector.cpp src/Utils/Doubles.cpp src/Graphics/Font.cpp src/Graphics/Text.cpp \
 		 src/Graphics/Font.cpp src/Graphics/Text.cpp src/Utils/Exceptions.cpp src/Model/Boundary.cpp \
-		 src/Gui/OnReleaseButton.cpp src/Gui/WhileReleasedButton.cpp src/Gui/Animation.cpp
+		 src/Gui/OnReleaseButton.cpp src/Gui/WhileReleasedButton.cpp src/Gui/Animation.cpp	\
+		 
 
 CPPOBJ := $(addprefix $(OUT_O_DIR)/,$(CPPSRC:.cpp=.o))
 DEPS = $(CPPOBJ:.o=.d)

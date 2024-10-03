@@ -4,69 +4,34 @@
 #include <chrono>
 
 #include "Graphics/Sprite.hpp"
-#include "Gui/Button.hpp"
+#include "Gui/WhileReleasedButton.hpp"
+#include "Gui/Animation.hpp"
 
 namespace Gui
 {
 
-class HoverAnimatedButton : public Button
+class HoverAnimatedButton : public WhileReleasedButton
 {
     enum class AnimationType
     {
-        None,
-        Hovering,
         Unhovering,
+        Hovering,
     };
 
-    struct PrevSpriteWrap
-    {
-    private:
-        Graphics::Sprite prevSprite_;
-
-    public:
-        void setPrevSprite(const Graphics::Sprite& sprite);
-        Graphics::Sprite& getPrevSpriteLink();
-        
-        explicit operator Graphics::Sprite&();
-    };
-
-    PrevSpriteWrap prevSprite_;
-
-    std::chrono::steady_clock::time_point animationBeginTime_; // time hovered or unhovered
-    uint8_t spriteBeginAlpha_;
-
-    std::chrono::milliseconds animationDuration_;              // time on interaction
+    Animation animation_;
     AnimationType animationType_;
 
 public:
-    struct CtorParams : public Button::CtorParams
-    {
-        std::chrono::milliseconds animationDuration;
+    HoverAnimatedButton(const std::chrono::milliseconds& animationDuration, const Button::CtorParams& params);
 
-        CtorParams(const std::chrono::milliseconds& animationDuration, const Button::CtorParams& otherParams);
-    };
+    //HoverAnimatedButton(const Engine::Point& topLeft, const Button::CtorParams& otherParams);
 
-    HoverAnimatedButton(
-        const Engine::Point& topLeft, unsigned int width, unsigned int height, bool showing,
-        const Graphics::Sprite& normalSprite  , const Graphics::Sprite& hoveredSprite,
-        const Graphics::Sprite& releasedSprite, const Graphics::Sprite& pressedSprite,
-        std::chrono::milliseconds animationDuration
-    );
+    void onRelease(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) override;
+    void onPress  (Graphics::RenderWindow& renderWindow, const Graphics::Event& event) override;
+    void onHover  (Graphics::RenderWindow& renderWindow, const Graphics::Event& event) override;
+    void onUnhover(Graphics::RenderWindow& renderWindow, const Graphics::Event& event) override;
 
-    HoverAnimatedButton(const Engine::Point& topLeft, const CtorParams& otherParams);
-
-    virtual ~HoverAnimatedButton() = default;
-
-    virtual void onRelease  (Graphics::RenderWindow& window, const Graphics::Event& event) override;
-    virtual void onPress    (Graphics::RenderWindow& window, const Graphics::Event& event) override;
-    virtual void onHover    (Graphics::RenderWindow& window, const Graphics::Event& event) override;
-    virtual void onUnhover  (Graphics::RenderWindow& window, const Graphics::Event& event) override;
-
-private:
-    void animationCtor();
-    void animateOnHover();
-    void animateOnUnhover();
-    void animationCtorOnUnrelease();
+    void draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsSystem& cs) override;
 };
 
 } // namespace Gui
