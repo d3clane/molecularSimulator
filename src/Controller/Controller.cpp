@@ -91,4 +91,19 @@ void Controller::moveForcerDown(std::chrono::milliseconds deltaTime)
     moleculeManager_.forcer().move(down * deltaTime.count());
 }
 
+Point Controller::getForcerPos() const
+{
+    return moleculeManager_.forcer().pos();
+}
+
+
+Vector Controller::getForcerScales() const
+{
+    Vector scales = moleculeManager_.forcer().scales();
+
+    static const double width = 50;
+
+    return Vector{width, scales.dy, 0};
+}
+
 } // namespace Simulator

@@ -26,6 +26,7 @@ class View
     std::vector<std::unique_ptr<Graphics::Font> >    fonts_;
     
     Graphics::Sprite moleculeSprites_[Simulator::numberOfDifferentMolecules];
+    Graphics::Sprite forcerSprite_;
 
     std::vector<std::unique_ptr<Graphics::Renderable> > graphicsRenderables_; 
 

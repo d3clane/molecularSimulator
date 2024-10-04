@@ -19,4 +19,9 @@ Boundary::Boundary(const Boundary& other) :
 const RectangleCollider* Boundary::collider() const &   { return collider_.get(); }
 const Engine::Vector& Boundary::perpendicular() const & { return perpendicular_;  }
 
+Engine::Vector Boundary::scales() const
+{
+    return Engine::Vector{width_, height_, 0};
+}
+
 } // namespace Simulator

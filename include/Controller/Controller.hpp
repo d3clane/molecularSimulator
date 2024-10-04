@@ -24,6 +24,9 @@ public:
 
     void moveForcerUp  (std::chrono::milliseconds deltaTime);
     void moveForcerDown(std::chrono::milliseconds deltaTime);
+    
+    Point  getForcerPos   () const;
+    Vector getForcerScales() const;
 
     // view: controller.updateModel()
     // btn.action() -> controller.moveForcerUp() -> forcer moves

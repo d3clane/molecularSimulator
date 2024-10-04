@@ -105,10 +105,26 @@ void drawMolecule(
     renderWindow.drawSprite(moleculeSprite);
 }
 
-void addButtons(
+void drawForcer(
+    const Graphics::Sprite& forcerSprite, const Controller& controller,
+    const Engine::CoordsSystem& coordsSystem, Graphics::RenderWindow& window
+)
+{
+    Graphics::Sprite drawingSprite = forcerSprite;
+    
+    auto a = coordsSystem.getScaleInPixels(controller.getForcerScales());
+    auto b = coordsSystem.getPointInWindow(controller.getForcerPos());
+
+    drawingSprite.scaleInPixels(coordsSystem.getScaleInPixels(controller.getForcerScales()));
+    drawingSprite.setPosition  (coordsSystem.getPointInWindow(controller.getForcerPos()));
+
+    window.drawSprite(drawingSprite);
+}
+
+void addMoleculesButtons(
     Controller& controller,
     Gui::WindowManager& windowManager, const size_t width, const size_t height,
-    std::vector<std::unique_ptr<Graphics::Texture> >& textures
+    std::vector<std::unique_ptr<Graphics::Texture> >& textures  
 )
 {
     Graphics::Sprite addMoleculesSprite    = loadSprite(textures, "media/textures/plus.jpeg");
@@ -131,11 +147,11 @@ void addButtons(
     };
 
     auto* addMoleculesAction = new ChangeMoleculesQuantityAction{
-        controller, Simulator::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Add
+        controller, ChangeMoleculesQuantityAction::ActionType::Add
     };
 
     auto* removeMoleculesAction = new ChangeMoleculesQuantityAction{
-        controller, Simulator::MoleculeType::Circle, ChangeMoleculesQuantityAction::ActionType::Remove
+        controller, ChangeMoleculesQuantityAction::ActionType::Remove
     };
 
     addMoleculesButton->addAction(std::unique_ptr<Gui::Action>(addMoleculesAction));
@@ -143,6 +159,67 @@ void addButtons(
 
     windowManager.addWindow(std::unique_ptr<Gui::Button>(addMoleculesButton));
     windowManager.addWindow(std::unique_ptr<Gui::Button>(removeMoleculesButton));
+}
+
+void addForcerButtons(
+    Controller& controller,
+    Gui::WindowManager& windowManager, const size_t renderWindowWidth, const size_t renderWindowHeight,
+    std::vector<std::unique_ptr<Graphics::Texture> >& textures 
+)
+{
+    Graphics::Sprite forcerUpSprite   = loadSprite(textures, "media/textures/up.jpeg");
+    Graphics::Sprite forcerDownSprite = loadSprite(textures, "media/textures/down.jpeg");
+    Graphics::Sprite hoveringSprite   = loadSprite(textures, "media/textures/red.jpeg");
+
+    static const unsigned int buttonWidth  = 64;
+    static const unsigned int buttonHeight = 64;
+
+    Gui::Button::CtorParams staticParams{
+        {0, 0, 0}, buttonWidth, buttonHeight, true, Gui::Button::State::Normal, 
+        forcerUpSprite, hoveringSprite, forcerUpSprite, forcerUpSprite
+    };
+
+    static const std::chrono::milliseconds animationDuration{1000};
+
+    auto* forcerUpButton = new Gui::HoverAnimatedButton{
+        animationDuration, 
+        Gui::Button::CtorParams{
+            {renderWindowWidth - buttonWidth, 0, 0}, buttonWidth, buttonHeight, true, Gui::Button::State::Normal,
+            forcerUpSprite, hoveringSprite, forcerUpSprite, forcerUpSprite
+        }
+    };
+
+    auto* forcerDownButton = new Gui::HoverAnimatedButton{
+        animationDuration, 
+        Gui::Button::CtorParams{
+            {renderWindowWidth - 2 * buttonWidth, 0, 0}, buttonWidth, buttonHeight, true, 
+            Gui::Button::State::Normal,
+            forcerDownSprite, hoveringSprite, forcerDownSprite, forcerDownSprite
+        }
+    };
+
+    auto* moveUpAction = new MoveForcerAction{
+        controller, MoveForcerAction::ActionType::MoveUp
+    };
+    auto* moveDownAction = new MoveForcerAction{
+        controller, MoveForcerAction::ActionType::MoveDown
+    };
+
+    forcerUpButton->addAction(std::unique_ptr<Gui::Action>(moveUpAction));
+    forcerDownButton->addAction(std::unique_ptr<Gui::Action>(moveDownAction));
+
+    windowManager.addWindow(std::unique_ptr<Gui::Button>(forcerUpButton));
+    windowManager.addWindow(std::unique_ptr<Gui::Button>(forcerDownButton));   
+}
+
+void addButtons(
+    Controller& controller,
+    Gui::WindowManager& windowManager, const size_t renderWindowWidth, const size_t renderWindowHeight,
+    std::vector<std::unique_ptr<Graphics::Texture> >& textures
+)
+{
+    addMoleculesButtons(controller, windowManager, renderWindowWidth, renderWindowHeight, textures);
+    addForcerButtons   (controller, windowManager, renderWindowWidth, renderWindowHeight, textures);
 }
 
 void addMoleculesSprites(
@@ -155,6 +232,14 @@ void addMoleculesSprites(
 
     (*moleculesSprites)[(size_t)Simulator::MoleculeType::Rectangle] = 
         loadSprite(textures, "media/textures/red.jpeg");
+}
+
+void addForcerSprite(
+    Graphics::Sprite& forcerSprite, 
+    std::vector<std::unique_ptr<Graphics::Texture> >& textures
+)
+{
+    forcerSprite = loadSprite(textures, "media/textures/red.jpeg");
 }
 
 void addGraphs(
@@ -190,10 +275,11 @@ void addGraphs(
         {1, renderWindowHeight - temperatureCs.getSizeInPixels(temperatureGraphsWindowHeight)}
     );
 
+    static const size_t fontHeight = 50;
     temperatureGraphTime->setFont(*font);
     temperatureGraphTime->setString("Time");
     temperatureGraphTime->setPosition(
-        {1 + temperatureCs.getSizeInPixels(temperatureGraphsWindowWidth), renderWindowHeight - 50}
+        {1 + temperatureCs.getSizeInPixels(temperatureGraphsWindowWidth), renderWindowHeight - fontHeight}
     );
 
     graphicsRenderables.push_back(std::unique_ptr<Graphics::Renderable>(temperatureGraphTemperature));
@@ -214,6 +300,7 @@ View::View(
 
     addButtons(controller_, windowManager_, renderWindowWidth, renderWindowHeight, textures_);
     addMoleculesSprites(&moleculeSprites_, textures_);
+    addForcerSprite(forcerSprite_, textures_);
     addGraphs(controller_, windowManager_, fonts_, graphicsRenderables_, renderWindowWidth, renderWindowHeight);
 }
 
@@ -237,6 +324,8 @@ void View::draw()
     {
         drawMolecule(molecule.get(), renderWindow_, coordsSystem_, &moleculeSprites_);
     }
+
+    drawForcer(forcerSprite_, controller_, coordsSystem_, renderWindow_);
 }
 
 Gui::WindowManager& View::windowManager() &

@@ -27,6 +27,8 @@ public:
     
     const RectangleCollider* collider() const &;
     const Engine::Vector& perpendicular() const &;
+
+    Engine::Vector scales() const;
 };
 
 } // namespace Simulator

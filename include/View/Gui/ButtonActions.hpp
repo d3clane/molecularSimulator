@@ -11,7 +11,6 @@ namespace Simulator
 class ChangeMoleculesQuantityAction : public Gui::Action
 {
     Simulator::Controller& controller_;
-    Simulator::MoleculeType  moleculesType_;
     
 public:
     enum class ActionType
@@ -20,15 +19,35 @@ public:
         Remove
     };
 
-    ChangeMoleculesQuantityAction(
-        Simulator::Controller& controller, Simulator::MoleculeType moleculesType, ActionType actionType
-    );
+    ChangeMoleculesQuantityAction(Simulator::Controller& controller, ActionType actionType);
 
     virtual void operator()() override;
 
 private:
     ActionType actionType_;
 };
+
+class MoveForcerAction : public Gui::Action
+{
+    Simulator::Controller& controller_;
+
+    std::chrono::steady_clock::time_point prevTime_;
+
+public:
+    enum class ActionType
+    {
+        MoveUp,
+        MoveDown,
+    };
+
+    MoveForcerAction(Simulator::Controller& controller, ActionType actionType);
+
+    virtual void operator()() override;
+
+private:
+    ActionType actionType_;
+};
+
 
 } // namespace Simulator
 

@@ -4,8 +4,8 @@ namespace Simulator
 {
 
 ChangeMoleculesQuantityAction::ChangeMoleculesQuantityAction(
-    Simulator::Controller& controller, Simulator::MoleculeType moleculesType, ActionType actionType
-) : controller_(controller), moleculesType_(moleculesType), actionType_(actionType)
+    Simulator::Controller& controller, ActionType actionType
+) : controller_(controller), actionType_(actionType)
 {
 }
 
@@ -21,6 +21,29 @@ void ChangeMoleculesQuantityAction::operator()()
             controller_.removeMolecules();
             break;
             
+        default:
+            break;
+    }
+}
+
+MoveForcerAction::MoveForcerAction(
+    Simulator::Controller& controller, ActionType actionType
+) : controller_(controller), actionType_(actionType) 
+{
+}
+
+void MoveForcerAction::operator()()
+{
+    std::chrono::milliseconds deltaTime{10}; // TODO: 
+    switch (actionType_)
+    {
+        case ActionType::MoveUp:
+            controller_.moveForcerUp(deltaTime);
+            break;
+        case ActionType::MoveDown:
+            controller_.moveForcerDown(deltaTime);
+            break;
+        
         default:
             break;
     }
