@@ -20,6 +20,7 @@ struct Molecules2DVtableFuncs
     ChemistryFuncType        processChemistry;
 };
 
+#if 0
 void addCheckCollisions(
     const CheckCollisionFuncType (&funcs)[numberOfDifferentMolecules][numberOfDifferentMolecules]
 );
@@ -29,6 +30,8 @@ void addProcessPhysics(
 void addProcessChemistry(
     const ChemistryFuncType (&funcs)[numberOfDifferentMolecules][numberOfDifferentMolecules]
 );
+
+#endif
 
 bool checkCollision  (const Molecule* molecule1, const Molecule* molecule2);
 bool checkCollision  (const Molecule* molecule, const Boundary* boundary);

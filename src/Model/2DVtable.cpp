@@ -8,20 +8,23 @@ namespace Simulator
 namespace Molecules2DVtable
 {
 
-// TODO: will broke when changing molecule type id's, should use enum
-static Molecules2DVtableFuncs 
+const static Molecules2DVtableFuncs 
     MoleculesCollisionsVTable[numberOfDifferentMolecules][numberOfDifferentMolecules] = 
 {
-    {
-        {checkCollisionCircleCircle, processCollisionCircleCircle, processChemistryCircleCircle},
+    [(size_t)MoleculeType::Circle][(size_t)MoleculeType::Circle] = 
+         {checkCollisionCircleCircle, processCollisionCircleCircle, processChemistryCircleCircle},
+
+    [(size_t)MoleculeType::Circle][(size_t)MoleculeType::Rectangle] = 
         {checkCollisionCircleRect,   processCollisionCircleRect,   processChemistryCircleRect},
-    },
-    {
+
+    [(size_t)MoleculeType::Rectangle][(size_t)MoleculeType::Circle] =
         {checkCollisionRectCircle,   processCollisionRectCircle,   processChemistryRectCircle},
+    
+    [(size_t)MoleculeType::Rectangle][(size_t)MoleculeType::Rectangle] =
         {checkCollisionRectRect,     processCollisionRectRect,     processChemistryRectRect},
-    }
 };
 
+#if 0
 void addCheckCollisions(const CheckCollisionFuncType (&funcs)[numberOfDifferentMolecules][numberOfDifferentMolecules])
 {
     for (size_t i = 0; i < numberOfDifferentMolecules; ++i)
@@ -58,6 +61,7 @@ void addProcessChemistry(
         }
     }
 }
+#endif
 
 bool checkCollision  (const Molecule* molecule1, const Molecule* molecule2)
 {
