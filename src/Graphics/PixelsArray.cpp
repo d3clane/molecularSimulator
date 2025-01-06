@@ -1,5 +1,7 @@
 #include "Graphics/PixelsArray.hpp"
 
+#include <cassert>
+
 namespace Graphics
 {
 

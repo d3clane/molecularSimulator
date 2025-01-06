@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <iostream>
+#include <cassert>
 
 namespace Gui
 {
@@ -71,7 +72,7 @@ void Animation::draw(Graphics::RenderWindow& renderWindow, const Engine::CoordsS
     Animation::AnimationSpritesAlpha animationSpritesAlpha = animate();
 
     //fprintf(stderr, "Animation: %d %d\n", animationSpritesAlpha.animationBeginSpriteAlpha_, animationSpritesAlpha.animationEndSpriteAlpha_);
-    setAlphaColorOfSprite(firstLayerSprite,  animationSpritesAlpha.animationBeginSpriteAlpha_);
+    setAlphaColorOfSprite(firstLayerSprite,  255);
     setAlphaColorOfSprite(secondLayerSprite, animationSpritesAlpha.animationEndSpriteAlpha_  );
 
     renderWindow.drawSprite(firstLayerSprite);

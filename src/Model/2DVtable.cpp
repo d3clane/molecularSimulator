@@ -2,6 +2,8 @@
 
 #include "src/Model/2DVtable.hpp"
 
+#include <cassert>
+
 namespace Simulator
 {
 

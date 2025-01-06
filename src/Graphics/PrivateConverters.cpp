@@ -1,5 +1,7 @@
 #include "PrivateConverters.hpp"
 
+#include <cassert>
+
 namespace Graphics
 {
 

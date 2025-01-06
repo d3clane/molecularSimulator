@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstdio>
+#include <cassert>
 
 namespace Simulator
 {

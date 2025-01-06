@@ -1,6 +1,7 @@
 #include "Model/Chemistry.hpp"
 
 #include <iostream>
+#include <cassert>
 
 namespace Simulator
 {

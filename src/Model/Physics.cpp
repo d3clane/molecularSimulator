@@ -5,6 +5,7 @@
 #include "Utils/Exceptions.hpp"
 
 #include <iostream>
+#include <cassert>
 
 namespace Simulator
 {

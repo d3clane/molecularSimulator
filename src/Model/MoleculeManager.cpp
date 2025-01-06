@@ -9,6 +9,7 @@
 #include <iostream>
 #include <algorithm>
 #include <list>
+#include <cassert>
 
 namespace Simulator
 {
